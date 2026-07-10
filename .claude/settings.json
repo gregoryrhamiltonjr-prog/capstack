@@ -1,0 +1,11 @@
+{
+  "enabledPlugins": {
+    "stripe@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(vercel --prod:*)",
+      "Bash(vercel deploy --prod:*)"
+    ]
+  }
+}

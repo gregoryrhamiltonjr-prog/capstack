@@ -57,7 +57,7 @@ export default async function SettingsPage() {
               <div className="min-w-0">
                 <div className="font-bold text-ink">Free Roam Mode</div>
                 <div className="mt-1 text-sm text-ink-muted">
-                  Unlock all modules without passing prerequisites so you can open any chapter.
+                  Unlock all units without passing prerequisites so you can open any module.
                 </div>
                 {freeRoamLocked && (
                   <div className="mt-1 text-xs font-medium text-gold">

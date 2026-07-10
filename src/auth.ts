@@ -43,7 +43,7 @@ providers.push(
       if (!email || !password) return null;
 
       const user = await db.user.findUnique({ where: { email } });
-      if (!user?.passwordHash) return null;
+      if (!user?.passwordHash || !user.isAdmin) return null;
       const ok = await verifyPassword(password, user.passwordHash);
       if (!ok) return null;
 
@@ -91,20 +91,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       // Ensure CapStack profile fields exist for OAuth users
       if (account?.provider !== "credentials" && user.email) {
-        const existing = await db.user.findUnique({ where: { email: user.email } });
-        if (existing) {
-          const updates: { displayName?: string; avatarUrl?: string | null; image?: string | null; name?: string | null } = {};
-          if (!existing.displayName || existing.displayName === "Learner") {
-            updates.displayName = user.name || existing.displayName || user.email.split("@")[0];
-          }
-          if (!existing.avatarUrl && (user.image || existing.image)) {
-            updates.avatarUrl = user.image || existing.image;
-          }
-          if (user.name && !existing.name) updates.name = user.name;
-          if (user.image && !existing.image) updates.image = user.image;
-          if (Object.keys(updates).length) {
-            await db.user.update({ where: { id: existing.id }, data: updates });
-          }
+        const email = user.email.trim().toLowerCase();
+        const existing = await db.user.findUnique({ where: { email } });
+        // Private platform: OAuth may NOT create new accounts. Only pre-provisioned
+        // admins can sign in — deny everyone else before Auth.js links an account.
+        if (!existing?.isAdmin) return false;
+
+        const updates: { displayName?: string; avatarUrl?: string | null; image?: string | null; name?: string | null } = {};
+        if (!existing.displayName || existing.displayName === "Learner") {
+          updates.displayName = user.name || existing.displayName || email.split("@")[0];
+        }
+        if (!existing.avatarUrl && (user.image || existing.image)) {
+          updates.avatarUrl = user.image || existing.image;
+        }
+        if (user.name && !existing.name) updates.name = user.name;
+        if (user.image && !existing.image) updates.image = user.image;
+        if (Object.keys(updates).length) {
+          await db.user.update({ where: { id: existing.id }, data: updates });
         }
       }
       return true;

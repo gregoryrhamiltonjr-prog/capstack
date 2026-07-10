@@ -2,21 +2,25 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { AppNav } from "@/components/AppNav";
+import { WelcomeConfetti } from "@/components/WelcomeConfetti";
 import { isStripeConfigured } from "@/lib/stripe";
 import { hasAccess, isTrialing, trialDaysLeft } from "@/lib/subscription";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  // Admin-only lockdown — the entire app is private; only admins get in.
+  if (!user.isAdmin) redirect("/");
   if (!user.onboarded) redirect("/onboarding");
-  // Subscription gate — enforced only when Stripe is configured (dev stays open).
-  if (isStripeConfigured() && !hasAccess(user)) redirect("/subscribe");
+  // Subscription gate — enforced only when Stripe is configured (admins bypass).
+  if (isStripeConfigured() && !user.isAdmin && !hasAccess(user)) redirect("/subscribe");
 
-  const trialing = isStripeConfigured() && isTrialing(user);
+  const trialing = isStripeConfigured() && !user.isAdmin && isTrialing(user);
   const daysLeft = trialing ? trialDaysLeft(user) : null;
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-[1400px]">
+      <WelcomeConfetti />
       <AppNav xp={user.xp} streak={user.currentStreak} name={user.displayName} avatarColor={user.avatarColor} avatarUrl={user.avatarUrl} />
       <main className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8 lg:pt-8">
         {trialing && (

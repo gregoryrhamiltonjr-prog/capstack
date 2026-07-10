@@ -82,7 +82,7 @@ export default async function DashboardPage() {
           ) : (
             <MouseGlow className="card-raised border-l-4 border-l-brand p-7">
               <h2 className="text-2xl font-bold text-ink">You&apos;re all caught up</h2>
-              <p className="mt-2 text-ink-muted">Browse the curriculum map for the next track.</p>
+              <p className="mt-2 text-ink-muted">Browse the course map for the next course.</p>
               <Link href="/map" className="btn-primary mt-6 inline-flex">
                 View course map
               </Link>
@@ -91,8 +91,8 @@ export default async function DashboardPage() {
 
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { label: "Tracks unlocked", value: unlockedTracks },
-              { label: "Chapters passed", value: completedChapters },
+              { label: "Courses unlocked", value: unlockedTracks },
+              { label: "Modules passed", value: completedChapters },
               { label: "Total XP", value: user.xp.toLocaleString() },
             ].map((s) => (
               <div key={s.label} className="card bg-surface p-4">
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
           <div className="card border-line p-5">
             <h3 className="mb-2 font-bold text-ink">How XP works</h3>
             <p className="text-sm leading-relaxed text-ink-muted">
-              Complete lessons and pass chapter quizzes (70%+) to climb the ladder. Streaks add a small daily bonus.
+              Complete lessons and pass module quizzes (70%+) to climb the ladder. Streaks add a small daily bonus.
             </p>
           </div>
         </div>

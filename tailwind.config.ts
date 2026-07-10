@@ -60,6 +60,18 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "float-in": {
+          "0%": { opacity: "0", transform: "translateY(28px) scale(0.98)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "float-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-64px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "float-in-right": {
+          "0%": { opacity: "0", transform: "translateX(64px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
         "pop": {
           "0%": { transform: "scale(0.96)" },
           "60%": { transform: "scale(1.03)" },
@@ -75,6 +87,9 @@ const config: Config = {
       },
       animation: {
         "fade-up": "fade-up 0.4s ease-out both",
+        "float-in": "float-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "float-in-left": "float-in-left 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "float-in-right": "float-in-right 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
         pop: "pop 0.25s ease-out both",
         shimmer: "shimmer 1.4s infinite",
       },

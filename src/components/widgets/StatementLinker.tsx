@@ -3,8 +3,8 @@ import { WidgetShell } from "./controls";
 
 // The "$10 of depreciation" three-statement walk-through. Not one of the six interactive
 // widgets, so per CapStack policy it renders as a correct, static worked model.
-export default function StatementLinker({ deprecation = 10, taxRate = 35 }: { deprecation?: number; taxRate?: number }) {
-  const d = deprecation;
+export default function StatementLinker({ depreciation = 10, taxRate = 35 }: { depreciation?: number; taxRate?: number }) {
+  const d = depreciation;
   const tax = d * (taxRate / 100);
   const ni = -(d - tax);
   const cash = ni + d;

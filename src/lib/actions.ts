@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { promises as fs } from "fs";
 import path from "path";
 import { db } from "./db";
-import { getUserId, hashPassword, verifyPassword } from "./auth";
+import { getUserId, verifyPassword } from "./auth";
 import { signIn, signOut } from "@/auth";
 import { XP, HINT_MULT } from "./xp";
 import { todayKey, weekKey, daysBetween } from "./util";
@@ -15,6 +15,8 @@ import { createCheckoutUrl, createPortalUrl } from "./billing";
 async function requireUserId(): Promise<string> {
   const uid = await getUserId();
   if (!uid) redirect("/login");
+  const user = await db.user.findUnique({ where: { id: uid }, select: { isAdmin: true } });
+  if (!user?.isAdmin) redirect("/");
   return uid;
 }
 
@@ -48,33 +50,10 @@ async function bumpStreak(userId: string) {
 }
 
 // ---------------- AUTH ----------------
-export async function signupAction(formData: FormData) {
-  const email = String(formData.get("email") || "").trim().toLowerCase();
-  const name = String(formData.get("name") || "").trim();
-  const password = String(formData.get("password") || "");
-  if (!email || !password || password.length < 6) redirect("/signup?error=1");
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) {
-    // If they signed up with Google/Apple already, don't clobber — send to login
-    if (!existing.passwordHash) redirect("/login?error=oauth");
-    redirect("/signup?error=exists");
-  }
-  const displayName = name || email.split("@")[0];
-  await db.user.create({
-    data: {
-      email,
-      name: displayName,
-      displayName,
-      passwordHash: await hashPassword(password),
-    },
-  });
-  const res = await signIn("credentials", {
-    email,
-    password,
-    redirect: false,
-  });
-  if (res?.error) redirect("/login?error=1");
-  redirect("/onboarding");
+export async function signupAction(_formData: FormData) {
+  // Public signup is disabled — the platform is private/admin-only.
+  // Account creation happens by direct provisioning, not self-service.
+  redirect("/login");
 }
 
 export async function loginAction(formData: FormData) {
@@ -84,6 +63,7 @@ export async function loginAction(formData: FormData) {
   if (!user) redirect("/login?error=1");
   if (!user.passwordHash) redirect("/login?error=oauth");
   if (!(await verifyPassword(password, user.passwordHash))) redirect("/login?error=1");
+  if (!user.isAdmin) redirect("/login?error=access");
 
   await signIn("credentials", {
     email,
@@ -101,6 +81,31 @@ export async function oauthSignInAction(formData: FormData) {
 
 export async function logoutAction() {
   await signOut({ redirectTo: "/" });
+}
+
+// ---------------- WAITLIST ----------------
+type WaitlistResult = { ok: boolean; message: string };
+
+/**
+ * Landing-page "Coming soon" waitlist join. Used with useActionState — returns a
+ * result object instead of redirecting. Idempotent: re-submitting the same email
+ * succeeds without creating a duplicate.
+ */
+export async function joinWaitlist(_prev: WaitlistResult, formData: FormData): Promise<WaitlistResult> {
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    return { ok: false, message: "Enter a valid email address." };
+  }
+  try {
+    await db.waitlistSignup.upsert({
+      where: { email },
+      update: {},
+      create: { email, source: "landing" },
+    });
+  } catch {
+    return { ok: false, message: "Something went wrong — please try again." };
+  }
+  return { ok: true, message: "You're on the list. We'll be in touch soon." };
 }
 
 // ---------------- ONBOARDING & SETTINGS ----------------

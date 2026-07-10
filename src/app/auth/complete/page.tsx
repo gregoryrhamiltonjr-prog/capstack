@@ -5,5 +5,6 @@ import { getCurrentUser } from "@/lib/auth";
 export default async function AuthCompletePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
   redirect(user.onboarded ? "/dashboard" : "/onboarding");
 }

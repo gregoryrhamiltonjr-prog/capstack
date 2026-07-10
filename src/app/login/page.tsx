@@ -6,7 +6,8 @@ import { Wordmark } from "@/components/Logo";
 import { AuthProviders } from "@/components/AuthProviders";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  if (await getCurrentUser()) redirect("/dashboard");
+  const currentUser = await getCurrentUser();
+  if (currentUser?.isAdmin) redirect("/dashboard");
   const { error } = await searchParams;
 
   return (
@@ -32,6 +33,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               That email is already registered. Sign in with the original method.
             </p>
           )}
+          {(error === "access" || error === "AccessDenied") && (
+            <p className="mt-3 rounded-lg border border-warn/30 bg-warn/10 px-3 py-2 text-sm text-warn">
+              This account does not have private access.
+            </p>
+          )}
 
           <form action={loginAction} className="mt-5 space-y-4">
             <div>
@@ -53,12 +59,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <AuthProviders mode="login" />
           </div>
         </div>
-        <p className="mt-4 text-center text-sm text-ink-muted">
-          No account?{" "}
-          <Link href="/signup" className="font-semibold text-brand hover:underline">
-            Sign up
-          </Link>
-        </p>
+        <p className="mt-4 text-center text-xs text-ink-faint">Private access. Accounts are provisioned by invitation only.</p>
       </div>
     </div>
   );

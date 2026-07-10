@@ -15,6 +15,7 @@ export default async function SubscribeSuccessPage({
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
 
   const { session_id } = await searchParams;
   if (isStripeConfigured() && session_id) {
@@ -25,5 +26,5 @@ export default async function SubscribeSuccessPage({
     }
   }
 
-  redirect(user.onboarded ? "/dashboard" : "/onboarding");
+  redirect(user.onboarded ? "/dashboard?welcome=1" : "/onboarding?welcome=1");
 }

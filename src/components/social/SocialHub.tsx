@@ -262,7 +262,7 @@ export function SocialHub({
           ) : (
             <div className="mt-3">
               <p className="text-sm leading-relaxed text-ink-muted">
-                Pair with someone on CapStack. Partners nudge each other to keep streaks and chapters moving.
+                Pair with someone on CapStack. Partners nudge each other to keep streaks and modules moving.
               </p>
               <button type="button" className="btn-primary mt-3 w-full py-2 text-sm" onClick={() => setShowPartnerFinder((v) => !v)}>
                 {showPartnerFinder ? "Hide finder" : "Find a partner"}

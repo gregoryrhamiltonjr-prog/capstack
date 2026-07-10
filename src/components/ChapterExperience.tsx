@@ -32,6 +32,8 @@ export function ChapterExperience({
   quizUnlocked,
   nextCode,
   prevCode,
+  initialLesson = 0,
+  initialTab = "lessons",
 }: {
   chapterId: string;
   chapterCode: string;
@@ -44,10 +46,13 @@ export function ChapterExperience({
   quizUnlocked: boolean;
   nextCode?: string | null;
   prevCode?: string | null;
+  initialLesson?: number;
+  initialTab?: "lessons" | "quiz";
 }) {
-  const [activeLesson, setActiveLesson] = useState(0);
+  const clampedInitial = Math.min(Math.max(initialLesson, 0), Math.max(lessons.length - 1, 0));
+  const [activeLesson, setActiveLesson] = useState(clampedInitial);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
-  const [tab, setTab] = useState<"lessons" | "quiz">("lessons");
+  const [tab, setTab] = useState<"lessons" | "quiz">(initialTab === "quiz" && quizUnlocked ? "quiz" : "lessons");
   const [pending, startTransition] = useTransition();
 
   const lesson = lessons[activeLesson];
@@ -94,7 +99,7 @@ export function ChapterExperience({
                 tab === "quiz" ? "bg-brand text-[#1a1206]" : "border border-line text-ink-muted hover:bg-surface-raised hover:text-ink"
               }`}
             >
-              Chapter quiz
+              Module quiz
             </button>
           )}
           <span className="ml-auto hidden text-sm text-ink-faint sm:inline">
@@ -141,7 +146,7 @@ export function ChapterExperience({
               {questions.length > 0 && quizUnlocked && (
                 <Magnetic className="pt-3">
                   <button type="button" className="btn-primary w-full text-sm" onClick={() => setTab("quiz")}>
-                    Take chapter quiz
+                    Take module quiz
                   </button>
                 </Magnetic>
               )}
@@ -167,7 +172,6 @@ export function ChapterExperience({
                     {completed[lesson.id] ? "Completed" : pending ? "Saving…" : "Mark complete"}
                   </button>
                 </div>
-
                 <LessonRenderer blocks={blocks} chapterCode={chapterCode} />
 
                 <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
@@ -185,7 +189,7 @@ export function ChapterExperience({
                     </button>
                   ) : questions.length > 0 && quizUnlocked ? (
                     <button type="button" className="btn-primary text-sm" onClick={() => setTab("quiz")}>
-                      Chapter quiz <Icon name="arrowRight" size={14} />
+                      Module quiz <Icon name="arrowRight" size={14} />
                     </button>
                   ) : (
                     <Link href="/map" className="btn-primary text-sm">
@@ -220,14 +224,14 @@ export function ChapterExperience({
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6">
         {prevCode ? (
           <Link href={`/learn/${prevCode}`} className="btn-ghost text-sm">
-            ← Previous chapter
+            ← Previous module
           </Link>
         ) : (
           <span />
         )}
         {nextCode ? (
           <Link href={`/learn/${nextCode}`} className="btn-ghost text-sm">
-            Next chapter →
+            Next module →
           </Link>
         ) : (
           <Link href="/map" className="btn-ghost text-sm">

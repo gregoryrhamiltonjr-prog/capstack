@@ -17,11 +17,11 @@ export default async function MapPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-10 pb-20">
       <header className="border-b border-line pb-6">
-        <h1 className="text-4xl font-extrabold tracking-tight text-ink">Curriculum Map</h1>
-        <p className="mt-2 text-lg text-ink-muted">Your path from foundations to desk-ready — tracks, modules, and chapters in order.</p>
+        <h1 className="text-4xl font-extrabold tracking-tight text-ink">Courses</h1>
+        <p className="mt-2 text-lg text-ink-muted">Your path from foundations to desk-ready — courses, units, and modules in order.</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="chip !border-brand/30 !text-brand-bright">{cre} CRE tracks</span>
-          <span className="chip !border-info/40 !text-info">{hf} High Finance tracks</span>
+          <span className="chip !border-brand/30 !text-brand-bright">{cre} CRE courses</span>
+          <span className="chip !border-info/40 !text-info">{hf} High Finance courses</span>
         </div>
       </header>
 
@@ -44,9 +44,9 @@ export default async function MapPage() {
                       <Icon name="lock" size={12} />
                     </div>
                   )}
-                  <h2 className="text-2xl font-bold text-ink">
-                    {track.code}: {track.title}
-                  </h2>
+                  <Link href={`/course/${track.code}`} className="text-2xl font-bold text-ink transition-colors hover:text-brand">
+                    {track.title}
+                  </Link>
                   {track.flagship && <span className="chip !border-gold/30 !bg-gold/10 !text-gold">Flagship</span>}
                   <span className={`chip ${track.realm === "cre" ? "!border-brand/30 !text-brand" : "!border-info/40 !text-info"}`}>
                     {track.realm === "cre" ? "CRE" : "HF"}
@@ -59,6 +59,9 @@ export default async function MapPage() {
               <div className="shrink-0 text-right">
                 <div className="text-3xl font-black text-brand tabnum">{track.progressPct}%</div>
                 <div className="text-xs uppercase tracking-wider text-ink-muted">Completed</div>
+                <Link href={`/course/${track.code}`} className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline">
+                  Open course <Icon name="chevronRight" size={12} />
+                </Link>
               </div>
             </div>
 
@@ -72,7 +75,7 @@ export default async function MapPage() {
                 >
                   <div className="mb-2 flex items-start justify-between gap-2">
                     <h3 className="text-lg font-bold leading-tight text-ink">
-                      {mod.code}: {mod.title}
+                      {mod.title}
                     </h3>
                     {!mod.unlocked && <Icon name="lock" size={16} className="shrink-0 text-ink-faint" />}
                     {mod.complete && <Icon name="check" size={16} className="shrink-0 text-brand" />}

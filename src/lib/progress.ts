@@ -14,6 +14,7 @@ export type ChapterState = {
   quizUnlocked: boolean; // can take the graded quiz
   bestScorePct: number;
   lessonsDone: number;
+  lessons: { id: string; title: string; orderIndex: number }[];
 };
 
 export type ModuleState = {
@@ -54,7 +55,10 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
         include: {
           chapters: {
             orderBy: { orderIndex: "asc" },
-            include: { _count: { select: { lessons: true, questions: true } } },
+            include: {
+              _count: { select: { lessons: true, questions: true } },
+              lessons: { orderBy: { orderIndex: "asc" }, select: { id: true, title: true, orderIndex: true } },
+            },
           },
         },
       },
@@ -141,6 +145,7 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
           quizUnlocked,
           bestScorePct: prog?.bestScorePct ?? 0,
           lessonsDone: doneLessonsByChap.get(c.code) ?? 0,
+          lessons: c.lessons.map((l) => ({ id: l.id, title: l.title, orderIndex: l.orderIndex })),
         };
         // next chapter in module is gated on this one passing; free roam only affects viewing.
         prevPassed = passed;

@@ -1,9 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { loadEnvConfig } from "@next/env";
 import { ALL_TRACKS } from "../src/content";
 import { weekKey } from "../src/lib/util";
 
+loadEnvConfig(process.cwd());
 const db = new PrismaClient();
+
+function getAdminCredentials() {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD || "";
+  if (!email || password.length < 12) {
+    throw new Error("Set ADMIN_EMAIL and an ADMIN_PASSWORD of at least 12 characters before seeding.");
+  }
+  return { email, password };
+}
 
 async function wipe() {
   // order matters for FK constraints
@@ -118,9 +129,28 @@ async function seedCurriculum() {
   }
 }
 
-async function seedUsers() {
+async function seedUsers(admin: { email: string; password: string }) {
   const pw = await bcrypt.hash("climbthestack", 10);
   const wk = weekKey();
+
+  // ── Admin account — full access, bypasses onboarding and the paywall ──
+  const adminPw = await bcrypt.hash(admin.password, 10);
+  await db.user.create({
+    data: {
+      email: admin.email,
+      passwordHash: adminPw,
+      displayName: "Admin",
+      avatarColor: "#F5B301",
+      careerStage: "vp_plus",
+      jobArea: "levfin_private_credit",
+      startingRealm: "cre",
+      guidedPath: "full_curriculum",
+      onboarded: true,
+      isAdmin: true,
+      subscriptionStatus: "active",
+      currentPeriodEnd: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3650),
+    },
+  });
 
   const demo = await db.user.create({
     data: {
@@ -278,12 +308,15 @@ async function seedUsers() {
 }
 
 async function main() {
+  // Validate before the destructive wipe so missing credentials cannot leave a
+  // database half-reset.
+  const admin = getAdminCredentials();
   console.log("Wiping…");
   await wipe();
   console.log("Seeding curriculum…");
   await seedCurriculum();
   console.log("Seeding users & social…");
-  await seedUsers();
+  await seedUsers(admin);
 
   const counts = {
     tracks: await db.track.count(),

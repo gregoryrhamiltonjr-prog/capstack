@@ -102,7 +102,7 @@ export default async function LeaderboardPage() {
           <div className="card border-l-4 border-l-info p-5">
             <h3 className="mb-1 font-bold text-ink">Climb quietly</h3>
             <p className="text-sm leading-relaxed text-ink-muted">
-              XP comes from finishing lessons and clearing chapter quizzes. No gimmicks — just reps.
+              XP comes from finishing lessons and clearing module quizzes. No gimmicks — just reps.
             </p>
           </div>
         </div>

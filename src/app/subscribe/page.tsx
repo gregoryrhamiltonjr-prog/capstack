@@ -11,6 +11,7 @@ import { SubmitButton } from "@/components/SubmitButton";
 export default async function SubscribePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
   // Already subscribed → into the app.
   if (isStripeConfigured() && hasAccess(user)) redirect("/dashboard");
 
@@ -22,7 +23,7 @@ export default async function SubscribePage() {
     "Interactive lessons, quizzes, and 3D models",
     "XP, streaks, ranks, and leaderboards",
     "Study groups, DMs, and accountability partners",
-    "Free Roam mode — unlock any chapter (paid members only)",
+    "Free Roam mode — unlock any module (paid members only)",
   ];
 
   return (

@@ -127,14 +127,14 @@ export function ChapterQuiz({
         servedIds: questions.map((qq) => qq.id),
         results,
       });
-      setXpNote(pct >= 70 ? "Chapter passed · XP awarded on first pass." : "Need 70% to pass — retry anytime.");
+      setXpNote(pct >= 70 ? "Module passed · XP awarded on first pass." : "Need 70% to pass — retry anytime.");
     });
   }
 
   if (!questions.length) {
     return (
       <div className="rounded-2xl border border-line bg-surface p-6 text-sm text-ink-muted">
-        No graded quiz for this chapter yet.
+        No graded quiz for this module yet.
       </div>
     );
   }
@@ -146,7 +146,7 @@ export function ChapterQuiz({
         <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border-2 ${passed ? "border-brand bg-brand/15 text-brand" : "border-warn bg-warn/10 text-warn"}`}>
           <Icon name={passed ? "trophy" : "target"} size={32} />
         </div>
-        <h3 className="text-2xl font-extrabold text-ink">{passed ? "Chapter cleared" : "Almost there"}</h3>
+        <h3 className="text-2xl font-extrabold text-ink">{passed ? "Module cleared" : "Almost there"}</h3>
         <p className="mt-2 text-ink-muted">
           You scored <span className="font-mono font-bold text-ink">{scorePct}%</span>
           {bestScorePct > 0 && (
@@ -203,7 +203,7 @@ export function ChapterQuiz({
     <div id="chapter-quiz" className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wider text-ink-faint">Chapter quiz · {chapterCode}</div>
+          <div className="text-[11px] font-medium uppercase tracking-wider text-ink-faint">Module quiz</div>
           <h3 className="text-lg font-bold text-ink">
             Question {idx + 1} of {questions.length}
           </h3>

@@ -5,11 +5,20 @@ import { getCourseState } from "@/lib/progress";
 import { effectiveFreeRoam } from "@/lib/subscription";
 import { ChapterExperience } from "@/components/ChapterExperience";
 
-export default async function LearnPage({ params }: { params: Promise<{ chapterCode: string }> }) {
+export default async function LearnPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ chapterCode: string }>;
+  searchParams: Promise<{ lesson?: string; tab?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
   const { chapterCode } = await params;
+  const { lesson: lessonParam, tab } = await searchParams;
+  const initialLesson = Number.isFinite(Number(lessonParam)) ? Math.max(0, Math.trunc(Number(lessonParam))) : 0;
+  const initialTab = tab === "quiz" ? "quiz" : "lessons";
 
   const chapter = await db.chapter.findUnique({
     where: { id: chapterCode },
@@ -24,8 +33,8 @@ export default async function LearnPage({ params }: { params: Promise<{ chapterC
   if (!chapter) {
     return (
       <div className="mx-auto max-w-3xl py-10 text-center">
-        <h1 className="text-2xl font-bold">Chapter not found</h1>
-        <p className="mt-2 text-ink-muted">The requested chapter ({chapterCode}) does not exist.</p>
+        <h1 className="text-2xl font-bold">Module not found</h1>
+        <p className="mt-2 text-ink-muted">The requested module ({chapterCode}) does not exist.</p>
       </div>
     );
   }
@@ -71,6 +80,8 @@ export default async function LearnPage({ params }: { params: Promise<{ chapterC
       quizUnlocked={chapterState.quizUnlocked}
       prevCode={prevCode}
       nextCode={nextCode}
+      initialLesson={initialLesson}
+      initialTab={initialTab}
     />
   );
 }

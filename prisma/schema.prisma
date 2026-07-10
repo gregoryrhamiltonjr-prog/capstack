@@ -1,6 +1,6 @@
-// CapStack schema — Postgres in production (Neon / Vercel).
+// CapStack schema — Postgres in every environment (Neon / Vercel in production).
 // Enum-like fields are String; JSON blobs are String (parsed in app).
-// For local SQLite, point DATABASE_URL at file:./dev.db and set provider to "sqlite".
+// For local development, use a local Postgres database or a separate Neon branch.
 
 generator client {
   provider = "prisma-client-js"
@@ -117,6 +117,7 @@ model User {
   longestStreak Int       @default(0)
   lastActiveDay String? // "YYYY-MM-DD"
   onboarded     Boolean   @default(false)
+  isAdmin       Boolean   @default(false) // admin-only access gate; blocks all non-admins from the app
   createdAt     DateTime  @default(now())
 
   // ── Billing / subscription (Stripe) ──
@@ -275,5 +276,15 @@ model XpEvent {
   amount    Int
   reason    String
   weekKey   String // "YYYY-Www" for weekly leaderboard
+  createdAt DateTime @default(now())
+}
+
+// ---------------- MARKETING ----------------
+
+// Landing-page "Coming soon" waitlist. No auth required to join.
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("landing")
   createdAt DateTime @default(now())
 }

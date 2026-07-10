@@ -32,18 +32,15 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
-        <div className="animate-fade-up space-y-8">
-          <h1 className="text-5xl font-black leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl text-white">
+        <div className="space-y-8">
+          <h1 className="animate-float-in-left text-5xl font-black leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl text-white">
             Climb the whole <br />
             <span className="text-brand">capital stack.</span>
           </h1>
-          <p className="max-w-lg text-lg leading-relaxed text-ink-muted">
+          <p className="animate-float-in-left [animation-delay:150ms] max-w-lg text-lg leading-relaxed text-ink-muted">
             The elite platform taking you from zero to desk-ready across commercial real estate and high finance. Master complex models interactively.
           </p>
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <Link href="/signup" className="btn-primary px-8 py-4 text-base font-bold shadow-glow hover:scale-105 transition-transform">
-              Start your ascent <Icon name="arrowRight" size={18} />
-            </Link>
+          <div className="animate-float-in-left [animation-delay:300ms] flex flex-wrap items-center gap-4 pt-4">
             <Link href="#curriculum" className="btn-ghost px-8 py-4 text-base font-bold border border-line hover:bg-surface">
               View Curriculum
             </Link>
@@ -51,7 +48,7 @@ export function HeroSection() {
         </div>
 
         {/* Capital stack — clean layered bars, no overlap */}
-        <div className="animate-fade-up relative flex w-full items-center justify-center py-8 lg:py-4">
+        <div className="animate-float-in-right [animation-delay:250ms] relative flex w-full items-center justify-center py-8 lg:py-4">
           <Interactive3DStack />
         </div>
       </div>
@@ -344,7 +341,7 @@ export function CoursePreviews() {
   ];
 
   return (
-    <section id="curriculum" className="mx-auto max-w-7xl px-6 pt-24 pb-8">
+    <section id="mentors" className="mx-auto max-w-7xl px-6 pt-24 pb-8">
       <div className="mb-12 text-center">
         <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Elite Industry Mentors</h2>
         <p className="mt-4 text-lg text-ink-muted">Taught by professionals executing multi-billion dollar deals.</p>
@@ -394,7 +391,7 @@ export function TiltCard({ course }: { course: any }) {
       <div style={{ transform: "translateZ(30px)" }}>
         <div className="chip !bg-canvas border-line mb-4 inline-flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: course.color }} />
-          <span className="font-bold">{course.realm || "Track"}</span>
+          <span className="font-bold">{course.realm || "Course"}</span>
         </div>
         <h3 className="text-2xl font-bold text-white leading-tight">{course.title}</h3>
       </div>

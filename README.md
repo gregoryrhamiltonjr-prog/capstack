@@ -6,17 +6,12 @@ Climb the whole capital stack. Interactive learning for commercial real estate a
 
 **https://capstack-sage.vercel.app**
 
-- **Email signup / login** — live now  
-- **Google & Apple** — wired in; enable by adding OAuth keys (see below)  
-- **Postgres** — Neon  
-- **Hosting** — Vercel  
-
-Demo (seeded):
-
-| Field    | Value               |
-|----------|---------------------|
-| Email    | `demo@capstack.app` |
-| Password | `climbthestack`     |
+- **Email credentials login** — available to the provisioned admin
+- **Private access** — public signup is disabled; only a provisioned admin can enter the app
+- **Public waitlist** — visitors can register interest from the landing page
+- **Google & Apple** — wired in; enable by adding OAuth keys (see below)
+- **Postgres** — Neon
+- **Hosting** — Vercel
 
 ## Stack
 
@@ -36,6 +31,7 @@ npm install
 cp .env.example .env
 # Set AUTH_SECRET (openssl rand -base64 32)
 # Set DATABASE_URL to Postgres (local Docker or Neon)
+# Set ADMIN_EMAIL and a unique ADMIN_PASSWORD (12+ characters)
 
 # 3. Database + seed demo data
 npx prisma db push
@@ -56,12 +52,13 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run start`   | Serve production build                           |
 | `npm run setup`   | Generate client, reset DB, seed curriculum/users |
 | `npm run db:push` | Apply Prisma schema                              |
-| `npm run db:seed` | Seed curriculum + demo cohort                    |
+| `npm run db:seed` | Seed curriculum, admin, and demo cohort           |
 | `npm run db:reset`| Force-reset DB and re-seed                       |
+| `npm run admin:provision` | Safely create or promote the configured admin |
 
 ## Auth: Google & Apple setup
 
-Email works out of the box. To enable **Google** and **Apple** buttons in production:
+Credentials login works after the admin is provisioned. To enable **Google** and **Apple** buttons in production:
 
 ### Google
 
@@ -97,13 +94,25 @@ Email works out of the box. To enable **Google** and **Apple** buttons in produc
 AUTH_SECRET=...
 AUTH_URL=https://capstack-sage.vercel.app
 DATABASE_URL=postgresql://...   # Neon
+ADMIN_EMAIL=you@example.com     # used by the one-off provisioning command
 ```
+
+After applying the schema to an existing database, provision the owner without
+wiping any data:
+
+```bash
+npx prisma db push
+ADMIN_EMAIL=you@example.com npm run admin:provision
+```
+
+Set `ADMIN_PASSWORD` for credentials login, or omit it when the provisioned
+email will use Google or Apple OAuth.
 
 ## Subscription (Stripe)
 
-CapStack is subscription-gated: **$12.99/month with a 3-day free trial**. The whole app (everything after onboarding) requires an active trial or paid subscription. **Free Roam mode is locked during the trial** and activates once the plan converts to paid.
+CapStack includes a subscription gate: **$12.99/month with a 3-day free trial**. During the current private-access phase, admins bypass that gate. When member access is reopened, **Free Roam mode is locked during the trial** and activates once the plan converts to paid.
 
-Billing is enforced **only when `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID` are set** — with them blank (local dev), the app stays fully open.
+Billing is enforced **only when `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID` are set**. With them blank, the billing gate stays disabled; the private admin gate still applies.
 
 Setup:
 
@@ -128,10 +137,11 @@ How it works:
 
 1. Strong unique `AUTH_SECRET` (set on Vercel).
 2. Postgres `DATABASE_URL` (Neon).
-3. OAuth keys for Google/Apple (optional until you add them).
-4. **Stripe** `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET` — subscription is enforced once these are set. Run `prisma db push` so the new billing columns exist.
-5. Uploads: chat/headshots use `public/uploads/` — on Vercel use object storage for persistence (S3/R2).
-6. Chat moderation blocks secrets, SSNs, and inappropriate content server-side.
+3. Run `prisma db push`, then `npm run admin:provision` with the intended `ADMIN_EMAIL` before deploying the lockdown.
+4. OAuth keys for Google/Apple (optional until you add them).
+5. **Stripe** `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET` — billing is configured once these are set.
+6. Uploads: chat/headshots use `public/uploads/` — on Vercel use object storage for persistence (S3/R2).
+7. Chat moderation blocks secrets, SSNs, and inappropriate content server-side.
 
 ## Project layout
 
