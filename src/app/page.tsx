@@ -2,7 +2,8 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { Logo, Wordmark } from "@/components/Logo";
 import { Icon } from "@/components/ui";
-import { HeroSection, BentoGrid, ScrollyTelling, FinancialCalculator, CoursePreviews, Testimonials, ScrollProgress, MarqueeTicker, CountUpStats } from "@/components/LandingBlocks";
+import { BentoGrid, ScrollyTelling, FinancialCalculator, Testimonials, ScrollProgress } from "@/components/LandingBlocks";
+import { Preloader, CinematicHero, OutlineMarquee, HorizontalCourseRail, GiantStats } from "@/components/LandingCinema";
 import { ScrubReveal } from "@/components/InteractiveWrappers";
 import { ComingSoon } from "@/components/ComingSoon";
 import { ROADMAP } from "@/content/roadmap";
@@ -26,8 +27,8 @@ const STATS: [string, string][] = [
 ];
 
 const NAV_LINKS = [
+  { href: "#courses", label: "Courses" },
   { href: "#curriculum", label: "Curriculum" },
-  { href: "#mentors", label: "Mentors" },
   { href: "#waitlist", label: "Waitlist" },
 ];
 
@@ -35,6 +36,7 @@ export default async function Landing() {
   const currentUser = await getCurrentUser();
   return (
     <div className="min-h-dvh">
+      <Preloader />
       <ScrollProgress />
 
       {/* Nav */}
@@ -62,18 +64,17 @@ export default async function Landing() {
         </div>
       </header>
 
-      {/* Hero — motionsites-style glow type, aurora bg, magnetic CTA */}
-      <HeroSection />
+      {/* Cinematic pinned hero — 3D tower explodes on scroll */}
+      <CinematicHero />
 
-      {/* Infinite topic ticker */}
-      <MarqueeTicker />
+      {/* Giant counter-scrolling outline marquee */}
+      <OutlineMarquee />
 
       {/* Coming-soon waitlist — hero CTA scrolls here */}
       <ComingSoon />
 
-      <ScrubReveal>
-        <CoursePreviews />
-      </ScrubReveal>
+      {/* Horizontal-scroll course rail (pinned) */}
+      <HorizontalCourseRail />
 
       <ScrubReveal>
         <Testimonials />
@@ -89,8 +90,8 @@ export default async function Landing() {
         <FinancialCalculator />
       </ScrubReveal>
 
-      {/* Stat strip — counts up on scroll into view */}
-      <CountUpStats stats={STATS} />
+      {/* Viewport-scale kinetic stats */}
+      <GiantStats stats={STATS} />
 
       {/* Features */}
       <ScrubReveal>
