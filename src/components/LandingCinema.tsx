@@ -199,20 +199,18 @@ export function CinematicHero() {
         },
       });
 
-      // Phase 1 — chrome exits fast, headline recedes, tower takes the stage
-      tl.to(".hero-sub, .hero-cta, .hero-badge", { opacity: 0, y: -40, duration: 0.1, ease: "none" }, 0)
+      // Phase 1 — chrome exits fast, headline recedes, tower centers on stage
+      tl.to(".hero-sub, .hero-cta, .hero-badge, .hero-scrollcue", { opacity: 0, y: -40, duration: 0.1, ease: "none" }, 0)
         .to(".hero-headline", { scale: 0.8, yPercent: -30, opacity: 0, duration: 0.3, ease: "none" }, 0)
-        .to(".hero-tower", { scale: 1.35, yPercent: -42, duration: 0.45, ease: "none" }, 0.05);
+        .to(".hero-tower", { scale: 1.28, yPercent: -30, duration: 0.45, ease: "none" }, 0.05);
 
-      // Phase 2 — the stack explodes apart, labels fly in
+      // Phase 2 — the stack fans apart cleanly, staying centered
       tl.to(".tower-slab", {
-        y: (i: number) => (i - 1.5) * 96,
-        rotateZ: (i: number) => (i % 2 === 0 ? -4 : 4),
+        y: (i: number) => (i - 1.5) * 58,
         duration: 0.4,
-        ease: "power1.inOut",
-        stagger: 0.02,
-      }, 0.28)
-        .to(".tower-label", { opacity: 1, x: 0, duration: 0.25, ease: "power2.out", stagger: 0.05 }, 0.38);
+        ease: "power2.inOut",
+        stagger: 0.03,
+      }, 0.28);
 
       // Phase 3 — scene yields to the page
       tl.to(scene, { opacity: 0, scale: 0.97, duration: 0.18, ease: "none" }, 0.82);
@@ -295,20 +293,12 @@ export function CinematicHero() {
                 </div>
               ))}
             </div>
-            {/* Fly-in labels revealed by the scroll explosion */}
-            <div aria-hidden className="pointer-events-none absolute -right-4 top-0 hidden h-full flex-col justify-between py-2 lg:flex">
-              {TOWER.map((t) => (
-                <div key={t.id} className="tower-label translate-x-10 text-right text-[10px] font-bold uppercase tracking-[0.2em] opacity-0" style={{ color: t.color }}>
-                  {t.ret} target
-                </div>
-              ))}
-            </div>
             <div className="pointer-events-none absolute -bottom-10 left-1/2 h-20 w-3/4 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
           </div>
         </div>
 
         {/* Scroll cue */}
-        <div aria-hidden className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2">
+        <div aria-hidden className="hero-scrollcue absolute bottom-6 left-1/2 z-10 -translate-x-1/2">
           <div className="flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-ink-faint">
             Scroll
             <span className="relative h-10 w-px overflow-hidden bg-line">

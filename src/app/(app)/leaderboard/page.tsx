@@ -2,7 +2,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
-import { MouseGlow, ScrubReveal } from "@/components/InteractiveWrappers";
+import { MouseGlow, ScrubReveal, ScrubStagger, Tilt3D, ParticleField, ParallaxLayer } from "@/components/InteractiveWrappers";
+import SplineBackground from "@/components/SplineBackground";
 
 export default async function LeaderboardPage() {
   const user = await getCurrentUser();
@@ -22,8 +23,14 @@ export default async function LeaderboardPage() {
   const me = levelProgress(user.xp);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-10 pb-20">
-      <header className="flex flex-col justify-between gap-4 border-b border-line pb-6 md:flex-row md:items-end">
+    <div className="mx-auto max-w-5xl pb-20 relative min-h-screen">
+      {/* Cinematic Background Elements */}
+      <SplineBackground scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" className="opacity-40 mix-blend-screen" />
+      <ParticleField count={30} className="fixed inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen" />
+
+      {/* Content wrapper with Parallax */}
+      <ParallaxLayer depth={10} className="relative z-10 space-y-10 pt-10">
+        <header className="flex flex-col justify-between gap-4 border-b border-line pb-6 md:flex-row md:items-end">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight text-ink">Leaderboard</h1>
           <p className="mt-2 text-lg text-ink-muted">How you rank against the street.</p>
@@ -35,78 +42,88 @@ export default async function LeaderboardPage() {
 
       <ScrubReveal className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="card overflow-hidden bg-surface p-0">
+          <Tilt3D intensity={5}>
+            <div className="card overflow-hidden bg-surface/80 backdrop-blur-md p-0 shadow-2xl border-white/5 border">
             {/* Ledger header — the deal-desk ranking */}
             <div className="grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 border-b border-line-strong px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
               <span className="text-center">#</span>
               <span>Member</span>
               <span className="text-right">Tier · XP</span>
             </div>
-            <div className="divide-y divide-line">
+            <ScrubStagger className="divide-y divide-line">
               {topUsers.map((u, i) => {
                 const rankInfo = levelProgress(u.xp);
                 const isTop3 = i < 3;
                 return (
-                  <MouseGlow
-                    key={i}
-                    className={`relative grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 px-4 py-3.5 transition-colors ${u.isMe ? "bg-brand/[0.06]" : "hover:bg-surface-raised/60"}`}
-                  >
-                    {u.isMe && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-brand" />}
-                    <div className={`text-center font-mono text-base font-bold tabnum ${isTop3 ? "text-gold" : "text-ink-faint"}`}>{i + 1}</div>
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface-raised text-sm font-bold text-ink-muted">
-                        {u.name.charAt(0)}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 font-bold text-ink">
-                          <span className="truncate">{u.name}</span>
-                          {u.isMe && <span className="chip !border-none !bg-brand/20 !px-2 !py-0.5 !text-[10px] !text-brand">You</span>}
-                          {isTop3 && <Icon name="trophy" size={13} className="shrink-0 text-gold" />}
+                  <div key={i} data-stagger-item>
+                    <MouseGlow
+                      className={`relative transition-colors ${u.isMe ? "bg-brand/[0.06]" : "hover:bg-surface-raised/60"}`}
+                    >
+                      <div className="grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 px-4 py-3.5">
+                        {u.isMe && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-brand" />}
+                        <div className={`text-center font-mono text-base font-bold tabnum ${isTop3 ? "text-gold" : "text-ink-faint"}`}>{i + 1}</div>
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface-raised text-sm font-bold text-ink-muted">
+                            {u.name.charAt(0)}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 font-bold text-ink">
+                              <span className="truncate">{u.name}</span>
+                              {u.isMe && <span className="chip !border-none !bg-brand/20 !px-2 !py-0.5 !text-[10px] !text-brand">You</span>}
+                              {isTop3 && <Icon name="trophy" size={13} className="shrink-0 text-gold" />}
+                            </div>
+                            <div className="mt-0.5 truncate text-xs text-ink-muted">
+                              {u.role} @ {u.firm} · {u.school}
+                            </div>
+                          </div>
                         </div>
-                        <div className="mt-0.5 truncate text-xs text-ink-muted">
-                          {u.role} @ {u.firm} · {u.school}
+                        <div className="text-right">
+                          <div className="text-sm font-bold" style={{ color: rankInfo.prestige ? "#F5B301" : "#C79A3A" }}>
+                            {rankInfo.rank}
+                          </div>
+                          <div className="font-mono text-xs text-ink-muted tabnum">{u.xp.toLocaleString()} XP</div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold" style={{ color: rankInfo.prestige ? "#F5B301" : "#C79A3A" }}>
-                        {rankInfo.rank}
-                      </div>
-                      <div className="font-mono text-xs text-ink-muted tabnum">{u.xp.toLocaleString()} XP</div>
-                    </div>
-                  </MouseGlow>
+                    </MouseGlow>
+                  </div>
                 );
               })}
-            </div>
+            </ScrubStagger>
           </div>
+          </Tilt3D>
         </div>
 
         <div className="space-y-5">
-          <div className="card bg-surface-raised p-5">
-            <h3 className="mb-4 font-bold text-ink">Your standing</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between border-b border-line pb-3">
-                <span className="text-ink-muted">Global rank</span>
-                <span className="font-bold text-brand tabnum">#{myRank}</span>
-              </div>
-              <div className="flex justify-between border-b border-line pb-3">
-                <span className="text-ink-muted">Total XP</span>
-                <span className="font-bold text-ink tabnum">{user.xp.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-ink-muted">Current rank</span>
-                <span className="font-bold text-ink">{me.rank}</span>
+          <Tilt3D intensity={8}>
+            <div className="card bg-surface-raised/80 backdrop-blur-md p-5 border border-white/5">
+              <h3 className="mb-4 font-bold text-ink">Your standing</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between border-b border-line pb-3">
+                  <span className="text-ink-muted">Global rank</span>
+                  <span className="font-bold text-brand tabnum">#{myRank}</span>
+                </div>
+                <div className="flex justify-between border-b border-line pb-3">
+                  <span className="text-ink-muted">Total XP</span>
+                  <span className="font-bold text-ink tabnum">{user.xp.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-ink-muted">Current rank</span>
+                  <span className="font-bold text-ink">{me.rank}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="card border-l-4 border-l-info p-5">
-            <h3 className="mb-1 font-bold text-ink">Climb quietly</h3>
-            <p className="text-sm leading-relaxed text-ink-muted">
-              XP comes from finishing lessons and clearing module quizzes. No gimmicks — just reps.
-            </p>
-          </div>
+          </Tilt3D>
+          <Tilt3D intensity={8}>
+            <div className="card border-l-4 border-l-info bg-surface-raised/80 backdrop-blur-md p-5 border border-white/5">
+              <h3 className="mb-1 font-bold text-ink">Climb quietly</h3>
+              <p className="text-sm leading-relaxed text-ink-muted">
+                XP comes from finishing lessons and clearing module quizzes. No gimmicks — just reps.
+              </p>
+            </div>
+          </Tilt3D>
         </div>
       </ScrubReveal>
+      </ParallaxLayer>
     </div>
   );
 }
