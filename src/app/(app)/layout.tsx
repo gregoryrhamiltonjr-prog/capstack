@@ -1,15 +1,38 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { AppNav } from "@/components/AppNav";
+import { isStripeConfigured } from "@/lib/stripe";
+import { hasAccess, isTrialing, trialDaysLeft } from "@/lib/subscription";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   if (!user.onboarded) redirect("/onboarding");
+  // Subscription gate — enforced only when Stripe is configured (dev stays open).
+  if (isStripeConfigured() && !hasAccess(user)) redirect("/subscribe");
+
+  const trialing = isStripeConfigured() && isTrialing(user);
+  const daysLeft = trialing ? trialDaysLeft(user) : null;
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-[1400px]">
       <AppNav xp={user.xp} streak={user.currentStreak} name={user.displayName} avatarColor={user.avatarColor} avatarUrl={user.avatarUrl} />
-      <main className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8 lg:pt-8">{children}</main>
+      <main className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8 lg:pt-8">
+        {trialing && (
+          <Link
+            href="/settings"
+            className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-brand/30 bg-brand/10 px-4 py-2.5 text-sm text-brand-bright transition-colors hover:bg-brand/15"
+          >
+            <span>
+              Free trial{daysLeft !== null ? ` · ${daysLeft} day${daysLeft === 1 ? "" : "s"} left` : ""}.
+              Free Roam mode unlocks when your plan goes paid.
+            </span>
+            <span className="shrink-0 font-semibold underline">Manage</span>
+          </Link>
+        )}
+        {children}
+      </main>
     </div>
   );
 }

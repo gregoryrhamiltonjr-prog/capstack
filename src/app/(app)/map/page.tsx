@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import { getCourseState } from "@/lib/progress";
+import { effectiveFreeRoam } from "@/lib/subscription";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/ui";
@@ -9,7 +10,7 @@ export default async function MapPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const tracks = await getCourseState(user.id, user.freeRoam);
+  const tracks = await getCourseState(user.id, effectiveFreeRoam(user));
   const cre = tracks.filter((t) => t.realm === "cre").length;
   const hf = tracks.filter((t) => t.realm === "hf").length;
 

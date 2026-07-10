@@ -23,6 +23,7 @@ Demo (seeded):
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
 - **Prisma** + **Postgres** (Neon in production)
 - **Auth.js** — email credentials + Google + Apple providers
+- **Stripe** — subscriptions ($12.99/mo, 3-day trial)
 - **Tailwind CSS**, **Framer Motion**, **GSAP**, **Recharts**
 
 ## Quick start (local)
@@ -98,13 +99,39 @@ AUTH_URL=https://capstack-sage.vercel.app
 DATABASE_URL=postgresql://...   # Neon
 ```
 
+## Subscription (Stripe)
+
+CapStack is subscription-gated: **$12.99/month with a 3-day free trial**. The whole app (everything after onboarding) requires an active trial or paid subscription. **Free Roam mode is locked during the trial** and activates once the plan converts to paid.
+
+Billing is enforced **only when `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID` are set** — with them blank (local dev), the app stays fully open.
+
+Setup:
+
+1. Stripe Dashboard → **Products** → create a recurring price of **$12.99 / month**. Copy its price ID (`price_...`).
+2. Add a webhook endpoint at `https://capstack-sage.vercel.app/api/stripe/webhook`, subscribing to `checkout.session.completed` and `customer.subscription.*`. Copy the signing secret (`whsec_...`).
+3. Set env (Vercel + local `.env`):
+
+   ```
+   STRIPE_SECRET_KEY=sk_live_...      # sk_test_... locally
+   STRIPE_PRICE_ID=price_...          # the $12.99/mo recurring price
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   ```
+
+4. Local webhook testing: `stripe listen --forward-to localhost:3000/api/stripe/webhook`.
+
+How it works:
+- `/subscribe` — paywall; Checkout creates a subscription with `trial_period_days: 3` (card required upfront, auto-converts).
+- Webhook (`/api/stripe/webhook`) mirrors Stripe subscription status onto the `User` row; access = `trialing | active | past_due`.
+- `Settings → Membership` → **Manage billing** opens the Stripe Billing Portal (cancel/update card).
+
 ## Production checklist
 
 1. Strong unique `AUTH_SECRET` (set on Vercel).
 2. Postgres `DATABASE_URL` (Neon).
 3. OAuth keys for Google/Apple (optional until you add them).
-4. Uploads: chat/headshots use `public/uploads/` — on Vercel use object storage for persistence (S3/R2).
-5. Chat moderation blocks secrets, SSNs, and inappropriate content server-side.
+4. **Stripe** `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET` — subscription is enforced once these are set. Run `prisma db push` so the new billing columns exist.
+5. Uploads: chat/headshots use `public/uploads/` — on Vercel use object storage for persistence (S3/R2).
+6. Chat moderation blocks secrets, SSNs, and inappropriate content server-side.
 
 ## Project layout
 
@@ -114,7 +141,8 @@ src/
   auth.ts              # Auth.js config (email + Google + Apple)
   components/          # UI, widgets, social, landing interactions
   content/             # Seeded CRE / HF curriculum
-  lib/                 # auth helpers, db, actions, moderation
+  lib/                 # auth helpers, db, actions, moderation, stripe/billing/subscription
+  app/api/stripe/      # Stripe webhook (subscription status sync)
 prisma/
   schema.prisma
   seed.ts

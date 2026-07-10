@@ -2,10 +2,17 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { MouseGlow, ScrubReveal } from "@/components/InteractiveWrappers";
 import { FreeRoamToggle } from "@/components/FreeRoamToggle";
+import { isStripeConfigured } from "@/lib/stripe";
+import { canUseFreeRoam, hasAccess, isTrialing, subscriptionLabel, PRICE_DISPLAY, BILLING_PERIOD } from "@/lib/subscription";
+import { openBillingPortalAction } from "@/lib/actions";
+import Link from "next/link";
 
 export default async function SettingsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+
+  const billingOn = isStripeConfigured();
+  const freeRoamLocked = billingOn && !canUseFreeRoam(user);
 
   return (
     <div className="mx-auto max-w-3xl space-y-10 pb-20">
@@ -52,8 +59,15 @@ export default async function SettingsPage() {
                 <div className="mt-1 text-sm text-ink-muted">
                   Unlock all modules without passing prerequisites so you can open any chapter.
                 </div>
+                {freeRoamLocked && (
+                  <div className="mt-1 text-xs font-medium text-gold">
+                    {isTrialing(user)
+                      ? "Available once your free trial converts to a paid plan."
+                      : "Available on the paid plan."}
+                  </div>
+                )}
               </div>
-              <FreeRoamToggle initial={user.freeRoam} />
+              <FreeRoamToggle initial={user.freeRoam} locked={freeRoamLocked} />
             </div>
 
             <div className="flex items-center justify-between gap-4">
@@ -72,6 +86,32 @@ export default async function SettingsPage() {
             </div>
           </div>
         </MouseGlow>
+
+        {billingOn && (
+          <MouseGlow className="card bg-surface p-6">
+            <h2 className="mb-6 text-xl font-bold text-ink">Membership</h2>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
+                <div className="font-bold text-ink">CapStack Membership</div>
+                <div className="mt-1 text-sm text-ink-muted">
+                  {PRICE_DISPLAY}/{BILLING_PERIOD} · Status:{" "}
+                  <span className="font-semibold text-ink">{subscriptionLabel(user)}</span>
+                </div>
+              </div>
+              {hasAccess(user) && user.stripeCustomerId ? (
+                <form action={openBillingPortalAction}>
+                  <button type="submit" className="btn-primary px-6 py-2 text-sm">
+                    Manage billing
+                  </button>
+                </form>
+              ) : (
+                <Link href="/subscribe" className="btn-primary px-6 py-2 text-sm">
+                  {user.subscriptionStatus ? "Reactivate" : "Subscribe"}
+                </Link>
+              )}
+            </div>
+          </MouseGlow>
+        )}
 
         <MouseGlow className="card border border-danger/20 bg-surface p-6">
           <h2 className="mb-4 text-xl font-bold text-danger">Danger Zone</h2>

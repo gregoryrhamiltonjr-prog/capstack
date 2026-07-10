@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getCourseState, findNextChapter } from "@/lib/progress";
+import { effectiveFreeRoam } from "@/lib/subscription";
 import Link from "next/link";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
@@ -10,7 +11,7 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const tracks = await getCourseState(user.id, user.freeRoam);
+  const tracks = await getCourseState(user.id, effectiveFreeRoam(user));
   const next = findNextChapter(tracks);
   const progress = levelProgress(user.xp);
 

@@ -140,6 +140,9 @@ async function seedUsers() {
       longestStreak: 11,
       lastActiveDay: null,
       onboarded: true,
+      // Active membership so the demo login skips the paywall when Stripe is enabled.
+      subscriptionStatus: "active",
+      currentPeriodEnd: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
     },
   });
 

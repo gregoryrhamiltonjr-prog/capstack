@@ -1,7 +1,25 @@
 import { toggleFreeRoamFromForm } from "@/lib/actions";
 
-export function FreeRoamToggle({ initial }: { initial: boolean }) {
+export function FreeRoamToggle({ initial, locked = false }: { initial: boolean; locked?: boolean }) {
   const next = !initial;
+
+  // During the trial (or without a paid plan) free roam can't be enabled.
+  if (locked) {
+    return (
+      <button
+        type="button"
+        role="switch"
+        aria-checked={false}
+        aria-disabled="true"
+        disabled
+        aria-label="Free roam mode is available on paid plans only"
+        title="Available on paid plans — activates after your trial converts"
+        className="relative h-6 w-12 shrink-0 cursor-not-allowed rounded-full border border-line bg-surface-raised p-1 opacity-60"
+      >
+        <span className="block h-4 w-4 translate-x-0 rounded-full bg-ink-faint shadow" />
+      </button>
+    );
+  }
 
   return (
     <form action={toggleFreeRoamFromForm} className="shrink-0">

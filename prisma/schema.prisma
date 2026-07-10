@@ -119,6 +119,16 @@ model User {
   onboarded     Boolean   @default(false)
   createdAt     DateTime  @default(now())
 
+  // ── Billing / subscription (Stripe) ──
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?
+  // Mirror of Stripe subscription.status: trialing|active|past_due|canceled|unpaid|incomplete|incomplete_expired|paused
+  subscriptionStatus   String?
+  subscriptionPriceId  String?
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean   @default(false)
+
   accounts        Account[]
   lessonProgress  LessonProgress[]
   chapterProgress ChapterProgress[]

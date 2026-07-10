@@ -9,6 +9,8 @@ import { getUserId, hashPassword, verifyPassword } from "./auth";
 import { signIn, signOut } from "@/auth";
 import { XP, HINT_MULT } from "./xp";
 import { todayKey, weekKey, daysBetween } from "./util";
+import { canUseFreeRoam } from "./subscription";
+import { createCheckoutUrl, createPortalUrl } from "./billing";
 
 async function requireUserId(): Promise<string> {
   const uid = await getUserId();
@@ -238,6 +240,11 @@ export async function removeAvatarAction(): Promise<AvatarUploadResult | { ok: t
 
 export async function toggleFreeRoam(value: boolean) {
   const uid = await requireUserId();
+  // Free roam is a paid feature — cannot be enabled during the trial or without access.
+  if (value) {
+    const user = await db.user.findUnique({ where: { id: uid } });
+    if (!user || !canUseFreeRoam(user)) return;
+  }
   await db.user.update({ where: { id: uid }, data: { freeRoam: value } });
   revalidatePath("/map");
   revalidatePath("/settings");
@@ -248,6 +255,19 @@ export async function toggleFreeRoam(value: boolean) {
 export async function toggleFreeRoamFromForm(formData: FormData) {
   const value = String(formData.get("freeRoam")) === "true";
   await toggleFreeRoam(value);
+}
+
+// ---------------- BILLING ----------------
+export async function startCheckoutAction() {
+  const uid = await requireUserId();
+  const url = await createCheckoutUrl(uid);
+  redirect(url);
+}
+
+export async function openBillingPortalAction() {
+  const uid = await requireUserId();
+  const url = await createPortalUrl(uid);
+  redirect(url);
 }
 
 // ---------------- LEARNING ----------------
