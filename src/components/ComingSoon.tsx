@@ -15,7 +15,7 @@ export function ComingSoon() {
   const [state, formAction, pending] = useActionState(joinWaitlist, INITIAL);
 
   return (
-    <section className="relative border-y border-brand/20 bg-gradient-to-b from-brand/10 to-transparent">
+    <section id="waitlist" className="relative scroll-mt-24 border-y border-brand/20 bg-gradient-to-b from-brand/10 to-transparent">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-5 py-7 text-center sm:flex-row sm:justify-between sm:gap-8 sm:text-left">
         <div className="space-y-1.5">
           <span className="chip !border-brand/40 !text-brand-bright">

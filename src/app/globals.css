@@ -100,6 +100,25 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Hero: brass gradient glow text (motionsites-style accent word) */
+.text-glow-brand {
+  background: linear-gradient(100deg, #c79a3a 0%, #e0b856 45%, #fbce4b 70%, #c79a3a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-grid {
+  background-image: linear-gradient(rgba(199, 154, 58, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199, 154, 58, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+}
+
+/* Marquee pause on hover */
+.marquee-track:hover > * {
+  animation-play-state: paused;
+}
+
 /* 3D helpers */
 .perspective-1000 {
   perspective: 1000px;

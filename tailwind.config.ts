@@ -84,6 +84,19 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "aurora-drift": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(4%, -6%) scale(1.08)" },
+          "66%": { transform: "translate(-5%, 4%) scale(0.95)" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { opacity: "0.55" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.4s ease-out both",
@@ -92,6 +105,9 @@ const config: Config = {
         "float-in-right": "float-in-right 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
         pop: "pop 0.25s ease-out both",
         shimmer: "shimmer 1.4s infinite",
+        marquee: "marquee 32s linear infinite",
+        "aurora-drift": "aurora-drift 18s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 4s ease-in-out infinite",
       },
     },
   },

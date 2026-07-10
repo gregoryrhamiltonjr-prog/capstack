@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, useScroll, useInView, animate, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -14,37 +14,108 @@ if (typeof window !== "undefined") {
 }
 
 // ==========================================
+// 0. SCROLL PROGRESS BAR (fixed top, brass)
+// ==========================================
+export function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+  return (
+    <motion.div
+      aria-hidden
+      className="fixed inset-x-0 top-0 z-50 h-[3px] origin-left bg-gradient-to-r from-brand via-brand-bright to-gold-soft"
+      style={{ scaleX }}
+    />
+  );
+}
+
+// ==========================================
 // 1. HERO SECTION
 // ==========================================
+const HEADLINE_TOP = ["Climb", "the", "whole"];
+
 export function HeroSection() {
+  const reduce = useReducedMotion();
+  const stagger = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+  };
+  const word = {
+    hidden: { opacity: 0, y: reduce ? 0 : 28, filter: "blur(6px)" },
+    show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring" as const, stiffness: 220, damping: 24 } },
+  };
+
   return (
-    <section className="relative overflow-hidden min-h-[95vh] flex items-center pt-24 pb-20">
-      <div className="absolute inset-0 z-0 bg-canvas">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="w-full h-full object-cover opacity-10 mix-blend-screen"
-          src="https://cdn.pixabay.com/video/2020/05/17/39324-421711283_large.mp4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas/80 to-canvas" />
+    <section className="relative flex min-h-[92vh] items-center overflow-hidden pb-20 pt-20">
+      {/* Aurora background — layered drifting brand glows + faint grid */}
+      <div aria-hidden className="absolute inset-0 z-0">
+        <div className="hero-grid absolute inset-0" />
+        <div className="absolute -top-32 left-1/2 h-[480px] w-[720px] -translate-x-1/2 animate-aurora-drift rounded-full bg-brand/[0.13] blur-[120px]" />
+        <div className="absolute right-[-10%] top-1/3 h-[380px] w-[380px] animate-aurora-drift rounded-full bg-info/[0.08] blur-[110px] [animation-delay:-6s]" />
+        <div className="absolute bottom-[-15%] left-[-5%] h-[360px] w-[520px] animate-aurora-drift rounded-full bg-gold/[0.07] blur-[130px] [animation-delay:-12s]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-canvas" />
       </div>
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
         <div className="space-y-8">
-          <h1 className="animate-float-in-left text-5xl font-black leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl text-white">
-            Climb the whole <br />
-            <span className="text-brand">capital stack.</span>
-          </h1>
-          <p className="animate-float-in-left [animation-delay:150ms] max-w-lg text-lg leading-relaxed text-ink-muted">
+          {/* Glowing pill badge */}
+          <motion.div
+            initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/[0.08] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright shadow-glow animate-glow-pulse"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-bright" />
+            </span>
+            Private beta — onboarding in waves
+          </motion.div>
+
+          {/* Word-staggered display headline with glowing gradient accent */}
+          <motion.h1
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="text-5xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.25rem]"
+          >
+            {HEADLINE_TOP.map((w) => (
+              <motion.span key={w} variants={word} className="mr-[0.22em] inline-block">
+                {w}
+              </motion.span>
+            ))}
+            <br />
+            <motion.span variants={word} className="relative inline-block">
+              {/* Bloom layer behind the gradient text */}
+              <span aria-hidden className="text-glow-brand absolute inset-0 blur-2xl opacity-60 animate-glow-pulse select-none">
+                capital stack.
+              </span>
+              <span className="text-glow-brand relative">capital stack.</span>
+            </motion.span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.6 }}
+            className="max-w-lg text-lg leading-relaxed text-ink-muted"
+          >
             The elite platform taking you from zero to desk-ready across commercial real estate and high finance. Master complex models interactively.
-          </p>
-          <div className="animate-float-in-left [animation-delay:300ms] flex flex-wrap items-center gap-4 pt-4">
-            <Link href="#curriculum" className="btn-ghost px-8 py-4 text-base font-bold border border-line hover:bg-surface">
-              View Curriculum
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="flex flex-wrap items-center gap-4 pt-2"
+          >
+            <MagneticLink href="#waitlist" className="group inline-flex items-center gap-2 rounded-full bg-brand px-8 py-4 text-base font-bold text-[#1a1206] shadow-glow transition-colors hover:bg-brand-bright">
+              Join the waitlist
+              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+            </MagneticLink>
+            <Link href="#curriculum" className="btn-ghost rounded-full border border-line px-7 py-4 text-base font-bold hover:bg-surface">
+              View curriculum
             </Link>
-          </div>
+          </motion.div>
         </div>
 
         {/* Capital stack — clean layered bars, no overlap */}
@@ -53,6 +124,104 @@ export function HeroSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Magnetic pill CTA — leans toward the cursor, springs back on leave. */
+function MagneticLink({ href, className = "", children }: { href: string; className?: string; children: React.ReactNode }) {
+  const reduce = useReducedMotion();
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 260, damping: 18 });
+  const sy = useSpring(y, { stiffness: 260, damping: 18 });
+
+  function onMove(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (reduce) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    x.set((e.clientX - r.left - r.width / 2) * 0.25);
+    y.set((e.clientY - r.top - r.height / 2) * 0.35);
+  }
+  function onLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  return (
+    <motion.a href={href} className={className} style={{ x: sx, y: sy }} onMouseMove={onMove} onMouseLeave={onLeave}>
+      {children}
+    </motion.a>
+  );
+}
+
+// ==========================================
+// 1.2 MARQUEE TICKER — infinite topic strip
+// ==========================================
+const TICKER_TOPICS = [
+  "Cap Rates", "DSCR Sizing", "Capital Stack", "CMBS Waterfalls", "LBO Modeling", "IRR & Equity Multiples",
+  "Mezzanine Debt", "Rent Rolls", "NOI Bridges", "Syndication", "Pref Equity", "Amortization", "Value-Add", "Superday Prep",
+];
+
+export function MarqueeTicker() {
+  const items = [...TICKER_TOPICS, ...TICKER_TOPICS]; // doubled for seamless -50% loop
+  return (
+    <section aria-label="Topics covered" className="relative overflow-hidden border-y border-line bg-surface/30 py-4">
+      <div className="marquee-track flex w-max">
+        <div className="flex shrink-0 animate-marquee items-center gap-3 pr-3">
+          {items.map((t, i) => (
+            <span
+              key={`${t}-${i}`}
+              className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-surface px-4 py-1.5 text-xs font-semibold text-ink-muted transition-colors hover:border-brand/50 hover:text-brand-bright"
+            >
+              <span className="h-1 w-1 rounded-full bg-brand/70" />
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+      {/* Edge fades */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-canvas to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-canvas to-transparent" />
+    </section>
+  );
+}
+
+// ==========================================
+// 1.3 COUNT-UP STAT STRIP
+// ==========================================
+export function CountUpStats({ stats }: { stats: [string, string][] }) {
+  return (
+    <section className="mt-16 border-y border-line bg-surface/40">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-5 py-10 text-center sm:grid-cols-4">
+        {stats.map(([n, l]) => (
+          <CountUpStat key={l} value={n} label={l} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CountUpStat({ value, label }: { value: string; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const reduce = useReducedMotion();
+  const numeric = parseInt(value, 10);
+  const [display, setDisplay] = useState(reduce || isNaN(numeric) ? value : "0");
+
+  useEffect(() => {
+    if (!inView || reduce || isNaN(numeric)) return;
+    const controls = animate(0, numeric, {
+      duration: 1.4,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => setDisplay(String(Math.round(v))),
+    });
+    return () => controls.stop();
+  }, [inView, numeric, reduce]);
+
+  return (
+    <div ref={ref}>
+      <div className="text-4xl font-extrabold tabular-nums text-brand">{isNaN(numeric) ? value : display}</div>
+      <div className="mt-1 text-xs text-ink-muted">{label}</div>
+    </div>
   );
 }
 
