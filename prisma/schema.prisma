@@ -1,0 +1,234 @@
+// CapStack schema — Prisma + SQLite (portable, zero-infra).
+// SQLite has no native enums/JSON: enum-like fields are String; JSON blobs are String (parsed in app).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------- CURRICULUM (seeded, queryable) ----------------
+
+model Track {
+  id            String   @id
+  realm         String // "cre" | "hf"
+  code          String // "T3", "HF-1"
+  title         String
+  tagline       String
+  description   String
+  tier          String // "Foundations 100" ...
+  difficulty    String // "Beginner" | "Intermediate" | ...
+  estHours      String
+  orderIndex    Int
+  flagship      Boolean  @default(false)
+  prereqTrackIds String  @default("[]") // JSON string[]
+  modules       Module[]
+}
+
+model Module {
+  id             String    @id
+  trackId        String
+  track          Track     @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  code           String // "T3.M7"
+  title          String
+  description    String
+  estHours       String
+  difficultyTier String // "Foundations 100" | "Core 200" | "Advanced 300" | "Practitioner 400"
+  adaptive       Boolean   @default(false)
+  orderIndex     Int
+  prereqModuleIds String   @default("[]")
+  chapters       Chapter[]
+}
+
+model Chapter {
+  id           String    @id
+  moduleId     String
+  module       Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  code         String // "T3.M7.1"
+  title        String
+  objective    String
+  orderIndex   Int
+  stageCallouts String   @default("{}") // JSON: { student, analyst, associate, vp_plus }
+  lessons      Lesson[]
+  questions    QuizQuestion[]
+  glossary     GlossaryTerm[]
+}
+
+model Lesson {
+  id          String   @id
+  chapterId   String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  title       String
+  orderIndex  Int
+  readMinutes Int      @default(5)
+  blocks      String // JSON: content block array
+  progress    LessonProgress[]
+}
+
+model QuizQuestion {
+  id          String  @id
+  chapterId   String
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  type        String // "mc" | "numeric" | "ordering" | "scenario"
+  prompt      String
+  data        String // JSON: choices / correct / tolerance / items / etc.
+  explanation String
+  hints       String // JSON: [tier1, tier2, tier3]
+  points      Int     @default(100)
+  orderIndex  Int
+}
+
+model GlossaryTerm {
+  id         String   @id @default(cuid())
+  term       String
+  definition String
+  chapterId  String?
+  chapter    Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+}
+
+// ---------------- USERS & STATE ----------------
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  displayName   String
+  avatarColor   String   @default("#10B981")
+  avatarUrl     String?  // optional headshot path under /uploads/avatars/
+  careerStage   String   @default("student") // student|analyst|associate|vp_plus|career_switcher
+  jobArea       String   @default("student_undecided")
+  weeklyGoal    Int      @default(5)
+  startingRealm String   @default("cre")
+  guidedPath    String   @default("agency_fast_track")
+  freeRoam      Boolean  @default(false)
+  school        String?
+  company       String?
+  xp            Int      @default(0)
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  lastActiveDay String? // "YYYY-MM-DD"
+  onboarded     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  lessonProgress  LessonProgress[]
+  chapterProgress ChapterProgress[]
+  quizAttempts    QuizAttempt[]
+  sentReqs        Connection[]     @relation("requester")
+  recvReqs        Connection[]     @relation("addressee")
+  messages        Message[]
+  memberships     GroupMember[]
+  xpEvents        XpEvent[]
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status      String   @default("explored") // explored|completed|tested_out
+  hintsUsed   Int      @default(0)
+  completedAt DateTime?
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model ChapterProgress {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapterId    String
+  status       String   @default("locked") // locked|available|in_progress|passed|tested_out
+  bestScorePct Int      @default(0)
+  passedAt     DateTime?
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, chapterId])
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapterId   String
+  scorePct    Int
+  passed      Boolean  @default(false)
+  servedIds   String // JSON string[]
+  answers     String // JSON
+  hintsUsed   Int      @default(0)
+  xpAwarded   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Connection {
+  id          String   @id @default(cuid())
+  requesterId String
+  requester   User     @relation("requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addresseeId String
+  addressee   User     @relation("addressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  status      String   @default("pending") // pending|accepted
+  isPartner   Boolean  @default(false) // accountability partner
+  nudgedAt    DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([requesterId, addresseeId])
+}
+
+model Channel {
+  id        String    @id @default(cuid())
+  kind      String    @default("dm") // dm|group
+  name      String?
+  groupId   String?
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  channelId      String
+  channel        Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body           String
+  attachmentName String?
+  attachmentMime String?
+  attachmentUrl  String?
+  attachmentSize Int?
+  createdAt      DateTime @default(now())
+}
+
+model StudyGroup {
+  id          String        @id @default(cuid())
+  name        String
+  description String
+  ownerId     String
+  channelId   String?
+  createdAt   DateTime      @default(now())
+  members     GroupMember[]
+}
+
+model GroupMember {
+  id       String     @id @default(cuid())
+  groupId  String
+  group    StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     String     @default("member") // owner|member
+  joinedAt DateTime   @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model XpEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  reason    String
+  weekKey   String // "YYYY-Www" for weekly leaderboard
+  createdAt DateTime @default(now())
+}
