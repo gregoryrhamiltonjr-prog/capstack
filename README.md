@@ -2,12 +2,28 @@
 
 Climb the whole capital stack. Interactive learning for commercial real estate and high finance — institutional content, widgets, quizzes, gamified progression, and a social layer (groups, DMs, accountability partners).
 
+## Live production
+
+**https://capstack-sage.vercel.app**
+
+- **Email signup / login** — live now  
+- **Google & Apple** — wired in; enable by adding OAuth keys (see below)  
+- **Postgres** — Neon  
+- **Hosting** — Vercel  
+
+Demo (seeded):
+
+| Field    | Value               |
+|----------|---------------------|
+| Email    | `demo@capstack.app` |
+| Password | `climbthestack`     |
+
 ## Stack
 
-- **Next.js 15** (App Router) + **React 19** + **TypeScript**
-- **Prisma** + **SQLite** (swap to Postgres for multi-instance production)
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Prisma** + **Postgres** (Neon in production)
+- **Auth.js** — email credentials + Google + Apple providers
 - **Tailwind CSS**, **Framer Motion**, **GSAP**, **Recharts**
-- Auth via signed HTTP-only cookies (`jose` + `bcryptjs`)
 
 ## Quick start (local)
 
@@ -17,24 +33,18 @@ npm install
 
 # 2. Environment
 cp .env.example .env
-# Edit AUTH_SECRET — use a long random string in production:
-# openssl rand -base64 32
+# Set AUTH_SECRET (openssl rand -base64 32)
+# Set DATABASE_URL to Postgres (local Docker or Neon)
 
 # 3. Database + seed demo data
-npm run setup
+npx prisma db push
+npm run db:seed
 
 # 4. Dev server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
-
-### Demo account (after seed)
-
-| Field    | Value              |
-|----------|--------------------|
-| Email    | `demo@capstack.app` |
-| Password | `climbthestack`     |
 
 ## Scripts
 
@@ -48,72 +58,68 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run db:seed` | Seed curriculum + demo cohort                    |
 | `npm run db:reset`| Force-reset DB and re-seed                       |
 
+## Auth: Google & Apple setup
+
+Email works out of the box. To enable **Google** and **Apple** buttons in production:
+
+### Google
+
+1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → create OAuth client (Web).
+2. Authorized JavaScript origins: `https://capstack-sage.vercel.app`
+3. Authorized redirect URI: `https://capstack-sage.vercel.app/api/auth/callback/google`
+4. In Vercel project env (Production):
+
+   ```
+   AUTH_GOOGLE_ID=...
+   AUTH_GOOGLE_SECRET=...
+   ```
+
+5. Redeploy.
+
+### Apple
+
+1. Apple Developer → Identifiers → Services ID with Sign in with Apple.
+2. Return URL: `https://capstack-sage.vercel.app/api/auth/callback/apple`
+3. Create a key + JWT client secret (Auth.js docs: Apple provider).
+4. In Vercel:
+
+   ```
+   AUTH_APPLE_ID=...
+   AUTH_APPLE_SECRET=...
+   ```
+
+5. Redeploy.
+
+### Required core env (already set on Vercel)
+
+```
+AUTH_SECRET=...
+AUTH_URL=https://capstack-sage.vercel.app
+DATABASE_URL=postgresql://...   # Neon
+```
+
 ## Production checklist
 
-1. **Secrets**
-   - Set a strong unique `AUTH_SECRET` (never use the example value).
-   - Do not commit `.env`.
-
-2. **Database**
-   - SQLite is fine for a single-node demo / small VPS.
-   - For Vercel, Railway, Render, Fly, etc. with multiple instances, use **Postgres** and set `DATABASE_URL` accordingly. Update `prisma/schema.prisma` `provider` to `postgresql` when you switch.
-
-3. **Build & run**
-
-   ```bash
-   npm ci
-   npx prisma generate
-   npx prisma db push   # or migrate deploy once you add migrations
-   npm run build
-   npm run start
-   ```
-
-   Optional seed (demo content only):
-
-   ```bash
-   npm run db:seed
-   ```
-
-4. **Uploads**
-   - Chat files and headshots land in `public/uploads/`.
-   - On ephemeral hosts (e.g. Vercel), use object storage (S3, R2, Uploadthing) instead — this repo uses the local filesystem for simplicity.
-
-5. **Chat safety**
-   - Server-side moderation blocks sensitive work data (secrets, SSNs, account numbers) and inappropriate content in group/DM chats.
-
-6. **Security headers / HTTPS**
-   - Terminate TLS at your reverse proxy or platform.
-   - Cookie `secure` flag is on when `NODE_ENV=production`.
+1. Strong unique `AUTH_SECRET` (set on Vercel).
+2. Postgres `DATABASE_URL` (Neon).
+3. OAuth keys for Google/Apple (optional until you add them).
+4. Uploads: chat/headshots use `public/uploads/` — on Vercel use object storage for persistence (S3/R2).
+5. Chat moderation blocks secrets, SSNs, and inappropriate content server-side.
 
 ## Project layout
 
 ```
 src/
   app/                 # Routes (landing, auth, dashboard, learn, social, …)
+  auth.ts              # Auth.js config (email + Google + Apple)
   components/          # UI, widgets, social, landing interactions
   content/             # Seeded CRE / HF curriculum
-  lib/                 # auth, db, actions, moderation, finance math
+  lib/                 # auth helpers, db, actions, moderation
 prisma/
   schema.prisma
   seed.ts
 public/uploads/        # Runtime user content (gitignored)
 ```
-
-## Deploy notes (common hosts)
-
-### Vercel / similar
-
-- Prefer **Postgres** (`DATABASE_URL`).
-- Set `AUTH_SECRET` in project env.
-- Build command: `prisma generate && next build`
-- Post-deploy: run `prisma db push` or migrations against production DB.
-- Local disk uploads will not persist — plan storage before shipping social files.
-
-### Single VPS / Docker
-
-- SQLite or Postgres both work if you pin one process (or use Postgres).
-- Mount a volume for `public/uploads` and for the SQLite file if used.
-- Process manager: `npm run start` behind nginx/Caddy.
 
 ## License
 
