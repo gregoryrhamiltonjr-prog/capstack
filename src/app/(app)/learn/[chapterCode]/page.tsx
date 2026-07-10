@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { getCourseState } from "@/lib/progress";
 import { ChapterExperience } from "@/components/ChapterExperience";
 
 export default async function LearnPage({ params }: { params: Promise<{ chapterCode: string }> }) {
@@ -36,6 +37,10 @@ export default async function LearnPage({ params }: { params: Promise<{ chapterC
   const progress = await db.chapterProgress.findUnique({
     where: { userId_chapterId: { userId: user.id, chapterId: chapter.id } },
   });
+  const tracks = await getCourseState(user.id, user.freeRoam);
+  const chapterState = tracks.flatMap((track) => track.modules.flatMap((module) => module.chapters)).find((c) => c.code === chapter.code);
+
+  if (!chapterState?.viewable) redirect("/map");
 
   return (
     <ChapterExperience
@@ -62,6 +67,7 @@ export default async function LearnPage({ params }: { params: Promise<{ chapterC
       }))}
       glossary={chapter.glossary.map((g) => ({ term: g.term, definition: g.definition }))}
       bestScorePct={progress?.bestScorePct ?? 0}
+      quizUnlocked={chapterState.quizUnlocked}
       prevCode={prevCode}
       nextCode={nextCode}
     />

@@ -92,19 +92,24 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
 
   const result: TrackState[] = tracks.map((t) => {
     const prereqTrackIds = parseJSON<string[]>(t.prereqTrackIds, []);
-    const trackUnlocked =
-      prereqTrackIds.filter((id) => tracks.some((x) => x.id === id)).every((id) => completeByTrack.get(id)) || prereqTrackIds.length === 0;
+    const realTrackUnlocked =
+      prereqTrackIds.filter((id) => tracks.some((x) => x.id === id)).every((id) => completeByTrack.get(id)) ||
+      prereqTrackIds.length === 0;
+    const trackUnlocked = freeRoam || realTrackUnlocked;
 
     let passedCount = 0;
     let totalChapters = 0;
 
     const modules: ModuleState[] = t.modules.map((m) => {
-      const prereqModuleCodes = parseJSON<string[]>(m.prereqModuleIds, []).filter((code) => tracks.some((x) => x.modules.some((mm) => mm.code === code)));
+      const prereqModuleCodes = parseJSON<string[]>(m.prereqModuleIds, []).filter((code) =>
+        tracks.some((x) => x.modules.some((mm) => mm.code === code))
+      );
       const prereqsDone = prereqModuleCodes.every((code) => {
         const mod = tracks.flatMap((x) => x.modules).find((mm) => mm.code === code);
         return mod ? moduleComplete(mod) : true;
       });
-      const modUnlocked = trackUnlocked && prereqsDone;
+      const realModUnlocked = realTrackUnlocked && prereqsDone;
+      const modUnlocked = freeRoam || realModUnlocked;
 
       let prevPassed = true; // first chapter gate
       const chapters: ChapterState[] = m.chapters.map((c) => {
@@ -112,7 +117,7 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
         const prog = progByChap.get(c.code);
         const passed = isPassed(c.code);
         if (passed) passedCount++;
-        const available = modUnlocked && prevPassed;
+        const available = realModUnlocked && prevPassed;
         const quizUnlocked = available; // graded quiz follows the real gate
         const viewable = available || freeRoam;
 
@@ -120,7 +125,7 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
         if (prog?.status === "tested_out") status = "tested_out";
         else if (prog?.status === "passed") status = "passed";
         else if (available && (prog?.status === "in_progress" || (doneLessonsByChap.get(c.code) ?? 0) > 0)) status = "in_progress";
-        else if (available) status = "available";
+        else if (available || freeRoam) status = "available";
         else status = "locked";
 
         const state: ChapterState = {
@@ -137,7 +142,7 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
           bestScorePct: prog?.bestScorePct ?? 0,
           lessonsDone: doneLessonsByChap.get(c.code) ?? 0,
         };
-        // next chapter in module gated on this one passing
+        // next chapter in module is gated on this one passing; free roam only affects viewing.
         prevPassed = passed;
         return state;
       });

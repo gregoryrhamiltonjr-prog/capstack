@@ -241,6 +241,13 @@ export async function toggleFreeRoam(value: boolean) {
   await db.user.update({ where: { id: uid }, data: { freeRoam: value } });
   revalidatePath("/map");
   revalidatePath("/settings");
+  revalidatePath("/dashboard");
+  revalidatePath("/learn");
+}
+
+export async function toggleFreeRoamFromForm(formData: FormData) {
+  const value = String(formData.get("freeRoam")) === "true";
+  await toggleFreeRoam(value);
 }
 
 // ---------------- LEARNING ----------------

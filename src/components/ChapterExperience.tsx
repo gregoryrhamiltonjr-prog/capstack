@@ -29,6 +29,7 @@ export function ChapterExperience({
   questions,
   glossary,
   bestScorePct = 0,
+  quizUnlocked,
   nextCode,
   prevCode,
 }: {
@@ -40,6 +41,7 @@ export function ChapterExperience({
   questions: QuizQ[];
   glossary: GlossaryItem[];
   bestScorePct?: number;
+  quizUnlocked: boolean;
   nextCode?: string | null;
   prevCode?: string | null;
 }) {
@@ -54,7 +56,7 @@ export function ChapterExperience({
   function markComplete() {
     if (!lesson || completed[lesson.id]) return;
     startTransition(async () => {
-      await recordLessonComplete(lesson.id, chapterId, 0, true);
+      await recordLessonComplete(lesson.id, chapterId, 0, quizUnlocked);
       setCompleted((c) => ({ ...c, [lesson.id]: true }));
     });
   }
@@ -84,7 +86,7 @@ export function ChapterExperience({
           >
             Lessons
           </button>
-          {questions.length > 0 && (
+          {questions.length > 0 && quizUnlocked && (
             <button
               type="button"
               onClick={() => setTab("quiz")}
@@ -136,7 +138,7 @@ export function ChapterExperience({
                 );
               })}
 
-              {questions.length > 0 && (
+              {questions.length > 0 && quizUnlocked && (
                 <Magnetic className="pt-3">
                   <button type="button" className="btn-primary w-full text-sm" onClick={() => setTab("quiz")}>
                     Take chapter quiz
@@ -181,7 +183,7 @@ export function ChapterExperience({
                     <button type="button" className="btn-primary text-sm" onClick={() => setActiveLesson((i) => i + 1)}>
                       Next lesson <Icon name="arrowRight" size={14} />
                     </button>
-                  ) : questions.length > 0 ? (
+                  ) : questions.length > 0 && quizUnlocked ? (
                     <button type="button" className="btn-primary text-sm" onClick={() => setTab("quiz")}>
                       Chapter quiz <Icon name="arrowRight" size={14} />
                     </button>
@@ -211,7 +213,7 @@ export function ChapterExperience({
         </div>
       )}
 
-      {tab === "quiz" && questions.length > 0 && (
+      {tab === "quiz" && questions.length > 0 && quizUnlocked && (
         <ChapterQuiz chapterId={chapterId} chapterCode={chapterCode} questions={questions} bestScorePct={bestScorePct} />
       )}
 

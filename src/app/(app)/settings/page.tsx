@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Icon } from "@/components/ui";
 import { MouseGlow, ScrubReveal } from "@/components/InteractiveWrappers";
+import { FreeRoamToggle } from "@/components/FreeRoamToggle";
 
 export default async function SettingsPage() {
   const user = await getCurrentUser();
@@ -15,42 +15,56 @@ export default async function SettingsPage() {
       </header>
 
       <ScrubReveal className="space-y-8">
-        <MouseGlow className="card p-6 bg-surface">
-          <h2 className="text-xl font-bold text-ink mb-6">Account Details</h2>
-          <div className="space-y-4 max-w-md">
+        <MouseGlow className="card bg-surface p-6">
+          <h2 className="mb-6 text-xl font-bold text-ink">Account Details</h2>
+          <div className="max-w-md space-y-4">
             <div>
-              <label className="block text-sm font-medium text-ink-muted mb-1">Display Name</label>
-              <input type="text" defaultValue={user.displayName} className="w-full bg-surface-raised border border-line rounded-lg px-4 py-2 text-ink focus:outline-none focus:border-brand transition-colors" />
+              <label className="mb-1 block text-sm font-medium text-ink-muted">Display Name</label>
+              <input
+                type="text"
+                defaultValue={user.displayName}
+                className="w-full rounded-lg border border-line bg-surface-raised px-4 py-2 text-ink focus:border-brand focus:outline-none"
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink-muted mb-1">Email Address</label>
-              <input type="email" defaultValue={user.email} disabled className="w-full bg-canvas border border-line rounded-lg px-4 py-2 text-ink-muted cursor-not-allowed" />
+              <label className="mb-1 block text-sm font-medium text-ink-muted">Email Address</label>
+              <input
+                type="email"
+                defaultValue={user.email}
+                disabled
+                className="w-full cursor-not-allowed rounded-lg border border-line bg-canvas px-4 py-2 text-ink-muted"
+              />
             </div>
             <div className="pt-2">
-              <button className="btn-primary px-6 py-2 text-sm shadow-glow">Save Changes</button>
+              <button type="button" className="btn-primary px-6 py-2 text-sm shadow-glow">
+                Save Changes
+              </button>
             </div>
           </div>
         </MouseGlow>
 
-        <MouseGlow className="card p-6 bg-surface">
-          <h2 className="text-xl font-bold text-ink mb-6">Learning Preferences</h2>
+        <MouseGlow className="card bg-surface p-6">
+          <h2 className="mb-6 text-xl font-bold text-ink">Learning Preferences</h2>
           <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-line pb-4">
-              <div>
+            <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
+              <div className="min-w-0">
                 <div className="font-bold text-ink">Free Roam Mode</div>
-                <div className="text-sm text-ink-muted mt-1">Unlock all modules without passing prerequisites. Disables XP tracking.</div>
+                <div className="mt-1 text-sm text-ink-muted">
+                  Unlock all modules without passing prerequisites so you can open any chapter.
+                </div>
               </div>
-              <div className={`w-12 h-6 rounded-full flex items-center p-1 cursor-pointer transition-colors ${user.freeRoam ? 'bg-brand' : 'bg-surface-raised border border-line'}`}>
-                <div className={`w-4 h-4 bg-white rounded-full transition-transform ${user.freeRoam ? 'translate-x-6' : 'translate-x-0'}`} />
-              </div>
+              <FreeRoamToggle initial={user.freeRoam} />
             </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
+
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <div className="font-bold text-ink">Weekly Goal</div>
-                <div className="text-sm text-ink-muted mt-1">Target number of lessons to complete per week.</div>
+                <div className="mt-1 text-sm text-ink-muted">Target number of lessons to complete per week.</div>
               </div>
-              <select defaultValue={user.weeklyGoal} className="bg-surface-raised border border-line rounded-lg px-4 py-2 text-ink outline-none focus:border-brand">
+              <select
+                defaultValue={user.weeklyGoal}
+                className="rounded-lg border border-line bg-surface-raised px-4 py-2 text-ink outline-none focus:border-brand"
+              >
                 <option value="1">1 Lesson / Week (Casual)</option>
                 <option value="5">5 Lessons / Week (Regular)</option>
                 <option value="10">10 Lessons / Week (Intense)</option>
@@ -59,10 +73,13 @@ export default async function SettingsPage() {
           </div>
         </MouseGlow>
 
-        <MouseGlow className="card p-6 border-danger/20 border bg-surface">
-          <h2 className="text-xl font-bold text-danger mb-4">Danger Zone</h2>
-          <p className="text-sm text-ink-muted mb-6">Once you delete your account, there is no going back. Please be certain.</p>
-          <button className="px-4 py-2 bg-danger/10 text-danger font-bold rounded-lg hover:bg-danger/20 transition-colors border border-danger/30">
+        <MouseGlow className="card border border-danger/20 bg-surface p-6">
+          <h2 className="mb-4 text-xl font-bold text-danger">Danger Zone</h2>
+          <p className="mb-6 text-sm text-ink-muted">Once you delete your account, there is no going back. Please be certain.</p>
+          <button
+            type="button"
+            className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-2 font-bold text-danger transition-colors hover:bg-danger/20"
+          >
             Delete Account
           </button>
         </MouseGlow>
