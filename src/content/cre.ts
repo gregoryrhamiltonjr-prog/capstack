@@ -28,7 +28,7 @@ export const CRE_TRACKS: SeedTrack[] = [
         chapters: [
           {
             code: "T1.M1.1",
-            title: "What Commercial Real Estate Is",
+            title: "What is Commercial Real Estate?",
             objective: "Define CRE as an asset class and place it among the four quadrants of capital.",
             stageCallouts: {
               student: "Learn the words. 'Asset class', 'four quadrants', 'basis' — this is the language recruiters expect you to already speak.",
