@@ -2,21 +2,21 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
-import { MouseGlow, ScrubReveal, ScrubStagger, Tilt3D, ParticleField, ParallaxLayer } from "@/components/InteractiveWrappers";
-import SplineBackground from "@/components/SplineBackground";
+import { ScrubReveal, Tilt3D, ParticleField, ParallaxLayer } from "@/components/InteractiveWrappers";
+import { LeaderboardList, type LeaderboardUser } from "@/components/leaderboard/LeaderboardList";
 
 export default async function LeaderboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const topUsers = [
-    { name: "Alex V.", school: "Wharton", role: "Analyst", firm: "Apollo", xp: 24500 },
-    { name: "Sarah M.", school: "Harvard", role: "Associate", firm: "Blackstone", xp: 21200 },
-    { name: "David K.", school: "Stern", role: "VP", firm: "Starwood", xp: 19800 },
-    { name: "Jessica L.", school: "Stanford", role: "Analyst", firm: "KKR", xp: 15400 },
-    { name: user.displayName, school: user.school || "—", role: user.careerStage, firm: user.company || "—", xp: user.xp, isMe: true },
-    { name: "Michael R.", school: "Booth", role: "Student", firm: "—", xp: 8200 },
-    { name: "Emily W.", school: "Columbia", role: "Analyst", firm: "Goldman", xp: 7900 },
+  const topUsers: LeaderboardUser[] = [
+    { id: "fake-1", name: "Alex V.", school: "Wharton", role: "Analyst", firm: "Apollo", xp: 24500, avatarColor: "#3B82F6", currentStreak: 45, jobArea: "private_equity" },
+    { id: "fake-2", name: "Sarah M.", school: "Harvard", role: "Associate", firm: "Blackstone", xp: 21200, avatarColor: "#10B981", currentStreak: 32, jobArea: "real_estate" },
+    { id: "fake-3", name: "David K.", school: "Stern", role: "VP", firm: "Starwood", xp: 19800, avatarColor: "#F59E0B", currentStreak: 28, jobArea: "real_estate" },
+    { id: "fake-4", name: "Jessica L.", school: "Stanford", role: "Analyst", firm: "KKR", xp: 15400, avatarColor: "#8B5CF6", currentStreak: 15, jobArea: "private_equity" },
+    { id: user.id, name: user.displayName, school: user.school || "—", role: user.careerStage, firm: user.company || "—", xp: user.xp, isMe: true, avatarColor: user.avatarColor, currentStreak: user.currentStreak, jobArea: user.jobArea },
+    { id: "fake-6", name: "Michael R.", school: "Booth", role: "Student", firm: "—", xp: 8200, avatarColor: "#EF4444", currentStreak: 5, jobArea: "investment_banking" },
+    { id: "fake-7", name: "Emily W.", school: "Columbia", role: "Analyst", firm: "Goldman", xp: 7900, avatarColor: "#EC4899", currentStreak: 2, jobArea: "investment_banking" },
   ].sort((a, b) => b.xp - a.xp);
 
   const myRank = topUsers.findIndex((u) => u.isMe) + 1;
@@ -49,45 +49,7 @@ export default async function LeaderboardPage() {
               <span>Member</span>
               <span className="text-right">Tier · XP</span>
             </div>
-            <ScrubStagger className="divide-y divide-line">
-              {topUsers.map((u, i) => {
-                const rankInfo = levelProgress(u.xp);
-                const isTop3 = i < 3;
-                return (
-                  <div key={i} data-stagger-item>
-                    <MouseGlow
-                      className={`relative transition-colors ${u.isMe ? "bg-brand/[0.06]" : "hover:bg-surface-raised/60"}`}
-                    >
-                      <div className="grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 px-4 py-3.5">
-                        {u.isMe && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-brand" />}
-                        <div className={`text-center font-mono text-base font-bold tabnum ${isTop3 ? "text-gold" : "text-ink-faint"}`}>{i + 1}</div>
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface-raised text-sm font-bold text-ink-muted">
-                            {u.name.charAt(0)}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 font-bold text-ink">
-                              <span className="truncate">{u.name}</span>
-                              {u.isMe && <span className="chip !border-none !bg-brand/20 !px-2 !py-0.5 !text-[10px] !text-brand">You</span>}
-                              {isTop3 && <Icon name="trophy" size={13} className="shrink-0 text-gold" />}
-                            </div>
-                            <div className="mt-0.5 truncate text-xs text-ink-muted">
-                              {u.role} @ {u.firm} · {u.school}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-bold" style={{ color: rankInfo.prestige ? "#F5B301" : "#C79A3A" }}>
-                            {rankInfo.rank}
-                          </div>
-                          <div className="font-mono text-xs text-ink-muted tabnum">{u.xp.toLocaleString()} XP</div>
-                        </div>
-                      </div>
-                    </MouseGlow>
-                  </div>
-                );
-              })}
-            </ScrubStagger>
+            <LeaderboardList topUsers={topUsers} currentUserId={user.id} />
           </div>
           </Tilt3D>
         </div>
