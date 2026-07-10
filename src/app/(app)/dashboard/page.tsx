@@ -5,7 +5,7 @@ import { effectiveFreeRoam } from "@/lib/subscription";
 import Link from "next/link";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
-import { MouseGlow, ScrubReveal, Magnetic } from "@/components/InteractiveWrappers";
+import { MouseGlow, ScrubReveal, Magnetic, Tilt3D, ParallaxLayer, ScrubStagger } from "@/components/InteractiveWrappers";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -58,6 +58,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
+      <ParallaxLayer depth={5}>
       <ScrubReveal className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           {next ? (
@@ -95,20 +96,22 @@ export default async function DashboardPage() {
               { label: "Modules passed", value: completedChapters },
               { label: "Total XP", value: user.xp.toLocaleString() },
             ].map((s) => (
-              <div key={s.label} className="card bg-surface p-4">
-                <div className="text-2xl font-black text-ink tabnum">{s.value}</div>
-                <div className="mt-0.5 text-xs text-ink-muted">{s.label}</div>
-              </div>
+              <Tilt3D key={s.label} intensity={5}>
+                <div className="card bg-surface p-4">
+                  <div className="text-2xl font-black text-ink tabnum">{s.value}</div>
+                  <div className="mt-0.5 text-xs text-ink-muted">{s.label}</div>
+                </div>
+              </Tilt3D>
             ))}
           </div>
 
           <div className="card bg-surface p-6">
             <h3 className="mb-5 text-sm font-bold uppercase tracking-wide text-ink-muted">Weekly XP</h3>
-            <div className="flex h-36 items-end justify-between gap-2">
+            <ScrubStagger className="flex h-36 items-end justify-between gap-2">
               {recentActivity.map((day, i) => {
                 const heightPct = (day.xp / maxActivity) * 100;
                 return (
-                  <div key={i} className="group flex flex-1 flex-col items-center gap-2">
+                  <div key={i} data-stagger-item className="group flex flex-1 flex-col items-center gap-2">
                     <div className="relative flex h-full w-full items-end overflow-hidden rounded-t-md bg-surface-raised">
                       <div className="w-full rounded-t-md bg-brand/80 transition-all duration-500 group-hover:bg-brand" style={{ height: `${heightPct}%` }} />
                     </div>
@@ -116,11 +119,12 @@ export default async function DashboardPage() {
                   </div>
                 );
               })}
-            </div>
+            </ScrubStagger>
           </div>
         </div>
 
         <div className="space-y-5">
+          <Tilt3D intensity={3}>
           <div className="card bg-surface-raised p-5">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-bold text-ink">Rank progress</h3>
@@ -134,7 +138,9 @@ export default async function DashboardPage() {
               <span>{progress.nextRank ?? "Max"}</span>
             </div>
           </div>
+          </Tilt3D>
 
+          <Tilt3D intensity={3}>
           <div className="card p-5">
             <h3 className="mb-3 font-bold text-ink">Weekly goal</h3>
             <p className="text-sm text-ink-muted">
@@ -145,15 +151,19 @@ export default async function DashboardPage() {
             </div>
             <p className="mt-2 text-xs font-medium text-brand">On track</p>
           </div>
+          </Tilt3D>
 
+          <Tilt3D intensity={3}>
           <div className="card border-line p-5">
             <h3 className="mb-2 font-bold text-ink">How XP works</h3>
             <p className="text-sm leading-relaxed text-ink-muted">
               Complete lessons and pass module quizzes (70%+) to climb the ladder. Streaks add a small daily bonus.
             </p>
           </div>
+          </Tilt3D>
         </div>
       </ScrubReveal>
+      </ParallaxLayer>
     </div>
   );
 }

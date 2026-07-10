@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui";
-import { MouseGlow } from "@/components/InteractiveWrappers";
+import { MouseGlow, Tilt3D, ScrubStagger, Magnetic } from "@/components/InteractiveWrappers";
 import {
   createGroupAction,
   joinGroupAction,
@@ -142,7 +142,7 @@ export function SocialHub({
         )}
 
         {tab === "mine" && (
-          <div className="space-y-2.5">
+          <ScrubStagger className="space-y-2.5">
             {myGroups.length === 0 ? (
               <div className="card border-dashed p-6 text-center">
                 <p className="text-sm text-ink-muted">You haven&apos;t joined any groups yet.</p>
@@ -152,7 +152,9 @@ export function SocialHub({
               </div>
             ) : (
               myGroups.map((g) => (
-                <Link key={g.id} href={`/social/groups/${g.id}`} className="block">
+                <div key={g.id} data-stagger-item>
+                <Tilt3D intensity={2}>
+                <Link href={`/social/groups/${g.id}`} className="block">
                   <MouseGlow className="card bg-surface p-4 transition-colors hover:border-brand/30">
                     <div className="flex items-center gap-3.5">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface-raised text-ink-muted">
@@ -172,18 +174,22 @@ export function SocialHub({
                     </div>
                   </MouseGlow>
                 </Link>
+                </Tilt3D>
+                </div>
               ))
             )}
-          </div>
+          </ScrubStagger>
         )}
 
         {tab === "discover" && (
-          <div className="space-y-2.5">
+          <ScrubStagger className="space-y-2.5">
             {discoverGroups.length === 0 ? (
               <div className="card border-dashed p-6 text-center text-sm text-ink-muted">No other groups to join right now. Create one.</div>
             ) : (
               discoverGroups.map((g) => (
-                <MouseGlow key={g.id} className="card bg-surface p-4">
+                <div key={g.id} data-stagger-item>
+                <Tilt3D intensity={2}>
+                <MouseGlow className="card bg-surface p-4">
                   <div className="flex items-start gap-3.5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface-raised text-ink-muted">
                       <Icon name="users" size={18} />
@@ -201,9 +207,11 @@ export function SocialHub({
                     </form>
                   </div>
                 </MouseGlow>
+                </Tilt3D>
+                </div>
               ))
             )}
-          </div>
+          </ScrubStagger>
         )}
       </section>
 
@@ -247,9 +255,11 @@ export function SocialHub({
                 </form>
                 <form action={nudgePartnerAction}>
                   <input type="hidden" name="connId" value={partnerConnId} />
+                  <Magnetic strength={0.3}>
                   <button type="submit" className="btn-ghost px-3 py-1.5 text-xs">
                     Nudge
                   </button>
+                  </Magnetic>
                 </form>
                 <form action={endPartnershipAction}>
                   <input type="hidden" name="connId" value={partnerConnId} />
@@ -286,9 +296,11 @@ export function SocialHub({
                       <form action={respondConnectionAction}>
                         <input type="hidden" name="connId" value={p.id} />
                         <input type="hidden" name="accept" value="1" />
+                        <Magnetic strength={0.3}>
                         <button type="submit" className="btn-primary px-2 py-1 text-[11px]">
                           Accept
                         </button>
+                        </Magnetic>
                       </form>
                       <form action={respondConnectionAction}>
                         <input type="hidden" name="connId" value={p.id} />

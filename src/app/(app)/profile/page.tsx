@@ -2,7 +2,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
-import { MouseGlow, ScrubReveal } from "@/components/InteractiveWrappers";
+import { MouseGlow, ScrubReveal, Tilt3D, ParallaxLayer, ParticleField } from "@/components/InteractiveWrappers";
 import { ProfileAvatarUpload } from "@/components/ProfileAvatarUpload";
 
 export default async function ProfilePage() {
@@ -13,9 +13,11 @@ export default async function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-20">
+      <ParallaxLayer depth={8}>
       <ScrubReveal className="space-y-6">
-        <MouseGlow className="card-raised overflow-hidden bg-surface">
+        <MouseGlow className="card-raised overflow-hidden bg-surface relative">
           <div className="h-24 bg-gradient-to-r from-brand/20 via-info/15 to-transparent" />
+          <ParticleField count={20} className="opacity-30" />
           <div className="relative space-y-5 p-6 pt-0 sm:p-8 sm:pt-0">
             <div className="-mt-10">
               <ProfileAvatarUpload name={user.displayName} color={user.avatarColor} url={user.avatarUrl} />
@@ -60,6 +62,7 @@ export default async function ProfilePage() {
         <div className="card p-6">
           <h2 className="mb-4 text-lg font-bold text-ink">Badges</h2>
           <div className="grid gap-3 sm:grid-cols-3">
+            <Tilt3D intensity={5}>
             <div className="card flex flex-col items-center border-brand/25 bg-surface-raised p-4 text-center">
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand">
                 <Icon name="check" size={20} />
@@ -67,6 +70,8 @@ export default async function ProfilePage() {
               <div className="text-sm font-bold">What is Commercial Real Estate?</div>
               <div className="mt-0.5 text-xs text-ink-muted">In progress</div>
             </div>
+            </Tilt3D>
+            <Tilt3D intensity={5}>
             <div className="card flex flex-col items-center border-line bg-surface-raised p-4 text-center opacity-45">
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-canvas text-ink-faint">
                 <Icon name="lock" size={18} />
@@ -74,6 +79,8 @@ export default async function ProfilePage() {
               <div className="text-sm font-bold">Debt Markets</div>
               <div className="mt-0.5 text-xs text-ink-muted">Locked</div>
             </div>
+            </Tilt3D>
+            <Tilt3D intensity={5}>
             <div className="card flex flex-col items-center border-line bg-surface-raised p-4 text-center opacity-45">
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-canvas text-ink-faint">
                 <Icon name="lock" size={18} />
@@ -81,9 +88,11 @@ export default async function ProfilePage() {
               <div className="text-sm font-bold">LBO Modeling</div>
               <div className="mt-0.5 text-xs text-ink-muted">Locked</div>
             </div>
+            </Tilt3D>
           </div>
         </div>
       </ScrubReveal>
+      </ParallaxLayer>
     </div>
   );
 }

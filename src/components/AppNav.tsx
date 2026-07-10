@@ -6,6 +6,7 @@ import { Icon, RankBadge, Streak } from "./ui";
 import { logoutAction } from "@/lib/actions";
 import { cn } from "@/lib/util";
 import { UserAvatar } from "./UserAvatar";
+import { Magnetic } from "@/components/InteractiveWrappers";
 
 const ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: "chart" },
@@ -49,21 +50,25 @@ export function AppNav({
           })}
         </nav>
         <div className="mt-auto space-y-3 px-1">
-          <Link href="/profile" className="flex items-center gap-2.5 rounded-xl px-2 py-2 transition-colors hover:bg-surface-raised">
-            <UserAvatar name={name} color={avatarColor} url={avatarUrl} size={32} />
-            <div className="min-w-0">
-              <div className="truncate text-sm font-semibold text-ink">{name}</div>
-              <div className="text-[11px] text-ink-faint">View profile</div>
-            </div>
-          </Link>
+          <Magnetic strength={0.1}>
+            <Link href="/profile" className="flex items-center gap-2.5 rounded-xl px-2 py-2 transition-colors hover:bg-surface-raised">
+              <UserAvatar name={name} color={avatarColor} url={avatarUrl} size={32} />
+              <div className="min-w-0">
+                <div className="truncate text-sm font-semibold text-ink">{name}</div>
+                <div className="text-[11px] text-ink-faint">View profile</div>
+              </div>
+            </Link>
+          </Magnetic>
           <div className="flex items-center justify-between">
             <RankBadge xp={xp} size="sm" />
             <Streak days={streak} size="sm" />
           </div>
           <form action={logoutAction}>
-            <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink-faint transition-colors hover:bg-surface-raised hover:text-ink">
-              <Icon name="logout" size={16} /> Sign out
-            </button>
+            <Magnetic strength={0.2}>
+              <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink-faint transition-colors hover:bg-surface-raised hover:text-ink">
+                <Icon name="logout" size={16} /> Sign out
+              </button>
+            </Magnetic>
           </form>
         </div>
       </aside>

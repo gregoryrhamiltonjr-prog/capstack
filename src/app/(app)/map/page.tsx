@@ -4,7 +4,7 @@ import { effectiveFreeRoam } from "@/lib/subscription";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/ui";
-import { MouseGlow, ScrubReveal } from "@/components/InteractiveWrappers";
+import { MouseGlow, ScrubReveal, Tilt3D, ParallaxLayer, ScrubStagger } from "@/components/InteractiveWrappers";
 
 export default async function MapPage() {
   const user = await getCurrentUser();
@@ -25,6 +25,7 @@ export default async function MapPage() {
         </div>
       </header>
 
+      <ParallaxLayer depth={5}>
       <ScrubReveal className="space-y-12">
         {tracks.map((track) => (
           <div key={track.id} className="relative">
@@ -65,10 +66,11 @@ export default async function MapPage() {
               </div>
             </div>
 
-            <div className={`ml-9 grid gap-4 md:grid-cols-2 ${!track.unlocked ? "pointer-events-none opacity-40" : ""}`}>
+            <ScrubStagger className={`ml-9 grid gap-4 md:grid-cols-2 ${!track.unlocked ? "pointer-events-none opacity-40" : ""}`}>
               {track.modules.map((mod) => (
+                <div key={mod.id} data-stagger-item>
+                <Tilt3D intensity={3}>
                 <MouseGlow
-                  key={mod.id}
                   className={`card-raised border-l-4 bg-surface p-5 ${
                     mod.complete ? "border-l-brand" : mod.unlocked ? "border-l-info" : "border-l-line"
                   }`}
@@ -116,11 +118,14 @@ export default async function MapPage() {
                     })}
                   </div>
                 </MouseGlow>
+                </Tilt3D>
+                </div>
               ))}
-            </div>
+            </ScrubStagger>
           </div>
         ))}
       </ScrubReveal>
+      </ParallaxLayer>
     </div>
   );
 }
