@@ -14,7 +14,7 @@ export type RoadmapTrack = {
 
 export const ROADMAP: RoadmapTrack[] = [
   // ---- CRE realm ----
-  { code: "T1", realm: "cre", title: "CRE Foundations", tagline: "The vocabulary and math everything stands on.", tier: "Foundations 100", live: true, moduleCount: 7 },
+  { code: "T1", realm: "cre", title: "What is Commercial Real Estate?", tagline: "The vocabulary and math everything stands on.", tier: "Foundations 100", live: true, moduleCount: 7 },
   { code: "T2", realm: "cre", title: "Debt Markets & the Capital Stack", tagline: "Who lends, how the stack is built.", tier: "Core 200", live: true, moduleCount: 4 },
   { code: "T3", realm: "cre", title: "Agency Lending & the GSEs", tagline: "Flagship. Fannie DUS & asset management.", tier: "Core 200–400", live: true, moduleCount: 12 },
   { code: "T4", realm: "cre", title: "CMBS & Structured Finance", tagline: "How loans become bonds.", tier: "Advanced 300", live: true, moduleCount: 6 },

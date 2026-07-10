@@ -7,7 +7,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     id: "T1",
     realm: "cre",
     code: "T1",
-    title: "CRE Foundations",
+    title: "What is Commercial Real Estate?",
     tagline: "The vocabulary and math everything else stands on.",
     description:
       "Start here. What commercial real estate is, who the players are, how income becomes value, and the debt/equity math you will use every single day.",

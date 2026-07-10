@@ -64,7 +64,7 @@ export default async function ProfilePage() {
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand">
                 <Icon name="check" size={20} />
               </div>
-              <div className="text-sm font-bold">CRE Foundations</div>
+              <div className="text-sm font-bold">What is Commercial Real Estate?</div>
               <div className="mt-0.5 text-xs text-ink-muted">In progress</div>
             </div>
             <div className="card flex flex-col items-center border-line bg-surface-raised p-4 text-center opacity-45">
