@@ -25,7 +25,6 @@ export default async function LeaderboardPage() {
   return (
     <div className="mx-auto max-w-5xl pb-20 relative min-h-screen">
       {/* Cinematic Background Elements */}
-      <SplineBackground scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" className="opacity-40 mix-blend-screen" />
       <ParticleField count={30} className="fixed inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen" />
 
       {/* Content wrapper with Parallax */}
