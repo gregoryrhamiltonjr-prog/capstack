@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { promises as fs } from "fs";
 import path from "path";
 import { db } from "./db";
-import { getUserId, createSession, destroySession, hashPassword, verifyPassword } from "./auth";
+import { getUserId, hashPassword, verifyPassword } from "./auth";
+import { signIn, signOut } from "@/auth";
 import { XP, HINT_MULT } from "./xp";
 import { todayKey, weekKey, daysBetween } from "./util";
 
@@ -51,11 +52,26 @@ export async function signupAction(formData: FormData) {
   const password = String(formData.get("password") || "");
   if (!email || !password || password.length < 6) redirect("/signup?error=1");
   const existing = await db.user.findUnique({ where: { email } });
-  if (existing) redirect("/signup?error=exists");
-  const user = await db.user.create({
-    data: { email, displayName: name || email.split("@")[0], passwordHash: await hashPassword(password) },
+  if (existing) {
+    // If they signed up with Google/Apple already, don't clobber — send to login
+    if (!existing.passwordHash) redirect("/login?error=oauth");
+    redirect("/signup?error=exists");
+  }
+  const displayName = name || email.split("@")[0];
+  await db.user.create({
+    data: {
+      email,
+      name: displayName,
+      displayName,
+      passwordHash: await hashPassword(password),
+    },
   });
-  await createSession(user.id);
+  const res = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
+  if (res?.error) redirect("/login?error=1");
   redirect("/onboarding");
 }
 
@@ -63,14 +79,26 @@ export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
   const user = await db.user.findUnique({ where: { email } });
-  if (!user || !(await verifyPassword(password, user.passwordHash))) redirect("/login?error=1");
-  await createSession(user.id);
+  if (!user) redirect("/login?error=1");
+  if (!user.passwordHash) redirect("/login?error=oauth");
+  if (!(await verifyPassword(password, user.passwordHash))) redirect("/login?error=1");
+
+  await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
   redirect(user.onboarded ? "/dashboard" : "/onboarding");
 }
 
+export async function oauthSignInAction(formData: FormData) {
+  const provider = String(formData.get("provider") || "");
+  if (provider !== "google" && provider !== "apple") redirect("/login?error=1");
+  await signIn(provider, { redirectTo: "/auth/complete" });
+}
+
 export async function logoutAction() {
-  await destroySession();
-  redirect("/");
+  await signOut({ redirectTo: "/" });
 }
 
 // ---------------- ONBOARDING & SETTINGS ----------------
