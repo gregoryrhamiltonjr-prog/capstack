@@ -81,7 +81,7 @@ export function ChapterExperience({
             type="button"
             onClick={() => setTab("lessons")}
             className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
-              tab === "lessons" ? "bg-brand text-[#04150e]" : "border border-line text-ink-muted hover:bg-surface-raised hover:text-ink"
+              tab === "lessons" ? "bg-brand text-[#1a1206]" : "border border-line text-ink-muted hover:bg-surface-raised hover:text-ink"
             }`}
           >
             Lessons
@@ -91,7 +91,7 @@ export function ChapterExperience({
               type="button"
               onClick={() => setTab("quiz")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
-                tab === "quiz" ? "bg-brand text-[#04150e]" : "border border-line text-ink-muted hover:bg-surface-raised hover:text-ink"
+                tab === "quiz" ? "bg-brand text-[#1a1206]" : "border border-line text-ink-muted hover:bg-surface-raised hover:text-ink"
               }`}
             >
               Chapter quiz
@@ -124,7 +124,7 @@ export function ChapterExperience({
                     <div className="flex items-start gap-2.5">
                       <div
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                          done ? "bg-brand text-[#04150e]" : active ? "bg-info/20 text-info" : "bg-surface-raised text-ink-faint"
+                          done ? "bg-brand text-[#1a1206]" : active ? "bg-info/20 text-info" : "bg-surface-raised text-ink-faint"
                         }`}
                       >
                         {done ? "✓" : i + 1}

@@ -34,42 +34,51 @@ export default async function LeaderboardPage() {
       </header>
 
       <ScrubReveal className="grid gap-8 lg:grid-cols-3">
-        <div className="space-y-3 lg:col-span-2">
-          {topUsers.map((u, i) => {
-            const rankInfo = levelProgress(u.xp);
-            const isTop3 = i < 3;
-            return (
-              <MouseGlow
-                key={i}
-                className={`card flex items-center justify-between p-4 ${u.isMe ? "border-brand/40 bg-brand/5" : "bg-surface"}`}
-              >
-                <div className="flex items-center gap-4 sm:gap-6">
-                  <div className={`w-8 text-center text-lg font-black ${isTop3 ? "text-gold" : "text-ink-muted"}`}>#{i + 1}</div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface-raised text-sm font-bold text-ink-muted">
-                      {u.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 font-bold text-ink">
-                        {u.name}
-                        {u.isMe && <span className="chip !border-none !bg-brand/20 !px-2 !py-0.5 !text-[10px] !text-brand">You</span>}
-                        {isTop3 && <Icon name="trophy" size={13} className="text-gold" />}
+        <div className="lg:col-span-2">
+          <div className="card overflow-hidden bg-surface p-0">
+            {/* Ledger header — the deal-desk ranking */}
+            <div className="grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 border-b border-line-strong px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
+              <span className="text-center">#</span>
+              <span>Member</span>
+              <span className="text-right">Tier · XP</span>
+            </div>
+            <div className="divide-y divide-line">
+              {topUsers.map((u, i) => {
+                const rankInfo = levelProgress(u.xp);
+                const isTop3 = i < 3;
+                return (
+                  <MouseGlow
+                    key={i}
+                    className={`relative grid grid-cols-[2.25rem_1fr_auto] items-center gap-4 px-4 py-3.5 transition-colors ${u.isMe ? "bg-brand/[0.06]" : "hover:bg-surface-raised/60"}`}
+                  >
+                    {u.isMe && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-brand" />}
+                    <div className={`text-center font-mono text-base font-bold tabnum ${isTop3 ? "text-gold" : "text-ink-faint"}`}>{i + 1}</div>
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface-raised text-sm font-bold text-ink-muted">
+                        {u.name.charAt(0)}
                       </div>
-                      <div className="mt-0.5 text-xs text-ink-muted">
-                        {u.role} @ {u.firm} · {u.school}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 font-bold text-ink">
+                          <span className="truncate">{u.name}</span>
+                          {u.isMe && <span className="chip !border-none !bg-brand/20 !px-2 !py-0.5 !text-[10px] !text-brand">You</span>}
+                          {isTop3 && <Icon name="trophy" size={13} className="shrink-0 text-gold" />}
+                        </div>
+                        <div className="mt-0.5 truncate text-xs text-ink-muted">
+                          {u.role} @ {u.firm} · {u.school}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="hidden text-right sm:block">
-                  <div className="text-sm font-bold" style={{ color: rankInfo.prestige ? "#F5B301" : "#39FF14" }}>
-                    {rankInfo.rank}
-                  </div>
-                  <div className="text-xs text-ink-muted tabnum">{u.xp.toLocaleString()} XP</div>
-                </div>
-              </MouseGlow>
-            );
-          })}
+                    <div className="text-right">
+                      <div className="text-sm font-bold" style={{ color: rankInfo.prestige ? "#F5B301" : "#C79A3A" }}>
+                        {rankInfo.rank}
+                      </div>
+                      <div className="font-mono text-xs text-ink-muted tabnum">{u.xp.toLocaleString()} XP</div>
+                    </div>
+                  </MouseGlow>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="space-y-5">

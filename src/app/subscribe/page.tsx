@@ -6,6 +6,7 @@ import { hasAccess, subscriptionLabel, PRICE_DISPLAY, BILLING_PERIOD, TRIAL_DAYS
 import { startCheckoutAction, logoutAction } from "@/lib/actions";
 import { Icon } from "@/components/ui";
 import { Logo } from "@/components/Logo";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function SubscribePage() {
   const user = await getCurrentUser();
@@ -72,9 +73,15 @@ export default async function SubscribePage() {
 
           {configured ? (
             <form action={startCheckoutAction} className="mt-8">
-              <button type="submit" className="btn-primary w-full py-3 text-base shadow-glow">
+              <SubmitButton
+                className="btn-primary w-full py-3 text-base shadow-glow"
+                pendingLabel="Redirecting to checkout…"
+              >
                 {reactivating ? "Resubscribe" : `Start ${TRIAL_DAYS}-day free trial`}
-              </button>
+              </SubmitButton>
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
+                <Icon name="lock" size={12} /> Secured by Stripe · cancel anytime
+              </p>
             </form>
           ) : (
             <div className="mt-8 rounded-lg border border-line bg-surface-raised p-4 text-sm text-ink-muted">

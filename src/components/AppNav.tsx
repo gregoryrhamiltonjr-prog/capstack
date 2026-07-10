@@ -34,7 +34,7 @@ export function AppNav({
     <>
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-dvh w-60 flex-none flex-col border-r border-line bg-surface/60 px-3 py-4 lg:flex">
-        <Link href="/dashboard" className="mb-6 flex items-center gap-2 px-2 text-lg font-bold tracking-tight">
+        <Link href="/" className="mb-6 flex items-center gap-2 px-2 text-lg font-bold tracking-tight">
           <Logo size={26} /> Cap<span className="-ml-2 text-brand">Stack</span>
         </Link>
         <nav className="flex flex-col gap-1">
@@ -70,7 +70,7 @@ export function AppNav({
 
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-canvas/90 px-4 py-2.5 backdrop-blur lg:hidden">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold">
+        <Link href="/" className="flex items-center gap-2 font-bold">
           <Logo size={22} /> Cap<span className="-ml-1.5 text-brand">Stack</span>
         </Link>
         <div className="flex items-center gap-3">

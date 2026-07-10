@@ -33,10 +33,6 @@ export function HeroSection() {
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
         <div className="animate-fade-up space-y-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand/20 bg-brand/5 text-sm font-medium text-brand">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" /> 
-            Higgsfield AI Enhanced
-          </div>
           <h1 className="text-5xl font-black leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl text-white">
             Climb the whole <br />
             <span className="text-brand">capital stack.</span>
@@ -68,7 +64,7 @@ function Interactive3DStack() {
     { id: "common", label: "Common Equity", risk: "Highest risk", return: "15–20%+", color: "#F5B301", width: "100%" },
     { id: "pref", label: "Preferred Equity", risk: "Med–high", return: "10–15%", color: "#8B5CF6", width: "94%" },
     { id: "mezz", label: "Mezzanine Debt", risk: "Medium", return: "8–12%", color: "#2E8BE6", width: "88%" },
-    { id: "senior", label: "Senior Debt", risk: "Lowest risk", return: "4–7%", color: "#39FF14", width: "82%" },
+    { id: "senior", label: "Senior Debt", risk: "Lowest risk", return: "4–7%", color: "#6FA891", width: "82%" },
   ];
 
   const [hovered, setHovered] = useState<string | null>(null);
@@ -314,19 +310,19 @@ export function FinancialCalculator() {
               <AreaChart data={data.slice(0, term + 1)} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorEquity" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#39FF14" stopOpacity={0.5}/>
-                    <stop offset="95%" stopColor="#39FF14" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#C79A3A" stopOpacity={0.5}/>
+                    <stop offset="95%" stopColor="#C79A3A" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorDebt" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.5}/>
                     <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="year" stroke="#5B6B85" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-                <YAxis stroke="#5B6B85" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value/1000}k`} dx={-10} />
-                <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#2E3D57', borderRadius: '12px', padding: '12px' }} itemStyle={{ fontFamily: 'monospace', fontWeight: 'bold' }} labelStyle={{ color: '#94A3B8', marginBottom: '8px' }} formatter={(value: any) => `$${Number(value).toLocaleString()}`} />
+                <XAxis dataKey="year" stroke="#8A96AC" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                <YAxis stroke="#8A96AC" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value/1000}k`} dx={-10} />
+                <Tooltip contentStyle={{ backgroundColor: '#141B27', borderColor: '#33404F', borderRadius: '12px', padding: '12px' }} itemStyle={{ fontFamily: 'monospace', fontWeight: 'bold' }} labelStyle={{ color: '#93A0B4', marginBottom: '8px' }} formatter={(value: any) => `$${Number(value).toLocaleString()}`} />
                 <Area type="monotone" dataKey="Debt" stackId="1" stroke="#3B82F6" fill="url(#colorDebt)" strokeWidth={3} animationDuration={500} />
-                <Area type="monotone" dataKey="Equity" stackId="1" stroke="#39FF14" fill="url(#colorEquity)" strokeWidth={3} animationDuration={500} />
+                <Area type="monotone" dataKey="Equity" stackId="1" stroke="#C79A3A" fill="url(#colorEquity)" strokeWidth={3} animationDuration={500} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -342,7 +338,7 @@ export function FinancialCalculator() {
 // ==========================================
 export function CoursePreviews() {
   const courses = [
-    { title: "Debt & the Capital Stack", mentor: "MD @ Blackstone", realm: "CRE", color: "#39FF14", icon: "building" },
+    { title: "Debt & the Capital Stack", mentor: "MD @ Blackstone", realm: "CRE", color: "#C79A3A", icon: "building" },
     { title: "LBO Modeling", mentor: "VP @ KKR", realm: "High Finance", color: "#3B82F6", icon: "chart" },
     { title: "CMBS & Structured Finance", mentor: "Director @ Goldman", realm: "CRE", color: "#8B5CF6", icon: "layers" },
   ];
@@ -432,7 +428,7 @@ export function Testimonials() {
     <section className="mx-auto max-w-7xl px-6 pt-8 pb-24">
       <div className="grid gap-8 md:grid-cols-3">
         {reviews.map((r, i) => (
-          <MouseGlow key={i} className="card border-t-2 bg-surface p-8" style={{ borderTopColor: i === 0 ? "#39FF14" : i === 1 ? "#3B82F6" : "#F5B301" }}>
+          <MouseGlow key={i} className="card border-t-2 bg-surface p-8" style={{ borderTopColor: i === 0 ? "#C79A3A" : i === 1 ? "#3B82F6" : "#F5B301" }}>
             <div className="flex gap-1 text-brand mb-6">
               {[1,2,3,4,5].map(s => (
                 <div key={s} className="text-brand drop-shadow-md">

@@ -44,7 +44,7 @@ export function Stat({ label, value, tone = "default", hint }: { label: string; 
 
 export function WidgetShell({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <div className="my-4 rounded-2xl border border-brand/20 bg-surface-raised p-4 shadow-[0_0_0_1px_rgba(16,185,129,0.05)]">
+    <div className="my-4 rounded-2xl border border-brand/20 bg-surface-raised p-4 shadow-[0_0_0_1px_rgba(199,154,58,0.05)]">
       {title && (
         <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-brand">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />

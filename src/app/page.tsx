@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { Logo, Wordmark } from "@/components/Logo";
 import { Icon } from "@/components/ui";
@@ -16,15 +15,21 @@ const CRE = ["CRE Foundations", "Debt & the Capital Stack", "Agency Lending & GS
 const HF = ["Finance & Accounting Bedrock", "Investment Banking", "ECM", "DCM & Bond Math", "LevFin & Private Credit", "Sales & Trading", "Fund Finance", "PE & Alternatives", "HF / AM / WM", "Career Navigation"];
 
 export default async function Landing() {
-  if (await getCurrentUser()) redirect("/dashboard");
+  const currentUser = await getCurrentUser();
   return (
     <div className="min-h-dvh">
       {/* Nav */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Wordmark size={26} />
         <div className="flex items-center gap-2">
-          <Link href="/login" className="btn-ghost">Log in</Link>
-          <Link href="/signup" className="btn-primary">Get started</Link>
+          {currentUser ? (
+            <Link href="/dashboard" className="btn-primary">Go to app</Link>
+          ) : (
+            <>
+              <Link href="/login" className="btn-ghost">Log in</Link>
+              <Link href="/signup" className="btn-primary">Get started</Link>
+            </>
+          )}
         </div>
       </header>
 

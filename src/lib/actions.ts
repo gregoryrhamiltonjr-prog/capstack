@@ -427,6 +427,21 @@ export async function respondConnectionAction(formData: FormData) {
   await respondConnection(connId, accept);
 }
 
+export async function withdrawConnection(connId: string) {
+  const uid = await requireUserId();
+  const conn = await db.connection.findUnique({ where: { id: connId } });
+  // Only the requester can withdraw, and only while still pending.
+  if (!conn || conn.requesterId !== uid || conn.status !== "pending") return;
+  await db.connection.delete({ where: { id: connId } });
+  revalidatePath("/social");
+}
+
+export async function withdrawConnectionAction(formData: FormData) {
+  const connId = String(formData.get("connId") || "");
+  if (!connId) return;
+  await withdrawConnection(connId);
+}
+
 export async function endPartnershipAction(formData: FormData) {
   const connId = String(formData.get("connId") || "");
   const uid = await requireUserId();

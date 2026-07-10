@@ -13,6 +13,7 @@ import {
   endPartnershipAction,
   nudgePartnerAction,
   openDmAction,
+  withdrawConnectionAction,
 } from "@/lib/actions";
 
 type GroupCard = {
@@ -308,8 +309,16 @@ export function SocialHub({
               {pendingOutgoing
                 .filter((p) => p.isPartner)
                 .map((p) => (
-                  <div key={p.id} className="text-xs text-ink-muted">
-                    Waiting on <span className="font-semibold text-ink">{p.addressee.displayName}</span>
+                  <div key={p.id} className="flex items-center justify-between gap-2">
+                    <div className="min-w-0 text-xs text-ink-muted">
+                      Waiting on <span className="font-semibold text-ink">{p.addressee.displayName}</span>
+                    </div>
+                    <form action={withdrawConnectionAction}>
+                      <input type="hidden" name="connId" value={p.id} />
+                      <button type="submit" className="btn-ghost shrink-0 px-2 py-1 text-[11px] text-ink-muted">
+                        Withdraw
+                      </button>
+                    </form>
                   </div>
                 ))}
             </div>

@@ -20,7 +20,7 @@ export function CapitalStack3D({
     { id: "eq", label: "Common Equity", sub: "First loss · 15–20%+", color: "#F5B301", h: 72 },
     { id: "pref", label: "Preferred Equity", sub: "Mezz-like · 10–15%", color: "#8B5CF6", h: 56 },
     { id: "mezz", label: "Mezzanine Debt", sub: "Second lien · 8–12%", color: "#3B82F6", h: 48 },
-    { id: "sr", label: "Senior Debt", sub: "First lien · 4–7%", color: "#39FF14", h: 64 },
+    { id: "sr", label: "Senior Debt", sub: "First lien · 4–7%", color: "#6FA891", h: 64 },
   ];
   const stack = layers ?? defaultLayers;
   const [hovered, setHovered] = useState<string | null>(null);
@@ -101,7 +101,7 @@ export function Building3D({
           {Array.from({ length: floors }).map((_, i) => {
             const on = i < activeFloor || hover === i;
             const label = names[i % names.length];
-            const colors = ["#39FF14", "#3B82F6", "#8B5CF6", "#F5B301", "#EF4444"];
+            const colors = ["#6FA891", "#3B82F6", "#8B5CF6", "#F5B301", "#EF4444"];
             const c = colors[i % colors.length];
             return (
               <motion.div
@@ -116,7 +116,7 @@ export function Building3D({
                 }}
                 animate={{ scale: hover === i ? 1.05 : 1, x: hover === i ? 6 : 0 }}
               >
-                <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: on ? c : "#5B6B85" }}>
+                <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: on ? c : "#8A96AC" }}>
                   {label}
                 </span>
                 <div className="absolute inset-y-2 left-2 w-1.5 rounded-sm opacity-40" style={{ background: c }} />
@@ -142,8 +142,8 @@ export function Waterfall3D({
   className?: string;
 }) {
   const defaults = [
-    { name: "AAA", color: "#39FF14", support: 30 },
-    { name: "AA", color: "#66FF4D", support: 22 },
+    { name: "AAA", color: "#6FA891", support: 30 },
+    { name: "AA", color: "#8FBCAE", support: 22 },
     { name: "A", color: "#3B82F6", support: 15 },
     { name: "BBB-", color: "#8B5CF6", support: 8 },
     { name: "B-piece", color: "#F5B301", support: 0 },
@@ -257,7 +257,7 @@ export function RankTower3D({
           const unlocked = i + 1 <= level;
           const current = i + 1 === level;
           const prestige = i + 1 >= 10;
-          const color = prestige ? "#F5B301" : unlocked ? "#39FF14" : "#2E3D57";
+          const color = prestige ? "#F5B301" : unlocked ? "#C79A3A" : "#33404F";
           return (
             <motion.div
               key={r}

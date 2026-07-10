@@ -48,7 +48,7 @@ export default function Amortization({ loan = 27300000, rate = 5.8, amortYears =
           <div>
             <div className="mb-1 text-[11px] uppercase tracking-wide text-ink-faint">Balance over {amortYears} yrs</div>
             <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
-              <polyline points={`0,${h} ${pts} ${w},${h}`} fill="rgba(16,185,129,0.10)" stroke="none" />
+              <polyline points={`0,${h} ${pts} ${w},${h}`} fill="rgba(199,154,58,0.10)" stroke="none" />
               <polyline points={pts} fill="none" stroke="#10B981" strokeWidth={2} />
             </svg>
           </div>

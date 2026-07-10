@@ -7,42 +7,44 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Canvas / surfaces (dark-first premium fintech)
-        canvas: "#0A0E16",
+        // Canvas / surfaces (dark-first institutional finance — "Capital Stack")
+        canvas: "#0B0F17",
         surface: {
-          DEFAULT: "#111827",
-          raised: "#161F30",
-          overlay: "#1B2536",
+          DEFAULT: "#141B27",
+          raised: "#1B2432",
+          overlay: "#212C3D",
         },
         line: {
-          DEFAULT: "#233047",
-          strong: "#2E3D57",
+          DEFAULT: "#26303F",
+          strong: "#33404F",
         },
         ink: {
-          DEFAULT: "#E9EEF7",
-          muted: "#94A3B8",
-          faint: "#5B6B85",
+          DEFAULT: "#ECE7DB", // warm parchment — reads like document, not screen
+          muted: "#93A0B4",
+          faint: "#8A96AC", // lightened from #5B6B85 to clear WCAG AA on canvas
         },
-        // Brand energy: electric neon green accents
+        // Brand: refined brass — seniority, capital, prestige (replaces neon green)
         brand: {
-          DEFAULT: "#39FF14",
-          bright: "#66FF4D",
-          dim: "#2DB30F",
-          ghost: "rgba(57,255,20,0.12)",
+          DEFAULT: "#C79A3A",
+          bright: "#E0B856",
+          dim: "#9C7526",
+          ghost: "rgba(199,154,58,0.12)",
         },
-        // Prestige gold — reserved for MD+ ranks & equity (top of stack)
+        // Prestige gold — reserved for apex ranks (Sponsor/GP, top of stack)
         gold: {
           DEFAULT: "#F5B301",
           soft: "#FBCE4B",
           deep: "#B8860B",
         },
+        // Equity teal — safe/senior tranches & positive growth (used sparingly)
+        equity: "#6FA891",
         info: "#3B82F6",
         warn: "#F59E0B",
         danger: "#EF4444",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+        sans: ["'IBM Plex Sans'", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       borderRadius: {
         xl: "0.9rem",
@@ -50,7 +52,7 @@ const config: Config = {
       },
       boxShadow: {
         card: "0 1px 0 0 rgba(255,255,255,0.03) inset, 0 8px 24px -12px rgba(0,0,0,0.6)",
-        glow: "0 0 0 1px rgba(57,255,20,0.35), 0 0 28px -6px rgba(57,255,20,0.45)",
+        glow: "0 0 0 1px rgba(199,154,58,0.35), 0 0 28px -6px rgba(199,154,58,0.45)",
         goldglow: "0 0 0 1px rgba(245,179,1,0.4), 0 0 28px -6px rgba(245,179,1,0.4)",
       },
       keyframes: {

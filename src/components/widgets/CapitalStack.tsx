@@ -18,7 +18,7 @@ export default function CapitalStack({ totalValue = 50000000 }: { totalValue?: n
   const layers = [
     { id: "eq", name: "Common equity", pct: equityPct, cost: equityCost, color: "#F5B301", note: "last paid · first loss" },
     { id: "mezz", name: "Mezzanine", pct: mezzPct, cost: mezzCost, color: "#8B5CF6", note: "equity pledge" },
-    { id: "sr", name: "Senior debt", pct: seniorPct, cost: seniorCost, color: "#39FF14", note: "first lien · first paid" },
+    { id: "sr", name: "Senior debt", pct: seniorPct, cost: seniorCost, color: "#6FA891", note: "first lien · first paid" },
   ];
 
   return (

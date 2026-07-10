@@ -27,7 +27,7 @@ export function MouseGlow({
   const background = useMotionTemplate`
     radial-gradient(
       650px circle at ${mouseX}px ${mouseY}px,
-      rgba(57, 255, 20, 0.15),
+      rgba(199, 154, 58, 0.15),
       transparent 80%
     )
   `;
