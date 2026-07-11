@@ -101,8 +101,8 @@ function ParticleField() {
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let w = 0, h = 0, raf = 0;
-    const N = 70;
+    let w = 0, h = 0, raf = 0, running = false, onScreen = true, last = 0;
+    const N = window.innerWidth < 640 ? 36 : 70;
     const parts = Array.from({ length: N }, () => ({
       x: Math.random(), y: Math.random(),
       r: 0.6 + Math.random() * 1.8,
@@ -122,7 +122,6 @@ function ParticleField() {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    let last = performance.now();
     function tick(now: number) {
       const dt = Math.min(now - last, 50); last = now;
       ctx!.clearRect(0, 0, w, h);
@@ -137,10 +136,24 @@ function ParticleField() {
         ctx!.fillStyle = `rgba(224, 184, 86, ${a})`;
         ctx!.fill();
       }
-      raf = requestAnimationFrame(tick);
+      if (running) raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+
+    // Only animate while the hero is on-screen and the tab is visible — a
+    // constantly-running canvas loop otherwise janks scrolling across the page.
+    function start() {
+      if (running || !onScreen || document.hidden) return;
+      running = true; last = performance.now(); raf = requestAnimationFrame(tick);
+    }
+    function stop() { running = false; cancelAnimationFrame(raf); }
+
+    const io = new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; onScreen ? start() : stop(); }, { threshold: 0 });
+    io.observe(canvas);
+    const onVis = () => (document.hidden ? stop() : start());
+    document.addEventListener("visibilitychange", onVis);
+    start();
+
+    return () => { stop(); ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis); };
   }, []);
 
   return <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full" />;
@@ -187,7 +200,7 @@ export function CinematicHero() {
 
     const ctx = gsap.context(() => {
       // — Entrance: chars rise out of their masks, tower floats in —
-      const introDelay = sessionStorage.getItem(INTRO_KEY) === "1" && performance.now() < 6000 ? 1.5 : 0.2;
+      const introDelay = 0.2;
       // y:0 clears the CSS translateY(110%) that GSAP parses into px; yPercent drives the reveal
       gsap.set(".hero-char", { y: 0, yPercent: 110 });
       gsap.to(".hero-char", {
@@ -209,15 +222,17 @@ export function CinematicHero() {
           trigger: wrap,
           start: "top top",
           end: "+=220%",
-          scrub: 0.6,
+          scrub: 0.4,
           pin: scene,
           anticipatePin: 1,
         },
       });
 
-      // Phase 1 — chrome exits fast, headline recedes, tower centers on stage
+      // Phase 1 — chrome exits fast, headline recedes, tower centers on stage.
+      // Headline holds full opacity through the first sliver of scroll (0.06) so
+      // it's always solid at the top instead of mid-fade under the scrub lag.
       tl.to(".hero-sub, .hero-cta, .hero-badge, .hero-scrollcue", { opacity: 0, y: -40, duration: 0.1, ease: "none" }, 0)
-        .to(".hero-headline", { scale: 0.8, yPercent: -30, opacity: 0, duration: 0.3, ease: "none" }, 0)
+        .to(".hero-headline", { scale: 0.8, yPercent: -30, opacity: 0, duration: 0.3, ease: "none" }, 0.06)
         .to(".hero-tower", { scale: 1.28, yPercent: -30, duration: 0.45, ease: "none" }, 0.05);
 
       // Phase 2 — the stack fans apart cleanly, staying centered
