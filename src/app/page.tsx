@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { Logo, Wordmark } from "@/components/Logo";
 import { Icon } from "@/components/ui";
 import { BentoGrid, ScrollyTelling, FinancialCalculator, Testimonials, ScrollProgress } from "@/components/LandingBlocks";
-import { Preloader, CinematicHero, OutlineMarquee, HorizontalCourseRail, GiantStats } from "@/components/LandingCinema";
+import { Preloader, CinematicHero, OutlineMarquee, HorizontalCourseRail, GiantStats, ScrollReset } from "@/components/LandingCinema";
 import { ScrubReveal } from "@/components/InteractiveWrappers";
 import { ComingSoon } from "@/components/ComingSoon";
 import { ROADMAP } from "@/content/roadmap";
@@ -36,6 +36,7 @@ export default async function Landing() {
   const currentUser = await getCurrentUser();
   return (
     <div className="min-h-dvh">
+      <ScrollReset />
       <Preloader />
       <ScrollProgress />
 

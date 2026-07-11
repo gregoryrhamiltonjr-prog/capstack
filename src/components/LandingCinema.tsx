@@ -23,6 +23,22 @@ function prefersReduced() {
 }
 
 // ==========================================
+// SCROLL RESET — always open at the top on load/reload
+// Safari restores the prior scroll position on reload, which drops you
+// mid-page with the pinned ScrollTrigger scenes out of sync. Take manual
+// control and force the top, beating the browser's late restoration.
+// ==========================================
+export function ScrollReset() {
+  useEffect(() => {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    const raf = requestAnimationFrame(() => window.scrollTo(0, 0));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return null;
+}
+
+// ==========================================
 // 0. PRELOADER — counter + curtain reveal (first visit per session)
 // ==========================================
 export function Preloader() {
