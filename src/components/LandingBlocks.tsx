@@ -376,14 +376,14 @@ export function ScrollyTelling() {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-32 max-w-7xl mx-auto px-6 relative border-t border-line">
-      <div className="text-center mb-24">
+    <section ref={containerRef} className="py-20 md:py-32 max-w-7xl mx-auto px-6 relative border-t border-line">
+      <div className="text-center mb-14 md:mb-24">
         <h2 className="text-4xl font-extrabold sm:text-5xl text-white">Master the Lifecycle</h2>
         <p className="mt-4 text-ink-muted text-lg">Scroll to see how a deal comes together.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-16 relative items-start">
-        <div className="w-full md:w-1/2 space-y-[40vh] pt-[10vh] pb-[30vh]">
+        <div className="w-full md:w-1/2 space-y-12 pb-4 md:space-y-[40vh] md:pt-[10vh] md:pb-[30vh]">
           {steps.map((step, i) => (
             <MouseGlow key={i} className="step-card card-raised p-10 border-l-4 shadow-2xl bg-surface" style={{ borderLeftColor: step.color }}>
               <div className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: step.color }}>Phase 0{i+1}</div>
