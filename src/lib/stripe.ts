@@ -1,5 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
+import { SITE_URL } from "@/lib/site";
 
 // $12.99/month recurring price, created in the Stripe dashboard and referenced by ID.
 export const PRICE_ID = process.env.STRIPE_PRICE_ID || "";
@@ -32,6 +33,6 @@ export function appBaseUrl(): string {
     process.env.AUTH_URL ||
     process.env.NEXTAUTH_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
-    "http://localhost:3000"
+    (process.env.VERCEL ? SITE_URL : "http://localhost:3000")
   ).replace(/\/$/, "");
 }

@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "CapStack — Climb the whole capital stack",
   description:
     "The high-finance learning platform. Commercial real estate and the broader world of high finance — institutional-grade content, gamified. Wall Street meets Duolingo.",
