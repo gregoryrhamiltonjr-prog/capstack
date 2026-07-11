@@ -35,7 +35,7 @@ const NAV_LINKS = [
 export default async function Landing() {
   const currentUser = await getCurrentUser();
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh overflow-x-clip">
       <ScrollReset />
       <Preloader />
       <ScrollProgress />
