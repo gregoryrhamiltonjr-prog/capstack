@@ -134,22 +134,6 @@ body {
 }
 .char-mask > span {
   display: inline-block;
-  /* Reveal is pure CSS so it can't be stranded by a JS/GSAP revert.
-     Resting state is translateY(0) (visible); per-char delay set inline. */
-  animation: hero-char-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes hero-char-rise {
-  from {
-    transform: translateY(110%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .char-mask > span {
-    animation: none;
-  }
 }
 @keyframes scroll-cue {
   0% {

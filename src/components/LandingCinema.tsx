@@ -172,12 +172,12 @@ const TOWER = [
 const LINE_1 = "CLIMB THE WHOLE";
 const LINE_2 = "CAPITAL STACK.";
 
-function KineticLine({ text, className = "", glow = false, offset = 0 }: { text: string; className?: string; glow?: boolean; offset?: number }) {
+function KineticLine({ text, className = "", glow = false }: { text: string; className?: string; glow?: boolean }) {
   return (
     <span className={`block whitespace-nowrap ${className}`}>
       {text.split("").map((ch, i) => (
         <span key={i} className="char-mask">
-          <span className={`hero-char ${glow ? "text-glow-brand" : ""}`} style={{ animationDelay: `${0.2 + (offset + i) * 0.028}s` }}>{ch === " " ? " " : ch}</span>
+          <span className={`hero-char ${glow ? "text-glow-brand" : ""}`}>{ch === " " ? " " : ch}</span>
         </span>
       ))}
     </span>
@@ -278,7 +278,7 @@ export function CinematicHero() {
           {/* Viewport-filling kinetic headline */}
           <h1 className="hero-headline font-black leading-[0.98] tracking-tight text-white" style={{ fontSize: "clamp(2.6rem, 8.2vw, 8.5rem)" }}>
             <KineticLine text={LINE_1} />
-            <KineticLine text={LINE_2} glow offset={LINE_1.length} />
+            <KineticLine text={LINE_2} glow />
           </h1>
 
           <p className="hero-sub mx-auto mt-7 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg">
