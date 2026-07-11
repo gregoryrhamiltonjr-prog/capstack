@@ -660,7 +660,7 @@ export const CRE_TRACKS: SeedTrack[] = [
               }
             ],
             quiz: [
-              mc("What does 'Pre-Review' mean in DUS?", ["Fannie reviews all loans", "Fannie must approve loans outside Guide parameters before commitment", "The borrower reviews the loan", "Lender's credit committee"], 1, "Loans outside delegated authority require Fannie's pre-review.", ["It involves Fannie looking at exceptions.", "Fannie must approve loans outside Guide parameters."]),
+              mc("What does 'Pre-Review' mean in DUS?", ["Fannie reviews all loans", "Fannie must approve loans outside Guide parameters before commitment", "The borrower reviews the loan", "Lender's credit committee"], 1, "Loans outside delegated authority require Fannie's pre-review.", ["It involves Fannie looking at exceptions.", "Fannie must approve loans outside Guide parameters.", "Fannie must approve loans outside Guide parameters."]),
             ],
             glossary: [
               { term: "DUS Guide", definition: "Fannie Mae's multifamily rulebook." },
@@ -696,7 +696,7 @@ export const CRE_TRACKS: SeedTrack[] = [
               }
             ],
             quiz: [
-              mc("What is the typical Net Worth requirement for a Key Principal?", ["10% of loan amount", "Equal to the loan amount", "Twice the loan amount", "$1M minimum"], 1, "Typically, Net Worth must equal the loan amount.", ["It matches the loan size.", "Equal to the loan amount."]),
+              mc("What is the typical Net Worth requirement for a Key Principal?", ["10% of loan amount", "Equal to the loan amount", "Twice the loan amount", "$1M minimum"], 1, "Typically, Net Worth must equal the loan amount.", ["It matches the loan size.", "Equal to the loan amount.", "Equal to the loan amount."]),
             ],
             glossary: [
               { term: "Key Principal", definition: "The individual or entity that controls the borrower and must meet net worth/liquidity tests." },
@@ -716,7 +716,7 @@ export const CRE_TRACKS: SeedTrack[] = [
               }
             ],
             quiz: [
-              mc("When a DUS loan is closed, how is it typically funded?", ["Lender keeps it on balance sheet", "It is packaged into an MBS guaranteed by Fannie Mae", "Sold to a local bank", "Syndicated to private equity"], 1, "DUS loans are mostly securitized into Fannie Mae MBS.", ["Think Mortgage-Backed Securities.", "MBS guaranteed by Fannie Mae."]),
+              mc("When a DUS loan is closed, how is it typically funded?", ["Lender keeps it on balance sheet", "It is packaged into an MBS guaranteed by Fannie Mae", "Sold to a local bank", "Syndicated to private equity"], 1, "DUS loans are mostly securitized into Fannie Mae MBS.", ["Think Mortgage-Backed Securities.", "MBS guaranteed by Fannie Mae.", "MBS guaranteed by Fannie Mae."]),
             ],
             glossary: [
               { term: "MBS", definition: "Mortgage-Backed Security; the vehicle used to fund DUS loans." },
@@ -872,8 +872,8 @@ export const CRE_TRACKS: SeedTrack[] = [
               }
             ],
             quiz: [
-              mc("What does the Green Rewards program require from borrowers?", ["Painting the building green", "Committing to property improvements that reduce energy/water consumption", "Planting a garden", "Switching to solar only"], 1, "Green Rewards is tied to measurable energy and water consumption reductions.", ["It's about utility savings.", "Energy and water consumption."]),
-              mc("A Supplemental Loan is essentially:", ["A bridge loan", "A second mortgage sitting behind the senior Fannie loan", "An unsecured personal loan", "A construction loan"], 1, "It's subordinate debt provided by the same lender to tap equity.", ["It sits behind the first mortgage.", "A second mortgage."]),
+              mc("What does the Green Rewards program require from borrowers?", ["Painting the building green", "Committing to property improvements that reduce energy/water consumption", "Planting a garden", "Switching to solar only"], 1, "Green Rewards is tied to measurable energy and water consumption reductions.", ["It's about utility savings.", "Energy and water consumption.", "Energy and water consumption."]),
+              mc("A Supplemental Loan is essentially:", ["A bridge loan", "A second mortgage sitting behind the senior Fannie loan", "An unsecured personal loan", "A construction loan"], 1, "It's subordinate debt provided by the same lender to tap equity.", ["It sits behind the first mortgage.", "A second mortgage.", "A second mortgage."]),
             ],
             glossary: [
               { term: "Green Rewards", definition: "A Fannie Mae program offering pricing benefits for energy and water consumption reductions." },
