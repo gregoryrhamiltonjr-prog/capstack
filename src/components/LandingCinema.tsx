@@ -172,12 +172,12 @@ const TOWER = [
 const LINE_1 = "CLIMB THE WHOLE";
 const LINE_2 = "CAPITAL STACK.";
 
-function KineticLine({ text, className = "", glow = false }: { text: string; className?: string; glow?: boolean }) {
+function KineticLine({ text, className = "", glow = false, offset = 0 }: { text: string; className?: string; glow?: boolean; offset?: number }) {
   return (
     <span className={`block whitespace-nowrap ${className}`}>
       {text.split("").map((ch, i) => (
         <span key={i} className="char-mask">
-          <span className={`hero-char ${glow ? "text-glow-brand" : ""}`}>{ch === " " ? " " : ch}</span>
+          <span className={`hero-char ${glow ? "text-glow-brand" : ""}`} style={{ animationDelay: `${0.2 + (offset + i) * 0.028}s` }}>{ch === " " ? " " : ch}</span>
         </span>
       ))}
     </span>
@@ -193,23 +193,15 @@ export function CinematicHero() {
     if (!wrap || !scene) return;
 
     if (prefersReduced()) {
-      gsap.set(".hero-char", { y: 0, yPercent: 0 });
       gsap.set(".tower-label", { opacity: 1, x: 0 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // — Entrance: chars rise out of their masks, tower floats in —
-      // Animate FROM the hidden state so the resting (and reverted / no-JS)
-      // state is visible — the headline can never get stranded off-screen.
+      // — Entrance: chars rise via CSS (see .char-mask > span); tower floats in —
+      // The headline reveal is intentionally CSS-only so a GSAP context revert
+      // can never strand the letters off-screen.
       const introDelay = 0.2;
-      gsap.from(".hero-char", {
-        yPercent: 110,
-        duration: 0.9,
-        ease: "power4.out",
-        stagger: 0.028,
-        delay: introDelay,
-      });
       gsap.from(".hero-tower", { opacity: 0, y: 120, duration: 1.2, ease: "power3.out", delay: introDelay + 0.3 });
       gsap.from(".hero-sub, .hero-cta", { opacity: 0, y: 24, duration: 0.8, stagger: 0.12, delay: introDelay + 0.5 });
 
@@ -286,7 +278,7 @@ export function CinematicHero() {
           {/* Viewport-filling kinetic headline */}
           <h1 className="hero-headline font-black leading-[0.98] tracking-tight text-white" style={{ fontSize: "clamp(2.6rem, 8.2vw, 8.5rem)" }}>
             <KineticLine text={LINE_1} />
-            <KineticLine text={LINE_2} glow />
+            <KineticLine text={LINE_2} glow offset={LINE_1.length} />
           </h1>
 
           <p className="hero-sub mx-auto mt-7 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg">
