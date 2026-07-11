@@ -19,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const daysLeft = trialing ? trialDaysLeft(user) : null;
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-[1400px]">
+    <div className="mx-auto min-h-dvh max-w-[1400px] lg:flex">
       <WelcomeConfetti />
       <AppNav xp={user.xp} streak={user.currentStreak} name={user.displayName} avatarColor={user.avatarColor} avatarUrl={user.avatarUrl} />
       <main className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8 lg:pt-8">
