@@ -200,11 +200,11 @@ export function CinematicHero() {
 
     const ctx = gsap.context(() => {
       // — Entrance: chars rise out of their masks, tower floats in —
+      // Animate FROM the hidden state so the resting (and reverted / no-JS)
+      // state is visible — the headline can never get stranded off-screen.
       const introDelay = 0.2;
-      // y:0 clears the CSS translateY(110%) that GSAP parses into px; yPercent drives the reveal
-      gsap.set(".hero-char", { y: 0, yPercent: 110 });
-      gsap.to(".hero-char", {
-        yPercent: 0,
+      gsap.from(".hero-char", {
+        yPercent: 110,
         duration: 0.9,
         ease: "power4.out",
         stagger: 0.028,

@@ -134,7 +134,6 @@ body {
 }
 .char-mask > span {
   display: inline-block;
-  transform: translateY(110%);
 }
 @keyframes scroll-cue {
   0% {
