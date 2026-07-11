@@ -306,6 +306,19 @@ export async function submitQuizResult(input: {
   results: { questionId: string; correct: boolean; hintTier: number }[];
 }) {
   const uid = await requireUserId();
+
+  if (input.servedIds.length > 0) {
+    const validQuestions = await db.quizQuestion.count({
+      where: {
+        id: { in: input.servedIds },
+        chapterId: input.chapterId,
+      },
+    });
+    if (validQuestions !== input.servedIds.length) {
+      throw new Error("Invalid question IDs submitted for this chapter.");
+    }
+  }
+
   const total = input.servedIds.length || 1;
   const correct = input.results.filter((r) => r.correct).length;
   const scorePct = Math.round((correct / total) * 100);

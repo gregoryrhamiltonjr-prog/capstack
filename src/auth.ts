@@ -72,19 +72,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, trigger, session }) {
       if (user?.id) {
         token.uid = user.id;
+        const dbUser = await db.user.findUnique({ where: { id: user.id } });
+        if (dbUser) {
+          token.displayName = dbUser.displayName;
+          token.avatarUrl = dbUser.avatarUrl;
+          token.isAdmin = dbUser.isAdmin;
+          token.careerStage = dbUser.careerStage;
+        }
       }
       // Keep token.uid stable across requests
       if (!token.uid && token.sub) {
         token.uid = token.sub;
       }
       if (trigger === "update" && session) {
-        // no-op placeholder for client session updates
+        if (session.displayName !== undefined) token.displayName = session.displayName;
+        if (session.avatarUrl !== undefined) token.avatarUrl = session.avatarUrl;
+        if (session.careerStage !== undefined) token.careerStage = session.careerStage;
+        if (session.name !== undefined) token.name = session.name;
+        if (session.image !== undefined) token.image = session.image;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.uid) {
-        (session.user as { id?: string }).id = String(token.uid);
+        session.user.id = String(token.uid);
+        session.user.displayName = token.displayName;
+        session.user.avatarUrl = token.avatarUrl;
+        session.user.isAdmin = token.isAdmin;
+        session.user.careerStage = token.careerStage;
       }
       return session;
     },

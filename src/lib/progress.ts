@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { db } from "./db";
 import { parseJSON } from "./util";
 
@@ -46,24 +47,32 @@ export type TrackState = {
   modules: ModuleState[];
 };
 
-export async function getCourseState(userId: string, freeRoam: boolean): Promise<TrackState[]> {
-  const tracks = await db.track.findMany({
-    orderBy: { orderIndex: "asc" },
-    include: {
-      modules: {
-        orderBy: { orderIndex: "asc" },
-        include: {
-          chapters: {
-            orderBy: { orderIndex: "asc" },
-            include: {
-              _count: { select: { lessons: true, questions: true } },
-              lessons: { orderBy: { orderIndex: "asc" }, select: { id: true, title: true, orderIndex: true } },
+const getCachedCurriculum = unstable_cache(
+  async () => {
+    return await db.track.findMany({
+      orderBy: { orderIndex: "asc" },
+      include: {
+        modules: {
+          orderBy: { orderIndex: "asc" },
+          include: {
+            chapters: {
+              orderBy: { orderIndex: "asc" },
+              include: {
+                _count: { select: { lessons: true, questions: true } },
+                lessons: { orderBy: { orderIndex: "asc" }, select: { id: true, title: true, orderIndex: true } },
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  },
+  ["curriculum"],
+  { tags: ["curriculum"], revalidate: 3600 }
+);
+
+export async function getCourseState(userId: string, freeRoam: boolean): Promise<TrackState[]> {
+  const tracks = await getCachedCurriculum();
 
   const chapProg = await db.chapterProgress.findMany({ where: { userId } });
   const progByChap = new Map(chapProg.map((c) => [c.chapterId, c]));

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { db as prisma } from "@/lib/db";
+import { auth } from "@/auth";
 
 export async function GET() {
+  const session = await auth();
+  if (!session?.user?.isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await prisma.chapter.updateMany({
       where: {

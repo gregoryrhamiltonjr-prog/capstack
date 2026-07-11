@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { db as prisma } from "@/lib/db";
 import { ALL_TRACKS } from "@/content";
+import { auth } from "@/auth";
 
 export async function GET() {
+  const session = await auth();
+  if (!session?.user?.isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     let trackOrder = 0;
     for (const t of ALL_TRACKS) {
