@@ -592,7 +592,7 @@ export const CRE_TRACKS: SeedTrack[] = [
         title: "The Fannie Mae DUS Program",
         description:
           "Delegation and risk-sharing — the core idea that makes DUS work and shapes lender credit culture.",
-        estHours: "3h",
+        estHours: "5h",
         difficultyTier: "Advanced 300",
         adaptive: true,
         chapters: [
@@ -625,40 +625,103 @@ export const CRE_TRACKS: SeedTrack[] = [
                   desk("This is why a DUS asset manager cares about every watchlist name. A single bad loan can carry a seven-figure hit to *your firm's* P&L, not a faceless agency's. When you write a consent memo or push a borrower for financials, you're protecting your own shop's first-loss layer."),
                 ],
               },
-              {
-                title: "The Guide, and what a DUS license requires",
-                readMinutes: 6,
-                blocks: [
-                  p("The **DUS Guide** is the rulebook — thousands of pages defining eligible collateral, underwriting standards (economic vacancy floors, minimum replacement reserves, management-fee minimums), pricing tiers, and the **delegation matrix** of what a lender can decide alone vs. what needs Fannie's consent. 'Inside the Guide' means delegated; outside it means a **pre-review** or a **waiver** request to Fannie."),
-                  p("Holding a DUS license is expensive and exclusive. Lenders must meet **net-worth, liquidity, and operational requirements**, maintain a **loss-sharing reserve** (posting collateral against their retained risk), and pass Fannie's ongoing servicer and quality reviews. That capital barrier is why only ~25 firms hold DUS licenses — and why the ones that do guard their Fannie relationship carefully."),
-                  crosslink("T3.M6.2", "What asset management does — the job this all feeds"),
-                  stage({
-                    student: "For interviews: know that DUS lenders are a small club (~25 firms) held to net-worth and loss-reserve requirements — it's a privileged license, not an open market.",
-                    analyst: "You'll hear 'is it delegated?' constantly. If the answer is no, your request routes to Fannie for pre-review — a slower path you need to flag early.",
-                    associate: "You judge whether a fact pattern is truly inside the Guide or needs a waiver. Getting that call wrong risks a repurchase demand against your shop.",
-                    vp_plus: "The loss-reserve posting and net-worth tests are balance-sheet costs you manage. Loss-share economics directly shape how much risk appetite the desk carries.",
-                  }, "By stage"),
-                ],
-              },
             ],
             quiz: [
               mc("What does DUS stand for?", ["Direct Underwriting Standards", "Delegated Underwriting and Servicing", "Diversified Unit Securitization", "Default Under Servicing"], 1, "DUS = Delegated Underwriting and Servicing — Fannie Mae's flagship multifamily program.", ["The first word is the whole point of the program.", "It's about delegation and servicing.", "Delegated Underwriting and Servicing."]),
-              mc("The defining feature of DUS 'delegation' is that the lender can:", ["Set its own interest rates freely", "Underwrite, close, and deliver loans without Fannie's prior approval, inside the Guide", "Avoid all losses", "Ignore the DUS Guide"], 1, "Delegation means originating inside the Guide without prior Fannie approval — the speed advantage over Freddie's prior-approval model.", ["What can a DUS lender do that a Freddie lender can't?", "It's about acting without prior approval.", "Underwrite and close without pre-approval."]),
               mc("Why does the DUS loss-sharing model make lenders underwrite carefully?", ["Fannie audits every loan before closing", "The lender retains a share of any loss — it eats its own cooking", "Loans are recourse to the borrower", "It has no effect on behavior"], 1, "Retained loss exposure aligns the lender with Fannie: bad underwriting hits the lender's own P&L.", ["What does the lender keep on every loan?", "Skin in the game changes behavior.", "It retains loss exposure."]),
-              numeric("A $20,000,000 DUS loan liquidates with a $1,000,000 total loss. The first-loss layer is 5% of UPB, borne 100% by the lender. How large is that first-loss layer? (dollars)", 1000000, 10000, "5% × $20,000,000 = $1,000,000. The entire loss here falls within the lender's first-loss layer.", ["First-loss layer = 5% × original UPB.", "0.05 × 20,000,000.", "$1,000,000 — the whole loss sits in the first-loss band."], { prefix: "$" }),
-              mc("Under standard tiered loss sharing, the lender's total exposure is capped at roughly:", ["5% of UPB", "One-third of loss economics / ~20% of UPB", "100% of UPB", "Zero"], 1, "Standard tiered sharing caps the lender near one-third of loss economics, about 20% of original UPB.", ["It's a fraction, not the whole loan.", "Around one-third of losses / ~20% of UPB.", "~20% of UPB max."]),
-              mc("Pari passu loss sharing typically splits losses:", ["100% lender", "One-third lender / two-thirds Fannie, from the first dollar", "100% Fannie", "50/50 above a 10% threshold"], 1, "Pari passu shares proportionally from dollar one — commonly 1/3 lender, 2/3 Fannie.", ["'Pari passu' means proportional from the start.", "Roughly 1/3 to the lender.", "1/3 lender, 2/3 Fannie."]),
-              scenario("A borrower request is clearly outside the DUS Guide's delegated parameters.", "You're an analyst and the borrower wants a modification the Guide doesn't permit you to approve on a delegated basis.", ["Approve it yourself under delegation", "Route it to Fannie Mae for pre-review / waiver, since it falls outside delegated authority", "Deny it without analysis", "Ignore the Guide"], 1, "Outside the Guide means it's not delegated — it must go to Fannie for pre-review or a waiver, a slower path you flag early.", ["Delegation only covers what's inside the Guide.", "Outside the box = Fannie must weigh in.", "Escalate to Fannie for pre-review."]),
             ],
             glossary: [
               { term: "DUS", definition: "Delegated Underwriting and Servicing — Fannie Mae's flagship delegated multifamily lending program." },
               { term: "Loss sharing", definition: "The DUS feature by which the originating lender retains a share of any loss on its loans." },
-              { term: "First-loss position", definition: "The initial layer of loss (≈5% of UPB) borne entirely by the DUS lender under tiered sharing." },
-              { term: "Pari passu loss sharing", definition: "Proportional loss sharing from the first dollar, commonly 1/3 lender and 2/3 Fannie." },
-              { term: "DUS Guide", definition: "Fannie Mae's multifamily rulebook defining eligibility, underwriting, pricing, and the delegation matrix." },
-              { term: "UPB", definition: "Unpaid principal balance — the outstanding loan amount losses are measured against." },
             ],
           },
+          {
+            code: "T3.M2.2",
+            title: "Part II - Origination & The Guide",
+            objective: "Navigate the DUS Guide and understand Pre-Review vs. Delegated Authority.",
+            lessons: [
+              {
+                title: "Navigating the DUS Guide",
+                readMinutes: 5,
+                blocks: [
+                  p("The **DUS Guide** is the rulebook. It contains thousands of pages defining eligible collateral, underwriting standards, pricing tiers, and the **delegation matrix**. Parts I through VI cover the entire lifecycle:\n- Part I: General Requirements\n- Part II: Mortgage Loan Origination\n- Part III: Underwriting\n- Part IV: Document Delivery\n- Part V: Servicing and Asset Management\n- Part VI: Advanced/Special Products"),
+                ],
+              },
+              {
+                title: "Pre-Review vs. Delegated Authority",
+                readMinutes: 6,
+                blocks: [
+                  p("'Inside the Guide' means delegated; outside it means a **pre-review** or a **waiver** request to Fannie. If a lender wants to originate a loan that violates standard Guide parameters (like a lower DSCR or non-standard property type), they must escalate to Fannie for a pre-review before commitment."),
+                  stage({
+                    student: "Interview tip: Knowing the difference between pre-review and delegated shows you understand the operational leverage lenders have.",
+                    analyst: "You'll hear 'is it delegated?' constantly. Flag early if it's not.",
+                  }, "By stage"),
+                ],
+              }
+            ],
+            quiz: [
+              mc("What does 'Pre-Review' mean in DUS?", ["Fannie reviews all loans", "Fannie must approve loans outside Guide parameters before commitment", "The borrower reviews the loan", "Lender's credit committee"], 1, "Loans outside delegated authority require Fannie's pre-review.", ["It involves Fannie looking at exceptions.", "Fannie must approve loans outside Guide parameters."]),
+            ],
+            glossary: [
+              { term: "DUS Guide", definition: "Fannie Mae's multifamily rulebook." },
+              { term: "Pre-Review", definition: "A required review by Fannie Mae for loans outside delegated authority." },
+            ]
+          },
+          {
+            code: "T3.M2.3",
+            title: "Part III - Underwriting Standards",
+            objective: "Master property eligibility, sponsor requirements, and third-party reports.",
+            lessons: [
+              {
+                title: "Property Eligibility and Market Analysis",
+                readMinutes: 5,
+                blocks: [
+                  p("Underwriting begins with the asset. Properties must meet baseline physical and market criteria. Fannie Mae requires a strong market analysis verifying the demand for the property type, the resilience of the submarket, and achievable rents."),
+                ],
+              },
+              {
+                title: "Sponsor and Key Principal Requirements",
+                readMinutes: 7,
+                blocks: [
+                  p("Sponsors must have sufficient **Net Worth and Liquidity**. Fannie typically requires a net worth equal to or greater than the loan amount, and liquid assets of at least 10% of the loan amount. Key Principals are also scrutinized for their track record in multifamily operations."),
+                  worked("Worked example — Sponsor Liquidity", "A $20M loan requires the Key Principals to collectively hold at least $2M in verifiable liquid assets and $20M in net worth. If the sponsor only has $1.5M liquid, this triggers a waiver or requires an additional guarantor."),
+                ],
+              },
+              {
+                title: "Third-Party Reports",
+                readMinutes: 6,
+                blocks: [
+                  p("Underwriters rely on three major third-party reports:\n- **Appraisal:** Determines value and market rent.\n- **Property Condition Assessment (PCA):** Identifies deferred maintenance and sizes the Replacement Reserve.\n- **Phase I Environmental Site Assessment (ESA):** Checks for environmental hazards."),
+                ],
+              }
+            ],
+            quiz: [
+              mc("What is the typical Net Worth requirement for a Key Principal?", ["10% of loan amount", "Equal to the loan amount", "Twice the loan amount", "$1M minimum"], 1, "Typically, Net Worth must equal the loan amount.", ["It matches the loan size.", "Equal to the loan amount."]),
+            ],
+            glossary: [
+              { term: "Key Principal", definition: "The individual or entity that controls the borrower and must meet net worth/liquidity tests." },
+            ]
+          },
+          {
+            code: "T3.M2.4",
+            title: "Part IV - Commitment & Delivery",
+            objective: "Understand the rate lock and MBS issuance process.",
+            lessons: [
+              {
+                title: "Rate Lock and MBS Issuance",
+                readMinutes: 6,
+                blocks: [
+                  p("Once a loan is underwritten, the lender issues a **Commitment** to Fannie. At this point, the interest rate is locked, and the loan is packaged into a **Mortgage-Backed Security (MBS)**. Fannie Mae guarantees the timely payment of principal and interest to the MBS investors, while the lender services the loan and retains loss-sharing risk."),
+                ],
+              }
+            ],
+            quiz: [
+              mc("When a DUS loan is closed, how is it typically funded?", ["Lender keeps it on balance sheet", "It is packaged into an MBS guaranteed by Fannie Mae", "Sold to a local bank", "Syndicated to private equity"], 1, "DUS loans are mostly securitized into Fannie Mae MBS.", ["Think Mortgage-Backed Securities.", "MBS guaranteed by Fannie Mae."]),
+            ],
+            glossary: [
+              { term: "MBS", definition: "Mortgage-Backed Security; the vehicle used to fund DUS loans." },
+            ]
+          }
         ],
       },
       {
@@ -666,7 +729,7 @@ export const CRE_TRACKS: SeedTrack[] = [
         title: "Servicing vs. Asset Management: The Machine",
         description:
           "Get the org chart right. What servicing does, and what the asset manager — the user's job — actually owns under DUS loss-sharing.",
-        estHours: "3h",
+        estHours: "4h",
         difficultyTier: "Practitioner 400",
         adaptive: true,
         prereqModuleCodes: ["T3.M2"],
@@ -691,60 +754,134 @@ export const CRE_TRACKS: SeedTrack[] = [
                   crosslink("T3.M2.1", "The loss-share economics that make this job matter"),
                 ],
               },
-              {
-                title: "Surveillance vs. transaction management",
-                readMinutes: 7,
-                blocks: [
-                  p("The AM desk splits into two modes:\n\n- **Portfolio surveillance:** the proactive watch. Collecting and analyzing annual/quarterly financials, ordering and reviewing inspections, maintaining the watchlist, and delivering required certifications to Fannie. This is the routine heartbeat.\n- **Transaction (request) management:** the reactive queue. Borrowers constantly ask for things — ownership transfers, supplemental loans, partial releases, management-company changes, reserve waivers, easements. Each request is a mini-underwrite that ends in a memo: approve, decline, or restructure."),
-                  p("A good AM keeps surveillance from becoming firefighting. If you're only reacting to defaults, you've already lost; the value of the role is catching the slow leak — a missing financial, a lapsed insurance policy, a slipping occupancy — before it becomes a watchlist name."),
-                  crosslink("T3.M7.3", "Building the consent memo — the AM's core deliverable"),
-                ],
-              },
-              {
-                title: "The annual cycle and the delegation matrix",
-                readMinutes: 8,
-                blocks: [
-                  p("The surveillance year has a rhythm:\n\n1. **Financials.** Collect borrower operating statements and rent rolls (annually, sometimes quarterly), then **normalize** them into a standard analysis (the OSAR — Operating Statement Analysis Report) and compute a surveillance DSCR against underwriting.\n2. **Inspections.** Order property inspections on a frequency set by loan risk; review ratings; track deferred-maintenance and life-safety findings to cure.\n3. **Watchlist.** Apply CREFC/FHFA-aligned criteria (DSCR thresholds, occupancy drops, maturity within 12 months, deferred maintenance) to flag troubled loans and write action plans.\n4. **Certifications.** Deliver required surveillance certifications and reporting to Fannie on schedule."),
-                  p("Cutting through all of it is the **delegation matrix** — the map of what a DUS lender's AM can decide alone vs. what requires **Fannie Mae's consent.** Roughly:\n\n- **Delegated (AM decides):** routine reserve draws, minor lease approvals, many insurance matters, standard financial-statement analysis.\n- **Requires Fannie consent:** most **ownership transfers/assumptions**, most **partial releases** of collateral, **loan-document modifications**, and anything outside the Guide.\n\nKnowing which side of that line a request falls on — before you promise a borrower a timeline — is the single most practical skill on the desk."),
-                  desk("Leadership tracks a handful of portfolio metrics religiously: **delinquency rate, watchlist percentage, past-due financials percentage, and inspection-completion rate.** These roll up to how much loss-share risk the shop is carrying. When your VP asks 'where are we on past-due financials?', they're really asking 'how blind are we to deterioration right now?'"),
-                  stage({
-                    student: "Interview framing: the AM protects the lender's retained risk between closing and payoff through surveillance and by adjudicating borrower requests inside a delegation matrix.",
-                    analyst: "Your calendar IS the annual cycle. Master the OSAR normalization and the inspection-review workflow first — they're 80% of the volume.",
-                    associate: "Own the delegation call. Mis-classifying a consent item as delegated can create a document defect and a repurchase risk.",
-                    vp_plus: "You manage the portfolio metrics and the Fannie relationship. Watchlist % and delinquency are your loss-share early-warning dashboard.",
-                  }, "By stage"),
-                ],
-              },
             ],
             quiz: [
               mc("The core difference between servicing and asset management is:", ["They are the same job", "Servicing administers the loan's plumbing; asset management owns post-closing credit risk", "Asset management collects the payments", "Servicing decides borrower requests"], 1, "Servicing is administrative (billing, escrows, remittance); asset management is the risk function that surveils performance and adjudicates requests.", ["One is administrative, one is risk.", "Which one watches for credit deterioration?", "AM = risk owner; servicing = plumbing."]),
-              mc("Under DUS, why does the asset manager's role exist at all?", ["Fannie requires busywork", "The lender retains loss exposure, so someone must watch each loan post-closing", "To collect late fees", "To originate new loans"], 1, "Because the DUS lender keeps a first-loss position, the AM surveils loans between closing and payoff to protect that retained risk.", ["Tie it back to loss-sharing.", "The lender has skin in the game to protect.", "It owns retained credit risk."]),
-              ordering("Order the surveillance annual cycle.", ["Collect borrower financials & rent rolls", "Normalize into an OSAR and compute surveillance DSCR", "Order and review property inspections", "Apply watchlist criteria and write action plans", "Deliver certifications to Fannie"], "Collect → normalize/analyze → inspect → watchlist → certify. Surveillance flows from raw data to Fannie reporting.", ["You can't analyze what you haven't collected.", "Normalization comes right after collection.", "Certifications to Fannie come last."]),
-              mc("Which typically REQUIRES Fannie Mae's consent rather than being delegated to the AM?", ["A routine replacement-reserve draw", "A minor commercial lease approval", "An ownership transfer/assumption", "Standard financial-statement analysis"], 2, "Transfers/assumptions, partial releases, and document modifications generally need Fannie consent; routine surveillance and minor items are delegated.", ["Which item changes *who owns* the collateral?", "Transfers reach beyond delegated authority.", "Ownership transfers need Fannie consent."]),
-              mc("An 'OSAR' is:", ["A type of loan", "The normalized Operating Statement Analysis Report the AM builds from borrower financials", "A Fannie interest rate", "An inspection score"], 1, "The OSAR is the standardized normalization of a borrower's operating statement used to compute surveillance DSCR.", ["It comes from analyzing borrower financials.", "It's a normalized operating statement report.", "Operating Statement Analysis Report."]),
-              mc("Which portfolio metric is a direct early-warning gauge of how 'blind' a shop is to deterioration?", ["Origination volume", "Past-due (delinquent) financials percentage", "Number of employees", "Marketing spend"], 1, "A high past-due-financials percentage means the AM lacks current performance data — blindness to deterioration and rising loss-share risk.", ["Which metric measures missing information?", "It's about financials you haven't received.", "Past-due financials %."]),
-              scenario("A borrower asks how fast you can approve a change of ownership.", "You're the asset manager. The borrower is selling the property to a new sponsor and needs the loan assumed. They want a two-week turnaround.", ["Promise two weeks — it's delegated", "Explain that transfers/assumptions generally require Fannie consent, so the timeline runs through a Fannie review, not just your desk", "Decline automatically", "Tell them it's the servicer's job"], 1, "Assumptions typically need Fannie consent; the honest answer sets expectations around the Fannie review path rather than promising a delegated turnaround.", ["Is a transfer delegated or a consent item?", "Fannie has to weigh in on ownership changes.", "Set the timeline around Fannie's review."]),
             ],
             glossary: [
               { term: "Asset management (lender-side)", definition: "The post-closing risk function that surveils loan performance and adjudicates borrower requests to protect the lender's retained loss exposure." },
-              { term: "Servicing", definition: "The administrative function: billing, collection, escrow analysis, UCC filings, and investor remittance." },
-              { term: "Portfolio surveillance", definition: "Proactive monitoring — financials, inspections, watchlist, and certifications." },
-              { term: "Delegation matrix", definition: "The map of decisions a DUS lender can make alone vs. those requiring Fannie Mae consent." },
-              { term: "OSAR", definition: "Operating Statement Analysis Report — the normalized borrower financial used to compute surveillance DSCR." },
             ],
           },
+          {
+            code: "T3.M6.3",
+            title: "Part V - Asset Management (The Delegation Matrix)",
+            objective: "Apply the Delegation Matrix to real-world asset management scenarios.",
+            lessons: [
+              {
+                title: "The Delegation Matrix in Practice",
+                readMinutes: 8,
+                blocks: [
+                  p("Cutting through all of it is the **delegation matrix** — the map of what a DUS lender's AM can decide alone vs. what requires **Fannie Mae's consent.** Roughly:\n\n- **Delegated (AM decides):** routine reserve draws, minor lease approvals, many insurance matters, standard financial-statement analysis.\n- **Requires Fannie consent:** most **ownership transfers/assumptions**, most **partial releases** of collateral, **loan-document modifications**, and anything outside the Guide.\n\nKnowing which side of that line a request falls on — before you promise a borrower a timeline — is the single most practical skill on the desk."),
+                  desk("Leadership tracks a handful of portfolio metrics religiously: **delinquency rate, watchlist percentage, past-due financials percentage, and inspection-completion rate.** These roll up to how much loss-share risk the shop is carrying."),
+                ],
+              },
+              {
+                title: "Ownership Transfers and Assumptions",
+                readMinutes: 7,
+                blocks: [
+                  p("When a sponsor wants to sell a property that has a Fannie loan, the buyer can **assume** the loan. Because this changes the Key Principal, this is almost always a **non-delegated** action requiring Fannie Mae's explicit consent. The AM must underwrite the new sponsor's net worth, liquidity, and experience, then write a memo to Fannie recommending approval."),
+                ],
+              },
+              {
+                title: "Easements, Condemnations, and Partial Releases",
+                readMinutes: 6,
+                blocks: [
+                  p("If a city widens a road and takes 10 feet of frontage, or a borrower wants to sell an outparcel, this affects the collateral. **Partial releases** require a showing that the remaining property still meets underwriting standards, and typically require Fannie's consent."),
+                ],
+              },
+              {
+                title: "Reserve Disbursements (Replacement vs. Completion)",
+                readMinutes: 5,
+                blocks: [
+                  p("**Replacement Reserves** are funded monthly for ongoing capital needs (roofs, HVAC). AMs delegate most of these draws. **Completion Repairs** are mandatory repairs identified at closing (e.g., life-safety fixes) and are heavily monitored to ensure they are finished within 6–12 months."),
+                ],
+              }
+            ],
+            quiz: [
+              mc("Which typically REQUIRES Fannie Mae's consent rather than being delegated to the AM?", ["A routine replacement-reserve draw", "A minor commercial lease approval", "An ownership transfer/assumption", "Standard financial-statement analysis"], 2, "Transfers/assumptions, partial releases, and document modifications generally need Fannie consent; routine surveillance and minor items are delegated.", ["Which item changes *who owns* the collateral?", "Transfers reach beyond delegated authority.", "Ownership transfers need Fannie consent."]),
+              scenario("A borrower asks how fast you can approve a change of ownership.", "You're the asset manager. The borrower is selling the property to a new sponsor and needs the loan assumed. They want a two-week turnaround.", ["Promise two weeks — it's delegated", "Explain that transfers/assumptions generally require Fannie consent, so the timeline runs through a Fannie review, not just your desk", "Decline automatically", "Tell them it's the servicer's job"], 1, "Assumptions typically need Fannie consent; the honest answer sets expectations around the Fannie review path rather than promising a delegated turnaround.", ["Is a transfer delegated or a consent item?", "Fannie has to weigh in on ownership changes.", "Set the timeline around Fannie's review."]),
+            ],
+            glossary: [
+              { term: "Delegation matrix", definition: "The map of decisions a DUS lender can make alone vs. those requiring Fannie Mae consent." },
+              { term: "Assumption", definition: "When a new buyer takes over an existing Fannie Mae loan, requiring consent." },
+            ]
+          },
+          {
+            code: "T3.M6.4",
+            title: "Part V - Surveillance & Watchlist",
+            objective: "Master the annual surveillance cycle and watchlist criteria.",
+            lessons: [
+              {
+                title: "Annual OSARs and Inspections",
+                readMinutes: 8,
+                blocks: [
+                  p("The surveillance year has a rhythm:\n\n1. **Financials.** Collect borrower operating statements and rent rolls (annually, sometimes quarterly), then **normalize** them into a standard analysis (the OSAR — Operating Statement Analysis Report) and compute a surveillance DSCR against underwriting.\n2. **Inspections.** Order property inspections on a frequency set by loan risk; review ratings; track deferred-maintenance and life-safety findings to cure."),
+                ],
+              },
+              {
+                title: "Watchlist Criteria and Action Plans",
+                readMinutes: 6,
+                blocks: [
+                  p("Apply CREFC/FHFA-aligned criteria (DSCR thresholds, occupancy drops, maturity within 12 months, deferred maintenance) to flag troubled loans and write action plans. The watchlist is the early-warning system for the lender's loss-share risk."),
+                ],
+              }
+            ],
+            quiz: [
+              ordering("Order the surveillance annual cycle.", ["Collect borrower financials & rent rolls", "Normalize into an OSAR and compute surveillance DSCR", "Order and review property inspections", "Apply watchlist criteria and write action plans", "Deliver certifications to Fannie"], "Collect → normalize/analyze → inspect → watchlist → certify. Surveillance flows from raw data to Fannie reporting.", ["You can't analyze what you haven't collected.", "Normalization comes right after collection.", "Certifications to Fannie come last."]),
+              mc("An 'OSAR' is:", ["A type of loan", "The normalized Operating Statement Analysis Report the AM builds from borrower financials", "A Fannie interest rate", "An inspection score"], 1, "The OSAR is the standardized normalization of a borrower's operating statement used to compute surveillance DSCR.", ["It comes from analyzing borrower financials.", "It's a normalized operating statement report.", "Operating Statement Analysis Report."]),
+            ],
+            glossary: [
+              { term: "OSAR", definition: "Operating Statement Analysis Report — the normalized borrower financial used to compute surveillance DSCR." },
+            ]
+          }
         ],
       },
       {
         code: "T3.M10",
-        title: "Prepayment, Payoff, and Exit",
-        description: "Why prepayment protection exists and how to compute what it costs — yield maintenance and defeasance.",
-        estHours: "2.5h",
+        title: "Special Products, Prepayment, and Exit",
+        description: "Green financing, affordable housing, supplemental loans, and how prepayment protection works.",
+        estHours: "4.5h",
         difficultyTier: "Advanced 300",
         prereqModuleCodes: ["T3.M2"],
         chapters: [
           {
             code: "T3.M10.1",
+            title: "Part VI - Advanced/Special Products",
+            objective: "Understand Green Rewards, Affordable Housing, and Supplemental Loans.",
+            lessons: [
+              {
+                title: "Green Financing (Green Rewards)",
+                readMinutes: 7,
+                blocks: [
+                  p("Fannie Mae's **Green Rewards** program offers better pricing (lower interest rates) and extra loan proceeds to borrowers who commit to property improvements that reduce energy and water consumption. An energy audit (High Performance Building Module) is required, and borrowers must escrow funds to complete the green improvements post-closing."),
+                ],
+              },
+              {
+                title: "Affordable Housing",
+                readMinutes: 6,
+                blocks: [
+                  p("A major mission of Fannie Mae is supporting affordable housing. Programs like **M.TEBs** (MBS as Tax-Exempt Bond Collateral) and **LIHTC** (Low-Income Housing Tax Credit) financing allow developers of rent-restricted properties to access highly favorable debt. These loans have complex compliance requirements that asset managers must monitor."),
+                ],
+              },
+              {
+                title: "Supplemental Loans",
+                readMinutes: 5,
+                blocks: [
+                  p("A **Supplemental Loan** is a second (or third) mortgage on the same property, originated by the same lender, sitting behind the senior Fannie Mae loan. It allows borrowers to tap equity without prepaying the senior loan. The combined LTV and DSCR must still meet Fannie's strict underwriting hurdles."),
+                ],
+              }
+            ],
+            quiz: [
+              mc("What does the Green Rewards program require from borrowers?", ["Painting the building green", "Committing to property improvements that reduce energy/water consumption", "Planting a garden", "Switching to solar only"], 1, "Green Rewards is tied to measurable energy and water consumption reductions.", ["It's about utility savings.", "Energy and water consumption."]),
+              mc("A Supplemental Loan is essentially:", ["A bridge loan", "A second mortgage sitting behind the senior Fannie loan", "An unsecured personal loan", "A construction loan"], 1, "It's subordinate debt provided by the same lender to tap equity.", ["It sits behind the first mortgage.", "A second mortgage."]),
+            ],
+            glossary: [
+              { term: "Green Rewards", definition: "A Fannie Mae program offering pricing benefits for energy and water consumption reductions." },
+              { term: "Supplemental Loan", definition: "A subordinate mortgage behind an existing Fannie Mae senior loan." },
+            ]
+          },
+          {
+            code: "T3.M10.2",
             title: "Yield Maintenance and Defeasance",
             objective: "Compute a yield-maintenance prepayment premium and contrast it with defeasance.",
             lessons: [
