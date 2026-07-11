@@ -365,7 +365,8 @@ export function HorizontalCourseRail() {
     const wrap = wrapRef.current, rail = railRef.current;
     if (!wrap || !rail || prefersReduced()) return;
 
-    const ctx = gsap.context(() => {
+    let mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
       const getX = () => -(rail.scrollWidth - window.innerWidth + 96);
       gsap.to(rail, {
         x: getX,
@@ -380,8 +381,8 @@ export function HorizontalCourseRail() {
           invalidateOnRefresh: true,
         },
       });
-    }, wrap);
-    return () => ctx.revert();
+    });
+    return () => mm.revert();
   }, []);
 
   return (
