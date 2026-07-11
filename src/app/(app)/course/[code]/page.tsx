@@ -102,11 +102,11 @@ export default async function CoursePage({ params }: { params: Promise<{ code: s
                 </div>
 
                 {/* lesson-group columns (chapters), each with its lessons */}
-                <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
+                <div className="columns-1 sm:columns-2 gap-x-10 gap-y-7">
                   {mod.chapters.map((chap) => {
                     const isPassed = chap.status === "passed" || chap.status === "tested_out";
                     return (
-                      <div key={chap.id}>
+                      <div key={chap.id} className="break-inside-avoid mb-7">
                         {chap.viewable ? (
                           <Link
                             href={`/learn/${chap.code}`}

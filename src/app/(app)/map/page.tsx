@@ -66,9 +66,9 @@ export default async function MapPage() {
               </div>
             </div>
 
-            <ScrubStagger className={`ml-9 grid gap-4 md:grid-cols-2 ${!track.unlocked ? "pointer-events-none opacity-40" : ""}`}>
+            <ScrubStagger className={`ml-9 columns-1 md:columns-2 gap-4 ${!track.unlocked ? "pointer-events-none opacity-40" : ""}`}>
               {track.modules.map((mod) => (
-                <div key={mod.id} data-stagger-item className="h-full">
+                <div key={mod.id} data-stagger-item className="break-inside-avoid mb-4 h-full">
                 <Tilt3D intensity={3} className="h-full">
                 <MouseGlow
                   className={`card-raised h-full border-l-4 bg-surface p-5 ${

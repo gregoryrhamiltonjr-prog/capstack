@@ -195,32 +195,36 @@ export function Tilt3D({
 export function Magnetic({
   children,
   className = "",
-  strength = 0.22,
+  strength = 0.3,
 }: {
   children: React.ReactNode;
   className?: string;
   strength?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 150, damping: 15, mass: 0.5 });
+  const sy = useSpring(y, { stiffness: 150, damping: 15, mass: 0.5 });
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className={className}
-      style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, transition: "transform 0.15s ease-out" }}
+      style={{ x: sx, y: sy }}
       onMouseMove={(e) => {
         if (!ref.current) return;
         const r = ref.current.getBoundingClientRect();
-        setPos({
-          x: (e.clientX - r.left - r.width / 2) * strength,
-          y: (e.clientY - r.top - r.height / 2) * strength,
-        });
+        x.set((e.clientX - r.left - r.width / 2) * strength);
+        y.set((e.clientY - r.top - r.height / 2) * strength);
       }}
-      onMouseLeave={() => setPos({ x: 0, y: 0 })}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 

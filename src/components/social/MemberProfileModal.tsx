@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
 import { openDmAction, requestPartnerAction } from "@/lib/actions";
@@ -40,6 +41,9 @@ export function MemberProfileModal({
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState<PartnerButtonStatus>(partnerStatus);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     setStatus(partnerStatus);
@@ -56,8 +60,10 @@ export function MemberProfileModal({
   const partnerLabel =
     status === "pending" ? "Pending" : status === "partner" ? "Partners" : status === "incoming" ? "Respond on Social" : "Partner";
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="member-profile-title">
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="member-profile-title">
       <button type="button" className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} aria-label="Close profile" />
       <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl animate-fade-up">
         <div className="h-20 bg-gradient-to-r from-brand/25 via-info/15 to-transparent" />
@@ -187,6 +193,7 @@ export function MemberProfileModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
