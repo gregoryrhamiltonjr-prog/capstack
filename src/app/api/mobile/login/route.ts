@@ -14,7 +14,8 @@ export async function POST(request: Request) {
     }
 
     const user = await db.user.findUnique({ where: { email } });
-    if (!user || !user.passwordHash) {
+    // Private platform: only provisioned admins may authenticate (match web credentials).
+    if (!user?.passwordHash || !user.isAdmin) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
         displayName: user.displayName,
         avatarUrl: user.avatarUrl,
         xp: user.xp,
-        gems: 150, // mock gems, database doesn't seem to track gems yet
+        gems: 0,
       },
     });
   } catch (err) {

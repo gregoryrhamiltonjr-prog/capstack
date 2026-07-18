@@ -44,7 +44,7 @@ const stripe = new Stripe(key);
 const AMOUNT_CENTS = 1299; // $12.99
 const CURRENCY = "usd";
 const PRODUCT_NAME = "CapStack Membership";
-const APP_URL = (process.env.APP_URL || "https://capstack-sage.vercel.app").replace(/\/$/, "");
+const APP_URL = (process.env.APP_URL || "https://learncapstack.com").replace(/\/$/, "");
 const WEBHOOK_URL = `${APP_URL}/api/stripe/webhook`;
 const WEBHOOK_EVENTS = [
   "checkout.session.completed",

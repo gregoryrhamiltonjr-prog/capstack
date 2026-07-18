@@ -11,6 +11,8 @@ import { XP, HINT_MULT } from "./xp";
 import { todayKey, weekKey, daysBetween } from "./util";
 import { canUseFreeRoam } from "./subscription";
 import { createCheckoutUrl, createPortalUrl } from "./billing";
+import { clientIpFromHeaders, rateLimit } from "./rate-limit";
+import { headers } from "next/headers";
 
 async function requireUserId(): Promise<string> {
   const uid = await getUserId();
@@ -92,10 +94,28 @@ type WaitlistResult = { ok: boolean; message: string };
  * succeeds without creating a duplicate.
  */
 export async function joinWaitlist(_prev: WaitlistResult, formData: FormData): Promise<WaitlistResult> {
+  // Honeypot — bots fill hidden fields; real users leave this empty.
+  const honey = String(formData.get("company_website") || "").trim();
+  if (honey) {
+    return { ok: true, message: "You're on the list. We'll be in touch soon." };
+  }
+
   const email = String(formData.get("email") || "").trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
     return { ok: false, message: "Enter a valid email address." };
   }
+
+  const hdrs = await headers();
+  const ip = clientIpFromHeaders(hdrs);
+  const ipLimit = rateLimit(`waitlist:ip:${ip}`, { limit: 8, windowMs: 60 * 60 * 1000 });
+  if (!ipLimit.ok) {
+    return { ok: false, message: "Too many attempts. Please try again later." };
+  }
+  const emailLimit = rateLimit(`waitlist:email:${email}`, { limit: 3, windowMs: 60 * 60 * 1000 });
+  if (!emailLimit.ok) {
+    return { ok: false, message: "Too many attempts. Please try again later." };
+  }
+
   try {
     await db.waitlistSignup.upsert({
       where: { email },

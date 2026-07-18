@@ -130,7 +130,15 @@ async function seedCurriculum() {
 }
 
 async function seedUsers(admin: { email: string; password: string }) {
-  const pw = await bcrypt.hash("climbthestack", 10);
+  // Demo cohort passwords are for local/dev only. Never attach shared passwords in
+  // production — private-access lockdown + mobile API would otherwise be bypassable.
+  const seedDemoPasswords =
+    process.env.SEED_DEMO_PASSWORDS === "1" ||
+    (process.env.VERCEL_ENV !== "production" && process.env.NODE_ENV !== "production");
+  const pw = seedDemoPasswords ? await bcrypt.hash("climbthestack", 10) : null;
+  if (!seedDemoPasswords) {
+    console.log("Skipping demo user passwords (production-safe seed).");
+  }
   const wk = weekKey();
 
   // ── Admin account — full access, bypasses onboarding and the paywall ──

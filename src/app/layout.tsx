@@ -21,9 +21,8 @@ export const viewport: Viewport = {
   themeColor: "#0b0f17",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // Allow pinch-zoom for accessibility (WCAG).
   viewportFit: "cover",
-  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

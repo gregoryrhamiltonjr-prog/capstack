@@ -32,5 +32,8 @@ export async function getMobileUser(request: Request) {
   const uid = await verifyMobileToken(token);
   if (!uid) return null;
 
-  return db.user.findUnique({ where: { id: uid } });
+  const user = await db.user.findUnique({ where: { id: uid } });
+  // Private platform: reject tokens for non-admin accounts (e.g. leftover seed users).
+  if (!user?.isAdmin) return null;
+  return user;
 }

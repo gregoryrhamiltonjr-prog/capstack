@@ -14,7 +14,7 @@ export async function GET(request: Request) {
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
       xp: user.xp,
-      gems: 150, // Mock
+      gems: 0,
       currentStreak: user.currentStreak,
       careerStage: user.careerStage,
       jobArea: user.jobArea,

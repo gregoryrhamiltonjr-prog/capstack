@@ -4,7 +4,7 @@ Climb the whole capital stack. Interactive learning for commercial real estate a
 
 ## Live production
 
-**https://capstack-sage.vercel.app**
+**https://learncapstack.com** (alias: https://capstack-sage.vercel.app)
 
 - **Email credentials login** — available to the provisioned admin
 - **Private access** — public signup is disabled; only a provisioned admin can enter the app
@@ -63,8 +63,8 @@ Credentials login works after the admin is provisioned. To enable **Google** and
 ### Google
 
 1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → create OAuth client (Web).
-2. Authorized JavaScript origins: `https://capstack-sage.vercel.app`
-3. Authorized redirect URI: `https://capstack-sage.vercel.app/api/auth/callback/google`
+2. Authorized JavaScript origins: `https://learncapstack.com`
+3. Authorized redirect URI: `https://learncapstack.com/api/auth/callback/google`
 4. In Vercel project env (Production):
 
    ```
@@ -77,7 +77,7 @@ Credentials login works after the admin is provisioned. To enable **Google** and
 ### Apple
 
 1. Apple Developer → Identifiers → Services ID with Sign in with Apple.
-2. Return URL: `https://capstack-sage.vercel.app/api/auth/callback/apple`
+2. Return URL: `https://learncapstack.com/api/auth/callback/apple`
 3. Create a key + JWT client secret (Auth.js docs: Apple provider).
 4. In Vercel:
 
@@ -92,9 +92,18 @@ Credentials login works after the admin is provisioned. To enable **Google** and
 
 ```
 AUTH_SECRET=...
-AUTH_URL=https://capstack-sage.vercel.app
+AUTH_URL=https://learncapstack.com
+NEXTAUTH_URL=https://learncapstack.com   # alias accepted by Auth.js
 DATABASE_URL=postgresql://...   # Neon
 ADMIN_EMAIL=you@example.com     # used by the one-off provisioning command
+```
+
+OAuth redirect URIs must use the **canonical domain** (`learncapstack.com`), not the
+`*.vercel.app` alias. Google/Apple console entries:
+
+```
+https://learncapstack.com/api/auth/callback/google
+https://learncapstack.com/api/auth/callback/apple
 ```
 
 After applying the schema to an existing database, provision the owner without
@@ -117,7 +126,7 @@ Billing is enforced **only when `STRIPE_SECRET_KEY` and `STRIPE_PRICE_ID` are se
 Setup:
 
 1. Stripe Dashboard → **Products** → create a recurring price of **$12.99 / month**. Copy its price ID (`price_...`).
-2. Add a webhook endpoint at `https://capstack-sage.vercel.app/api/stripe/webhook`, subscribing to `checkout.session.completed` and `customer.subscription.*`. Copy the signing secret (`whsec_...`).
+2. Add a webhook endpoint at `https://learncapstack.com/api/stripe/webhook`, subscribing to `checkout.session.completed` and `customer.subscription.*`. Copy the signing secret (`whsec_...`).
 3. Set env (Vercel + local `.env`):
 
    ```

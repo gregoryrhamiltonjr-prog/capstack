@@ -21,8 +21,10 @@ export function WaitlistActions({ signups }: { signups: Pick<WaitlistSignup, "em
   };
 
   const handleEmailAll = () => {
-    const subject = encodeURIComponent("CapStack is Live!");
-    const body = encodeURIComponent("Hey everyone, we are excited to announce that CapStack is now live. Head over to our site and create your account to start your journey!");
+    const subject = encodeURIComponent("You're invited to CapStack");
+    const body = encodeURIComponent(
+      "Hey — thanks for joining the CapStack waitlist.\n\nWe've opened private access for you. Reply to this email and we'll provision your account (signup is invite-only — no public registration).\n\n— CapStack"
+    );
     window.location.href = `mailto:?bcc=${emailString}&subject=${subject}&body=${body}`;
   };
 

@@ -39,6 +39,15 @@ export function ComingSoon() {
           </div>
         ) : (
           <form action={formAction} className="w-full shrink-0 sm:w-auto">
+            {/* Honeypot — hidden from users, filled by many bots */}
+            <input
+              type="text"
+              name="company_website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"

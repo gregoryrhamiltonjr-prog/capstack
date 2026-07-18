@@ -5,7 +5,37 @@ import { effectiveFreeRoam } from "@/lib/subscription";
 import Link from "next/link";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
+import { db } from "@/lib/db";
 import { MouseGlow, ScrubReveal, Magnetic, Tilt3D, ParallaxLayer, ScrubStagger } from "@/components/InteractiveWrappers";
+
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+
+async function last7DaysXp(userId: string) {
+  const start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  start.setUTCDate(start.getUTCDate() - 6);
+
+  const events = await db.xpEvent.findMany({
+    where: { userId, createdAt: { gte: start } },
+    select: { amount: true, createdAt: true },
+  });
+
+  const byDay = new Map<string, number>();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setUTCDate(start.getUTCDate() + i);
+    byDay.set(d.toISOString().slice(0, 10), 0);
+  }
+  for (const e of events) {
+    const key = e.createdAt.toISOString().slice(0, 10);
+    if (byDay.has(key)) byDay.set(key, (byDay.get(key) || 0) + e.amount);
+  }
+
+  return [...byDay.entries()].map(([key, xp]) => {
+    const d = new Date(key + "T00:00:00Z");
+    return { day: DAY_LABELS[d.getUTCDay()], xp };
+  });
+}
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -15,15 +45,7 @@ export default async function DashboardPage() {
   const next = findNextChapter(tracks);
   const progress = levelProgress(user.xp);
 
-  const recentActivity = [
-    { day: "Mon", xp: 120 },
-    { day: "Tue", xp: 340 },
-    { day: "Wed", xp: 0 },
-    { day: "Thu", xp: 210 },
-    { day: "Fri", xp: 450 },
-    { day: "Sat", xp: 80 },
-    { day: "Sun", xp: 500 },
-  ];
+  const recentActivity = await last7DaysXp(user.id);
   const maxActivity = Math.max(...recentActivity.map((a) => a.xp), 1);
   const unlockedTracks = tracks.filter((t) => t.unlocked).length;
   const completedChapters = tracks.reduce(
