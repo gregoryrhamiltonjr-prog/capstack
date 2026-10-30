@@ -1,6 +1,7 @@
 import type { SeedTrack } from "./schema";
 import { T1_M2, T1_M3, T1_M5_2, T1_M6_3, T1_M7 } from "./additions/t1";
 import { T2_M1, T2_M2_2, T2_M3, T2_M4 } from "./additions/t2";
+import { T8_M1, T8_M2, T8_M3_1, T8_M3_2, T8_M3_3, T8_M4 } from "./additions/t8";
 import { p, desk, interview, note, warn, practice, worked, formula, widget, crosslink, stage, scene3d, mc, numeric, ordering, scenario } from "./schema";
 
 export const CRE_TRACKS: SeedTrack[] = [
@@ -1013,7 +1014,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     ],
   },
 
-  // ============================================================ TRACK 8 (one rich narrative history chapter — cheap breadth, no math widgets)
+  // ============================================================ TRACK 8
   {
     id: "T8",
     realm: "cre",
@@ -1028,6 +1029,8 @@ export const CRE_TRACKS: SeedTrack[] = [
     orderIndex: 8,
     prereqTrackIds: ["T1"],
     modules: [
+      T8_M1,
+      T8_M2,
       {
         code: "T8.M3",
         title: "History Case Studies",
@@ -1035,6 +1038,9 @@ export const CRE_TRACKS: SeedTrack[] = [
         estHours: "3h",
         difficultyTier: "Advanced 300",
         chapters: [
+          T8_M3_1,
+          T8_M3_2,
+          T8_M3_3,
           {
             code: "T8.M3.4",
             title: "The 2022–24 Rate Shock and Office Distress",
@@ -1078,6 +1084,7 @@ export const CRE_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      T8_M4,
     ],
   },
 ];
