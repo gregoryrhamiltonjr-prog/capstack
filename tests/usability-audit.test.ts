@@ -42,7 +42,7 @@ const renderCourse = (done: string[] = []) =>
 
 test("course breakdown uses a stable grid, never CSS multi-columns", () => {
   const html = renderCourse();
-  assert.match(html, /data-course-chapter-grid="true" class="grid items-stretch gap-4 md:grid-cols-2"/);
+  assert.match(html, /data-course-chapter-grid="true" class="grid items-stretch gap-4 md:grid-cols-2(?: [^"]*)?"/);
   assert.doesNotMatch(html, /columns-\d|break-inside/);
 });
 

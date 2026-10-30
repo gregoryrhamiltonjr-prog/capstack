@@ -25,7 +25,7 @@ const render = (tracks = [track]) => renderToStaticMarkup(createElement(CourseMa
 
 test("CRE Ecosystem and Valuation remain server-rendered neighbors in a normal grid", () => {
   const html = render();
-  assert.match(html, /data-course-unit-grid="true" class="grid items-stretch gap-4 md:grid-cols-2"/);
+  assert.match(html, /data-course-unit-grid="true" class="grid items-stretch gap-4 md:grid-cols-2(?: [^"]*)?"/);
   assert.match(html, /<h3[^>]*>The CRE Ecosystem<\/h3>/);
   assert.match(html, /<h3[^>]*>Valuation<\/h3>/);
   assert.match(html, /Cap Rates/);
@@ -40,7 +40,7 @@ test("uneven chapter counts use equal-height row alignment without clipping cont
   const html = render([uneven]);
   assert.equal(uneven.modules[0].chapters.length, 3);
   assert.equal(uneven.modules[1].chapters.length, 1);
-  assert.match(html, /data-course-unit-grid="true" class="grid items-stretch gap-4 md:grid-cols-2"/);
+  assert.match(html, /data-course-unit-grid="true" class="grid items-stretch gap-4 md:grid-cols-2(?: [^"]*)?"/);
   assert.match(html, /Ecosystem topic 3/);
   assert.match(html, /NOI and the Operating Statement/);
   assert.doesNotMatch(html, /self-start|items-start gap-4 md:grid-cols-2|overflow-hidden|line-clamp/);

@@ -91,7 +91,7 @@ export default async function GroupPage({ params }: { params: Promise<{ groupId:
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 pb-20">
+    <div className="mx-auto max-w-5xl 2xl:max-w-6xl space-y-6 pb-20">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-5">
         <div>
           <Link href="/social" className="mb-2 inline-flex items-center gap-1 text-xs font-medium text-ink-muted hover:text-ink">

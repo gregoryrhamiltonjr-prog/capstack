@@ -10,7 +10,7 @@ export default async function SocialPage() {
   const state = await getSocialState(user.id);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 pb-20">
+    <div className="mx-auto max-w-5xl 2xl:max-w-6xl space-y-8 pb-20">
       <header className="border-b border-line pb-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Social</h1>
         <p className="mt-1.5 text-ink-muted">Groups and accountability partners.</p>

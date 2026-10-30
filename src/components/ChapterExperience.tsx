@@ -122,7 +122,7 @@ export function ChapterExperience({
     }`;
 
   return (
-    <div ref={topRef} className="mx-auto max-w-5xl scroll-mt-6 space-y-8 pb-12">
+    <div ref={topRef} className="mx-auto max-w-5xl 2xl:max-w-6xl scroll-mt-6 space-y-8 pb-12">
       <header className="border-b border-line pb-6">
         <nav aria-label="Breadcrumb" className="mb-3 flex flex-wrap items-center gap-2">
           <Link href={courseHref} className="chip min-h-8 max-w-full !border-line hover:border-brand/40">
