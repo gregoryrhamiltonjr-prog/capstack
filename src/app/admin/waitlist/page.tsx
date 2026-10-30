@@ -1,11 +1,21 @@
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
 import { WaitlistActions } from "./WaitlistActions";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Waitlist | Admin | CapStack",
 };
 
 export default async function AdminWaitlistPage() {
+  // Layouts and pages may render in parallel. Authorize at the data boundary,
+  // before loading private signup data, not only in the parent layout.
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
+
   const signups = await db.waitlistSignup.findMany({
     orderBy: { createdAt: "desc" },
   });
