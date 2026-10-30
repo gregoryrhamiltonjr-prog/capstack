@@ -6,7 +6,6 @@ import { LessonWidget } from "./widgets";
 import { Icon } from "./ui";
 import Link from "next/link";
 import { cn } from "@/lib/util";
-import { MouseGlow } from "./InteractiveWrappers";
 import { CapitalStack3D, Building3D, Waterfall3D, ContextualScene3D } from "./models/Scene3D";
 import { Poll } from "./artifacts/Poll";
 import { LessonGame } from "./artifacts/Games";

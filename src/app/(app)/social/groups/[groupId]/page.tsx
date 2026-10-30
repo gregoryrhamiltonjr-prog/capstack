@@ -4,11 +4,12 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { Icon } from "@/components/ui";
 import { GroupRoom } from "@/components/social/GroupRoom";
-import { joinGroupAction, leaveGroupAction } from "@/lib/actions";
+import { joinGroupAction, leaveGroupAction, prepareGroupChatAction } from "@/lib/actions";
 
 export default async function GroupPage({ params }: { params: Promise<{ groupId: string }> }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
 
   const { groupId } = await params;
   const group = await db.studyGroup.findUnique({
@@ -41,19 +42,15 @@ export default async function GroupPage({ params }: { params: Promise<{ groupId:
   const membership = group.members.find((m) => m.userId === user.id);
   const isMember = !!membership;
 
-  let channelId = group.channelId;
-  if (isMember && !channelId) {
-    const channel = await db.channel.create({ data: { kind: "group", name: `group:${group.name}`, groupId: group.id } });
-    await db.studyGroup.update({ where: { id: group.id }, data: { channelId: channel.id } });
-    channelId = channel.id;
-  }
+  // Viewing or prefetching a page must never create database records.
+  const channelId = group.channelId;
 
   const messages =
     isMember && channelId
       ? await db.message.findMany({
           where: { channelId },
           include: { sender: { select: { id: true, displayName: true, avatarColor: true } } },
-          orderBy: { createdAt: "asc" },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           take: 200,
         })
       : [];
@@ -129,12 +126,14 @@ export default async function GroupPage({ params }: { params: Promise<{ groupId:
       {isMember && channelId ? (
         <GroupRoom
           channelId={channelId}
-          messages={messages}
+          messages={messages.reverse()}
           currentUserId={user.id}
           groupName={group.name}
           members={members}
           partnerStatuses={partnerStatuses}
         />
+      ) : isMember ? (
+        <section className="card p-6"><h2 className="text-lg font-semibold text-ink">Chat setup is needed</h2><p className="mt-2 text-sm leading-6 text-ink-muted">This group’s chat has not been prepared yet. Starting it does not send a message.</p><form action={prepareGroupChatAction} className="mt-4"><input type="hidden" name="groupId" value={group.id} /><button type="submit" className="btn-primary">Prepare group chat</button></form></section>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="card flex min-h-[320px] flex-col items-center justify-center p-8 text-center lg:col-span-2">

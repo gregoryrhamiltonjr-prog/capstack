@@ -4,25 +4,24 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { Icon } from "@/components/ui";
 import { ChatBox } from "@/components/social/ChatBox";
+import { canAccessDirectMessage } from "@/lib/chat-policy";
 
 export default async function DmPage({ params }: { params: Promise<{ channelId: string }> }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
 
   const { channelId } = await params;
   const channel = await db.channel.findUnique({ where: { id: channelId } });
   if (!channel || channel.kind !== "dm") notFound();
 
-  // Authorization via deterministic name key
-  if (channel.name?.startsWith("dm:")) {
-    const parts = channel.name.split(":");
-    if (!parts.includes(user.id)) redirect("/social");
-  }
+  // Fail closed for legacy/malformed channels as well as non-participants.
+  if (!canAccessDirectMessage(channel.name, user.id)) redirect("/social");
 
   const messages = await db.message.findMany({
     where: { channelId },
     include: { sender: { select: { id: true, displayName: true, avatarColor: true } } },
-    orderBy: { createdAt: "asc" },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: 200,
   });
 
@@ -51,7 +50,7 @@ export default async function DmPage({ params }: { params: Promise<{ channelId: 
         <p className="mt-1 text-sm text-ink-muted">Direct message</p>
       </div>
 
-      <ChatBox channelId={channelId} messages={messages} currentUserId={user.id} placeholder={`Message ${otherName}…`} />
+      <ChatBox channelId={channelId} messages={messages.reverse()} currentUserId={user.id} placeholder={`Message ${otherName}…`} />
     </div>
   );
 }

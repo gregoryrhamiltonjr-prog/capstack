@@ -195,6 +195,18 @@ export async function getCourseState(userId: string, freeRoam: boolean): Promise
   return result;
 }
 
+/**
+ * Lessons the learner has marked complete, so completion survives reloads.
+ * "explored" is a Free Roam completion (no XP); it is still finished from the learner's view.
+ */
+export async function getCompletedLessonIds(userId: string, lessonIds?: string[]): Promise<Set<string>> {
+  const rows = await db.lessonProgress.findMany({
+    where: { userId, status: { in: ["completed", "tested_out", "explored"] }, ...(lessonIds ? { lessonId: { in: lessonIds } } : {}) },
+    select: { lessonId: true },
+  });
+  return new Set(rows.map((row) => row.lessonId));
+}
+
 // The next actionable chapter across both realms (for the "continue" rail).
 export function findNextChapter(tracks: TrackState[]): { track: TrackState; module: ModuleState; chapter: ChapterState } | null {
   // Prefer in_progress, then available.

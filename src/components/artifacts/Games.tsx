@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MouseGlow } from "@/components/InteractiveWrappers";
 import { fmtMoney } from "@/lib/util";
 
 /** Cap-rate snap: guess the value given NOI + cap */
@@ -29,7 +28,7 @@ export function CapRateGuessGame() {
   }
 
   return (
-    <MouseGlow className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
+    <div className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
       <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-ink-faint">Practice · Cap rate</div>
       <p className="mb-4 text-sm text-ink-muted">
         NOI is <span className="font-mono font-bold text-ink">{fmtMoney(round.noi)}</span> and the market cap is{" "}
@@ -71,7 +70,7 @@ export function CapRateGuessGame() {
           </motion.div>
         )}
       </AnimatePresence>
-    </MouseGlow>
+    </div>
   );
 }
 
@@ -103,7 +102,7 @@ export function StackMatchGame() {
   }
 
   return (
-    <MouseGlow className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
+    <div className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
       <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-ink-faint">Practice · Stack match</div>
       <p className="mb-4 text-sm text-ink-muted">Tap a capital-stack layer, then match its risk profile.</p>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -150,7 +149,7 @@ export function StackMatchGame() {
           Stack locked. You read risk like a credit committee.
         </motion.div>
       )}
-    </MouseGlow>
+    </div>
   );
 }
 
@@ -171,7 +170,7 @@ export function DscrQuickfireGame() {
   const [answer, setAnswer] = useState<"yes" | "no" | null>(null);
 
   return (
-    <MouseGlow className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
+    <div className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
       <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-ink-faint">Practice · DSCR</div>
       <p className="mb-3 text-sm text-ink-muted">
         NOI <span className="font-mono text-ink">{fmtMoney(deal.noi)}</span> · rate{" "}
@@ -210,7 +209,7 @@ export function DscrQuickfireGame() {
           {deal.ok ? "clears" : "fails"} the {deal.dscrReq.toFixed(2)}x gate.
         </motion.div>
       )}
-    </MouseGlow>
+    </div>
   );
 }
 

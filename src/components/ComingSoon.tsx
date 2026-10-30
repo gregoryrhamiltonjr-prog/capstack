@@ -55,6 +55,7 @@ export function ComingSoon() {
                 required
                 placeholder="you@email.com"
                 aria-label="Email address"
+                autoComplete="email"
                 className="input sm:w-64"
               />
               <button
@@ -67,7 +68,7 @@ export function ComingSoon() {
               </button>
             </div>
             {state.message && (
-              <p className="mt-2 text-left text-xs text-danger">{state.message}</p>
+              <p role="alert" className="mt-2 text-left text-xs text-danger">{state.message}</p>
             )}
           </form>
         )}

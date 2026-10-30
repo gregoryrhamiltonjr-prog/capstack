@@ -1,4 +1,12 @@
 import type { Metadata, Viewport } from "next";
+// Self-hosted fonts: no render-blocking third-party stylesheet request.
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-sans/700.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 

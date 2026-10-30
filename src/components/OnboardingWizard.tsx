@@ -78,20 +78,20 @@ export function OnboardingWizard({ defaults }: { defaults: { stage: string; area
             <p className="mt-1 text-sm text-ink-muted">Content adapts to your stage — you can change it anytime.</p>
             <div className="mt-4 space-y-2">
               {CAREER_STAGES.map((s) => (
-                <button key={s.id} onClick={() => setStage(s.id)} className={cn("w-full rounded-xl border p-3 text-left transition-colors", stage === s.id ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
+                <button key={s.id} type="button" aria-pressed={stage === s.id} onClick={() => setStage(s.id)} className={cn("w-full rounded-xl border p-3 text-left transition-colors", stage === s.id ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
                   <div className="text-sm font-semibold text-ink">{s.label}</div>
                   <div className="text-xs text-ink-muted">{s.blurb}</div>
                 </button>
               ))}
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div>
-                <label className="label">School (optional)</label>
-                <input className="input" value={school} onChange={(e) => setSchool(e.target.value)} placeholder="UNC Kenan-Flagler" />
+                <label className="label" htmlFor="onboarding-school">School (optional)</label>
+                <input id="onboarding-school" className="input" value={school} onChange={(e) => setSchool(e.target.value)} placeholder="UNC Kenan-Flagler" />
               </div>
               <div>
-                <label className="label">Company (optional)</label>
-                <input className="input" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Wells Fargo" />
+                <label className="label" htmlFor="onboarding-company">Company (optional)</label>
+                <input id="onboarding-company" className="input" value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Wells Fargo" />
               </div>
             </div>
           </div>
@@ -101,20 +101,20 @@ export function OnboardingWizard({ defaults }: { defaults: { stage: string; area
           <div>
             <h2 className="text-lg font-bold">What's your focus?</h2>
             <p className="mt-1 text-sm text-ink-muted">We tune examples and your recommended path to this.</p>
-            <label className="label mt-4">Job area</label>
-            <select className="input" value={area} onChange={(e) => setArea(e.target.value)}>
+            <label className="label mt-4" htmlFor="onboarding-area">Job area</label>
+            <select id="onboarding-area" className="input" value={area} onChange={(e) => setArea(e.target.value)}>
               {JOB_AREAS.map((j) => <option key={j.id} value={j.id}>{j.label}</option>)}
             </select>
-            <label className="label mt-4">Start in which realm?</label>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="label mt-4" id="onboarding-realm">Start in which realm?</p>
+            <div role="group" aria-labelledby="onboarding-realm" className="grid grid-cols-2 gap-3">
               {[{ id: "cre", label: "Commercial Real Estate" }, { id: "hf", label: "High Finance" }].map((r) => (
-                <button key={r.id} onClick={() => setRealm(r.id)} className={cn("rounded-xl border p-3 text-sm font-semibold transition-colors", realm === r.id ? "border-brand bg-brand/10 text-brand-bright" : "border-line text-ink-muted hover:bg-surface-raised")}>{r.label}</button>
+                <button key={r.id} type="button" aria-pressed={realm === r.id} onClick={() => setRealm(r.id)} className={cn("rounded-xl border p-3 text-sm font-semibold transition-colors", realm === r.id ? "border-brand bg-brand/10 text-brand-bright" : "border-line text-ink-muted hover:bg-surface-raised")}>{r.label}</button>
               ))}
             </div>
-            <label className="label mt-4">Guided path</label>
-            <div className="space-y-2">
+            <p className="label mt-4" id="onboarding-path">Guided path</p>
+            <div role="group" aria-labelledby="onboarding-path" className="space-y-2">
               {GUIDED_PATHS.filter((p) => (realm === "hf" ? p.id === "hf_core" || p.id === "full_curriculum" : p.id !== "hf_core")).map((p) => (
-                <button key={p.id} onClick={() => setPath(p.id)} className={cn("w-full rounded-xl border p-3 text-left transition-colors", path === p.id ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
+                <button key={p.id} type="button" aria-pressed={path === p.id} onClick={() => setPath(p.id)} className={cn("w-full rounded-xl border p-3 text-left transition-colors", path === p.id ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
                   <div className="text-sm font-semibold text-ink">{p.label}</div>
                   <div className="text-xs text-ink-muted">{p.blurb}</div>
                 </button>
@@ -129,7 +129,7 @@ export function OnboardingWizard({ defaults }: { defaults: { stage: string; area
             <p className="mt-1 text-sm text-ink-muted">Lessons completed per week. Drives your progress ring.</p>
             <div className="mt-4 grid grid-cols-3 gap-3">
               {[3, 5, 10].map((g) => (
-                <button key={g} onClick={() => setGoal(g)} className={cn("rounded-xl border p-5 text-center transition-colors", goal === g ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
+                <button key={g} type="button" aria-pressed={goal === g} onClick={() => setGoal(g)} className={cn("rounded-xl border p-5 text-center transition-colors", goal === g ? "border-brand bg-brand/10" : "border-line hover:bg-surface-raised")}>
                   <div className="text-2xl font-extrabold text-brand">{g}</div>
                   <div className="text-xs text-ink-muted">{g === 3 ? "Casual" : g === 5 ? "Committed" : "Rainmaker"}</div>
                 </button>

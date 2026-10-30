@@ -1,98 +1,26 @@
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
-import { MouseGlow, ScrubReveal, Tilt3D, ParallaxLayer, ParticleField } from "@/components/InteractiveWrappers";
 import { ProfileAvatarUpload } from "@/components/ProfileAvatarUpload";
+import { CourseProgressCards } from "@/components/CourseProgressCards";
+import { careerStageLabel } from "@/lib/presentation";
+import { getCourseState } from "@/lib/progress";
+import { effectiveFreeRoam } from "@/lib/subscription";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
-
+  if (!user.isAdmin) redirect("/");
   const progress = levelProgress(user.xp);
+  const courses = await getCourseState(user.id, effectiveFreeRoam(user));
 
-  return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-20">
-      <ParallaxLayer depth={8}>
-      <ScrubReveal className="space-y-6">
-        <MouseGlow className="card-raised overflow-hidden bg-surface relative">
-          <div className="h-24 bg-gradient-to-r from-brand/20 via-info/15 to-transparent" />
-          <ParticleField count={20} className="opacity-30" />
-          <div className="relative space-y-5 p-6 pt-0 sm:p-8 sm:pt-0">
-            <div className="-mt-10">
-              <ProfileAvatarUpload name={user.displayName} color={user.avatarColor} url={user.avatarUrl} />
-            </div>
-
-            <div>
-              <h1 className="text-2xl font-extrabold text-ink sm:text-3xl">{user.displayName}</h1>
-              <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-ink-muted">
-                <span className="flex items-center gap-1">
-                  <Icon name="briefcase" size={13} /> {user.careerStage}
-                </span>
-                {user.company && (
-                  <span className="flex items-center gap-1">
-                    <Icon name="building" size={13} /> {user.company}
-                  </span>
-                )}
-                {user.school && (
-                  <span className="flex items-center gap-1">
-                    <Icon name="book" size={13} /> {user.school}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="grid gap-4 border-t border-line pt-5 sm:grid-cols-3">
-              <div>
-                <div className="text-[11px] uppercase tracking-wider text-ink-muted">Rank</div>
-                <div className="text-lg font-bold text-brand">{progress.rank}</div>
-              </div>
-              <div>
-                <div className="text-[11px] uppercase tracking-wider text-ink-muted">Total XP</div>
-                <div className="text-lg font-bold text-ink tabnum">{user.xp.toLocaleString()}</div>
-              </div>
-              <div>
-                <div className="text-[11px] uppercase tracking-wider text-ink-muted">Longest streak</div>
-                <div className="text-lg font-bold text-ink tabnum">{user.longestStreak} days</div>
-              </div>
-            </div>
-          </div>
-        </MouseGlow>
-
-        <div className="card p-6">
-          <h2 className="mb-4 text-lg font-bold text-ink">Badges</h2>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Tilt3D intensity={5}>
-            <div className="card flex flex-col items-center border-brand/25 bg-surface-raised p-4 text-center">
-              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand">
-                <Icon name="check" size={20} />
-              </div>
-              <div className="text-sm font-bold">What is Commercial Real Estate?</div>
-              <div className="mt-0.5 text-xs text-ink-muted">In progress</div>
-            </div>
-            </Tilt3D>
-            <Tilt3D intensity={5}>
-            <div className="card flex flex-col items-center border-line bg-surface-raised p-4 text-center opacity-45">
-              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-canvas text-ink-faint">
-                <Icon name="lock" size={18} />
-              </div>
-              <div className="text-sm font-bold">Debt Markets</div>
-              <div className="mt-0.5 text-xs text-ink-muted">Locked</div>
-            </div>
-            </Tilt3D>
-            <Tilt3D intensity={5}>
-            <div className="card flex flex-col items-center border-line bg-surface-raised p-4 text-center opacity-45">
-              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-canvas text-ink-faint">
-                <Icon name="lock" size={18} />
-              </div>
-              <div className="text-sm font-bold">LBO Modeling</div>
-              <div className="mt-0.5 text-xs text-ink-muted">Locked</div>
-            </div>
-            </Tilt3D>
-          </div>
-        </div>
-      </ScrubReveal>
-      </ParallaxLayer>
-    </div>
-  );
+  return <div className="mx-auto max-w-4xl space-y-6 pb-8">
+    <section className="overflow-hidden rounded-2xl border border-line bg-surface">
+      <div aria-hidden="true" className="h-24 bg-gradient-to-r from-brand/20 via-info/10 to-transparent" />
+      <div className="relative space-y-5 px-5 pb-6 sm:px-7"><div className="-mt-10"><ProfileAvatarUpload name={user.displayName} color={user.avatarColor} url={user.avatarUrl} /></div><div className="flex flex-wrap items-start justify-between gap-4"><div className="min-w-0"><h1 className="break-words text-2xl font-bold text-ink sm:text-3xl">{user.displayName}</h1><div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-muted"><span className="flex items-center gap-1.5"><Icon name="briefcase" size={14} />{careerStageLabel(user.careerStage)}</span>{user.company && <span className="flex min-w-0 items-center gap-1.5"><Icon name="building" size={14} className="shrink-0" /><span className="break-words">{user.company}</span></span>}{user.school && <span className="flex min-w-0 items-center gap-1.5"><Icon name="book" size={14} className="shrink-0" /><span className="break-words">{user.school}</span></span>}</div></div><Link href="/settings" className="btn-ghost">Edit profile</Link></div><dl className="grid grid-cols-2 gap-4 border-t border-line pt-5 sm:grid-cols-3">{[{ label: "Rank", value: progress.rank }, { label: "Total XP", value: user.xp.toLocaleString() }, { label: "Longest streak", value: `${user.longestStreak} days` }].map((stat) => <div key={stat.label}><dt className="text-xs text-ink-muted">{stat.label}</dt><dd className="mt-1 text-lg font-semibold text-ink tabnum">{stat.value}</dd></div>)}</dl></div>
+    </section>
+    <CourseProgressCards courses={courses} />
+  </div>;
 }

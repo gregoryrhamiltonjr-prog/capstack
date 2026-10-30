@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MouseGlow } from "@/components/InteractiveWrappers";
 
 type PollProps = {
   id: string;
@@ -46,7 +45,7 @@ export function Poll({ id, question, options, seed }: PollProps) {
   }
 
   return (
-    <MouseGlow className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
+    <div className="my-5 rounded-xl border border-line/80 bg-surface/60 p-4">
       <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-ink-faint">Quick check</div>
       <h4 className="mb-3 text-sm font-semibold text-ink">{question}</h4>
       <div className="space-y-2.5">
@@ -86,6 +85,6 @@ export function Poll({ id, question, options, seed }: PollProps) {
       {voted !== null && (
         <p className="mt-2 text-[11px] text-ink-faint">{total.toLocaleString()} responses</p>
       )}
-    </MouseGlow>
+    </div>
   );
 }
