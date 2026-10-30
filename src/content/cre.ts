@@ -2,6 +2,7 @@ import type { SeedTrack } from "./schema";
 import { T1_M2, T1_M3, T1_M5_2, T1_M6_3, T1_M7 } from "./additions/t1";
 import { T2_M1, T2_M2_2, T2_M3, T2_M4 } from "./additions/t2";
 import { T8_M1, T8_M2, T8_M3_1, T8_M3_2, T8_M3_3, T8_M4 } from "./additions/t8";
+import { T4_M1, T4_M3, T4_M4, T4_M5, T4_M6 } from "./additions/t4";
 import { p, desk, interview, note, warn, practice, worked, formula, widget, crosslink, stage, scene3d, mc, numeric, ordering, scenario } from "./schema";
 
 export const CRE_TRACKS: SeedTrack[] = [
@@ -946,7 +947,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     ],
   },
 
-  // ============================================================ TRACK 4 (one chapter to host CMBS waterfall widget)
+  // ============================================================ TRACK 4
   {
     id: "T4",
     realm: "cre",
@@ -961,6 +962,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     orderIndex: 4,
     prereqTrackIds: ["T1", "T2"],
     modules: [
+      T4_M1,
       {
         code: "T4.M2",
         title: "Tranching, Subordination, and Credit Enhancement",
@@ -1011,6 +1013,10 @@ export const CRE_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      T4_M3,
+      T4_M4,
+      T4_M5,
+      T4_M6,
     ],
   },
 
