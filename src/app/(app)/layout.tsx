@@ -20,9 +20,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="mx-auto min-h-dvh max-w-[1400px] lg:flex">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <WelcomeConfetti />
       <AppNav xp={user.xp} streak={user.currentStreak} name={user.displayName} avatarColor={user.avatarColor} avatarUrl={user.avatarUrl} />
-      <main className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-8 lg:pt-8">
+      <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 scroll-mt-20 px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 sm:px-7 lg:pb-10 lg:pt-9">
         {trialing && (
           <Link
             href="/settings"
