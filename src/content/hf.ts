@@ -1,5 +1,6 @@
 import type { SeedTrack } from "./schema";
 import { p, desk, interview, note, warn, worked, formula, widget, crosslink, stage, mc, numeric, ordering, scenario } from "./schema";
+import { HF_1_1_2, HF_1_1_3, HF_1_2, HF_1_3, HF_1_4_2, HF_1_4_3 } from "./additions/hf1";
 
 export const HF_TRACKS: SeedTrack[] = [
   {
@@ -66,6 +67,8 @@ export const HF_TRACKS: SeedTrack[] = [
               { term: "Adjusted EBITDA", definition: "EBITDA modified for items management deems non-recurring — legitimate in theory, gameable in practice." },
             ],
           },
+          HF_1_1_2,
+          HF_1_1_3,
           {
             code: "HF-1.1.4",
             title: "Linking the Three Statements",
@@ -108,6 +111,8 @@ export const HF_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      HF_1_2,
+      HF_1_3,
       {
         code: "HF-1.4",
         title: "The Valuation Toolkit",
@@ -157,6 +162,8 @@ export const HF_TRACKS: SeedTrack[] = [
               { term: "Enterprise value", definition: "The value of the whole business (debt + equity − cash); the direct output of an unlevered DCF." },
             ],
           },
+          HF_1_4_2,
+          HF_1_4_3,
         ],
       },
     ],
