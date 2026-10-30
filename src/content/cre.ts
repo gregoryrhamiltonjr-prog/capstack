@@ -1,4 +1,5 @@
 import type { SeedTrack } from "./schema";
+import { T1_M2, T1_M3, T1_M5_2, T1_M6_3, T1_M7 } from "./additions/t1";
 import { p, desk, interview, note, warn, practice, worked, formula, widget, crosslink, stage, scene3d, mc, numeric, ordering, scenario } from "./schema";
 
 export const CRE_TRACKS: SeedTrack[] = [
@@ -191,6 +192,8 @@ export const CRE_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      T1_M2,
+      T1_M3,
       {
         code: "T1.M4",
         title: "NOI and the Operating Statement",
@@ -314,6 +317,7 @@ export const CRE_TRACKS: SeedTrack[] = [
               { term: "Basis point (bps)", definition: "One hundredth of a percent; 25 bps = 0.25%." },
             ],
           },
+          T1_M5_2,
         ],
       },
       {
@@ -447,6 +451,7 @@ export const CRE_TRACKS: SeedTrack[] = [
               { term: "Positive / negative leverage", definition: "Leverage helps when unlevered yield > debt cost (positive) and hurts when it's lower (negative)." },
             ],
           },
+          T1_M6_3,
           {
             code: "T1.M6.4",
             title: "Waterfalls and Promote Structures",
@@ -489,6 +494,7 @@ export const CRE_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      T1_M7,
     ],
   },
 
