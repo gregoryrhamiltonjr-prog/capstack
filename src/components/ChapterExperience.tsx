@@ -3,6 +3,8 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { LessonRenderer } from "./LessonRenderer";
+import { LessonAudio } from "./LessonAudio";
+import { lessonSpeechText } from "@/lib/lesson-audio";
 import { ChapterQuiz, type QuizQ } from "./artifacts/ChapterQuiz";
 import { Icon } from "./ui";
 import { parseJSON } from "@/lib/util";
@@ -67,6 +69,7 @@ export function ChapterExperience({
 
   const lesson = lessons[activeLesson];
   const blocks = useMemo(() => (lesson ? (parseJSON(lesson.blocks, []) as Block[]) : []), [lesson]);
+  const speechText = useMemo(() => lesson ? lessonSpeechText(lesson.title, blocks) : "", [lesson, blocks]);
   const doneCount = lessons.filter((l) => completed[l.id]).length;
   const courseHref = `/course/${course.code}`;
 
@@ -228,6 +231,7 @@ export function ChapterExperience({
                     </span>
                   )}
                 </div>
+                <LessonAudio key={lesson.id} title={lesson.title} text={speechText} />
                 <LessonRenderer key={lesson.id} blocks={blocks} chapterCode={chapterCode} />
 
                 <div className="mt-8 border-t border-line pt-5">
