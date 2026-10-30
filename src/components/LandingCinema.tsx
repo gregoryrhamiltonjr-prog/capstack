@@ -297,7 +297,10 @@ export function CinematicHero() {
           </div>
 
           {/* 3D tower — assembles below the type, explodes on scroll */}
-          <div className="hero-tower relative mt-[min(3.5rem,4svh)] h-[min(240px,24svh)] w-full max-w-[420px] [perspective:1200px] sm:h-[min(280px,24svh)]">
+          <div className="hero-tower pointer-events-none relative mt-[min(3.5rem,4svh)] h-[min(240px,24svh)] w-full max-w-[420px] [perspective:1200px] sm:h-[min(280px,24svh)]">
+            {/* Slabs are fixed-size, so short screens scale the whole stack rather than
+                only its box — otherwise it spills up over the hero buttons. */}
+            <div className="absolute inset-0 [transform-style:preserve-3d] [@media(max-height:820px)]:translate-y-3 [@media(max-height:820px)]:scale-[0.66] [@media(max-height:700px)]:translate-y-5 [@media(max-height:700px)]:scale-[0.5]">
             <div className="hero-tower-inner absolute inset-0" style={{ transform: "rotateX(52deg) rotateZ(-42deg)", transformStyle: "preserve-3d" }}>
               {TOWER.map((t, i) => (
                 <div
@@ -316,6 +319,7 @@ export function CinematicHero() {
                   </div>
                 </div>
               ))}
+            </div>
             </div>
             <div className="pointer-events-none absolute -bottom-10 left-1/2 h-20 w-3/4 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
           </div>
