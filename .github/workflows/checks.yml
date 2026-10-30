@@ -28,5 +28,9 @@ jobs:
         run: npm run test:layout
         env:
           CHROMIUM_PATH: /usr/bin/google-chrome
+      - name: Lesson audio controls (isolated mocked browser engine)
+        run: npm run test:audio
+        env:
+          CHROMIUM_PATH: /usr/bin/google-chrome
       - name: Known dependency vulnerabilities
         run: npm audit --include=dev --audit-level=moderate
