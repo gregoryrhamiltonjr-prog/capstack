@@ -88,7 +88,7 @@ test("quiz questions are well-formed and answerable", () => {
 
 // Chapters that existing lessons already link to and that are being written now.
 // Remove each code as its chapter lands; the list must only ever shrink.
-const PENDING_LINK_TARGETS = new Set(["T3.M7.1", "T3.M4.1", "T3.M3.2"]);
+const PENDING_LINK_TARGETS = new Set<string>([]);
 
 test("cross-links and widgets point at things that exist", () => {
   for (const code of PENDING_LINK_TARGETS) assert.ok(!chapterCodes.has(code), `${code} now exists; remove it from PENDING_LINK_TARGETS`);

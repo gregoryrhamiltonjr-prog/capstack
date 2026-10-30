@@ -3,9 +3,11 @@ import { T1_M2, T1_M3, T1_M5_2, T1_M6_3, T1_M7 } from "./additions/t1";
 import { T2_M1, T2_M2_2, T2_M3, T2_M4 } from "./additions/t2";
 import { T8_M1, T8_M2, T8_M3_1, T8_M3_2, T8_M3_3, T8_M4 } from "./additions/t8";
 import { T4_M1, T4_M3, T4_M4, T4_M5, T4_M6 } from "./additions/t4";
+import { T3_M1, T3_M3, T3_M4, T3_M5, T3_M6_1 } from "./additions/t3a";
+import { T3_M7, T3_M8, T3_M9, T3_M11, T3_M12, withQuizTopUps } from "./additions/t3b";
 import { p, desk, interview, note, warn, practice, worked, formula, widget, crosslink, stage, scene3d, mc, numeric, ordering, scenario } from "./schema";
 
-export const CRE_TRACKS: SeedTrack[] = [
+export const CRE_TRACKS: SeedTrack[] = withQuizTopUps([
   // ============================================================ TRACK 1
   {
     id: "T1",
@@ -600,6 +602,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     flagship: true,
     prereqTrackIds: ["T1", "T2"],
     modules: [
+      T3_M1,
       {
         code: "T3.M2",
         title: "The Fannie Mae DUS Program",
@@ -737,6 +740,9 @@ export const CRE_TRACKS: SeedTrack[] = [
           }
         ],
       },
+      T3_M3,
+      T3_M4,
+      T3_M5,
       {
         code: "T3.M6",
         title: "Servicing vs. Asset Management: The Machine",
@@ -747,6 +753,7 @@ export const CRE_TRACKS: SeedTrack[] = [
         adaptive: true,
         prereqModuleCodes: ["T3.M2"],
         chapters: [
+          T3_M6_1,
           {
             code: "T3.M6.2",
             title: "What Asset Management Does (The User's Job)",
@@ -849,6 +856,9 @@ export const CRE_TRACKS: SeedTrack[] = [
           }
         ],
       },
+      T3_M7,
+      T3_M8,
+      T3_M9,
       {
         code: "T3.M10",
         title: "Special Products, Prepayment, and Exit",
@@ -944,6 +954,8 @@ export const CRE_TRACKS: SeedTrack[] = [
           },
         ],
       },
+      T3_M11,
+      T3_M12,
     ],
   },
 
@@ -1093,4 +1105,4 @@ export const CRE_TRACKS: SeedTrack[] = [
       T8_M4,
     ],
   },
-];
+]);
