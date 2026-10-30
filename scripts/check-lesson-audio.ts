@@ -82,6 +82,10 @@ async function main() {
     const beforeChange = await page.evaluate(() => window.__lessonSpeechMock.spoken.length);
     await page.getByRole("button", { name: "Next sample lesson", exact: true }).click();
     await page.getByRole("button", { name: "Listen: Sample lesson two", exact: true }).waitFor();
+    // A new component is visible before its effect restores saved preferences.
+    // Wait for that documented asynchronous initialization, not just DOM presence.
+    await page.waitForFunction(() => (document.querySelector('select[id$="-rate"]') as HTMLSelectElement | null)?.value === "1.5");
+    await page.waitForFunction(() => window.__lessonSpeechMock.current === null);
     assert.equal(await page.evaluate(() => window.__lessonSpeechMock.current === null), true);
     assert.equal(await page.evaluate(() => window.__lessonSpeechMock.spoken.length), beforeChange);
     assert.equal(await page.getByLabel("Speed", { exact: true }).inputValue(), "1.5");
