@@ -1,0 +1,8 @@
+import Link from "next/link";
+import { Icon } from "@/components/ui";
+
+type CourseProgress = { id: string; code: string; title: string; complete: boolean; unlocked: boolean; progressPct: number };
+
+export function CourseProgressCards({ courses }: { courses: CourseProgress[] }) {
+  return <section className="card p-5 sm:p-6" aria-labelledby="profile-courses-heading"><div className="mb-5 flex flex-wrap items-center justify-between gap-3"><h2 id="profile-courses-heading" className="text-lg font-semibold text-ink">Course progress</h2><Link href="/map" className="text-sm font-semibold text-brand-bright hover:underline">Course map</Link></div>{courses.length === 0 ? <p className="text-sm text-ink-muted">Your courses will appear here when the curriculum is available.</p> : <div className="grid items-stretch gap-3 sm:grid-cols-2">{courses.map((course) => <Link key={course.id} href={`/course/${course.code}`} className="flex min-w-0 items-start gap-3 rounded-xl border border-line bg-canvas/40 p-4 transition-colors hover:border-brand/40"><span className={`mt-0.5 rounded-lg p-2 ${course.complete ? "bg-brand/10 text-brand-bright" : "bg-surface-raised text-ink-muted"}`}><Icon name={course.complete ? "check" : course.unlocked ? "book" : "lock"} size={17} /></span><span className="min-w-0"><span className="block text-sm font-semibold leading-6 text-ink">{course.title}</span><span className="mt-1 block text-xs text-ink-muted">{course.complete ? "Completed" : !course.unlocked ? "Prerequisites required" : course.progressPct > 0 ? `${course.progressPct}% complete` : "Ready to start"}</span></span></Link>)}</div>}</section>;
+}

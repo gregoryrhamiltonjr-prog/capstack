@@ -14,6 +14,8 @@ import { createCheckoutUrl, createPortalUrl } from "./billing";
 import { clientIpFromHeaders, rateLimit } from "./rate-limit";
 import { headers } from "next/headers";
 import { isAuthenticationConfigured } from "./auth-configuration";
+import { persistProfileSettings, type SettingsState } from "./profile-settings";
+import { canAccessDirectMessage } from "./chat-policy";
 
 async function requireUserId(): Promise<string> {
   const uid = await getUserId();
@@ -194,6 +196,16 @@ export async function updateSettings(data: { displayName?: string; careerStage?:
   });
   revalidatePath("/settings");
   revalidatePath("/profile");
+}
+
+export async function saveProfileSettingsAction(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
+  const uid = await requireUserId();
+  const state = await persistProfileSettings(formData, (data) => db.user.update({ where: { id: uid }, data }));
+  if (state.status === "success") {
+    // Refresh shared navigation/profile as well as the edited page.
+    revalidatePath("/", "layout");
+  }
+  return state;
 }
 
 export type AvatarUploadResult = { ok: true; url: string } | { ok: false; error: string };
@@ -536,16 +548,15 @@ export async function sendMessage(
   const channel = await db.channel.findUnique({ where: { id: channelId } });
   if (!channel) return { ok: false, error: "Chat not found." };
 
-  if (channel.kind === "group" && channel.groupId) {
+  if (channel.kind === "group") {
+    if (!channel.groupId) return { ok: false, error: "This group chat is not ready yet." };
     const member = await db.groupMember.findUnique({
       where: { groupId_userId: { groupId: channel.groupId, userId: uid } },
     });
     if (!member) return { ok: false, error: "Join the group to chat." };
   }
-  if (channel.kind === "dm" && channel.name?.startsWith("dm:")) {
-    const parts = channel.name.split(":");
-    if (!parts.includes(uid)) return { ok: false, error: "Not allowed." };
-  }
+  if (channel.kind === "dm" && !canAccessDirectMessage(channel.name, uid)) return { ok: false, error: "Not allowed." };
+  if (channel.kind !== "dm" && channel.kind !== "group") return { ok: false, error: "Chat is unavailable." };
 
   // Text moderation (sensitive work info + inappropriate content)
   if (text) {
@@ -657,6 +668,21 @@ export async function joinStudyGroup(groupId: string) {
   }
   revalidatePath("/social");
   revalidatePath(`/social/groups/${groupId}`);
+}
+
+export async function prepareGroupChatAction(formData: FormData) {
+  const uid = await requireUserId();
+  const groupId = String(formData.get("groupId") || "");
+  const membership = await db.groupMember.findUnique({ where: { groupId_userId: { groupId, userId: uid } } });
+  if (!membership) redirect("/social");
+  const group = await db.studyGroup.findUnique({ where: { id: groupId } });
+  if (!group) redirect("/social");
+  if (!group.channelId) {
+    const channel = await db.channel.create({ data: { kind: "group", name: `group:${group.name}`, groupId } });
+    await db.studyGroup.update({ where: { id: groupId }, data: { channelId: channel.id } });
+  }
+  revalidatePath(`/social/groups/${groupId}`);
+  redirect(`/social/groups/${groupId}`);
 }
 
 export async function joinGroupAction(formData: FormData) {

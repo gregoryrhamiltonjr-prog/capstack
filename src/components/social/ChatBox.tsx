@@ -176,11 +176,13 @@ export function ChatBox({
             onClick={() => fileRef.current?.click()}
             disabled={pending}
             title="Attach a file"
+            aria-label="Attach a file"
           >
             File
           </button>
           <input
             name="body"
+            aria-label="Message"
             maxLength={2000}
             className="input flex-1"
             placeholder={placeholder}

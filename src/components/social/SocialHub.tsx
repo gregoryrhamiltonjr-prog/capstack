@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui";
-import { MouseGlow, Tilt3D, ScrubStagger, Magnetic } from "@/components/InteractiveWrappers";
+import { careerStageLabel } from "@/lib/presentation";
 import {
   createGroupAction,
   joinGroupAction,
@@ -107,7 +107,7 @@ export function SocialHub({
         </div>
 
         {showCreate && (
-          <MouseGlow className="card bg-surface p-4">
+          <div className="card bg-surface p-4">
             <h3 className="mb-3 text-sm font-bold text-ink">Create a group</h3>
             <form action={createGroupAction} className="space-y-3">
               <div>
@@ -138,11 +138,11 @@ export function SocialHub({
                 </button>
               </div>
             </form>
-          </MouseGlow>
+          </div>
         )}
 
         {tab === "mine" && (
-          <ScrubStagger className="space-y-2.5">
+          <div className="space-y-2.5">
             {myGroups.length === 0 ? (
               <div className="card border-dashed p-6 text-center">
                 <p className="text-sm text-ink-muted">You haven&apos;t joined any groups yet.</p>
@@ -152,10 +152,9 @@ export function SocialHub({
               </div>
             ) : (
               myGroups.map((g) => (
-                <div key={g.id} data-stagger-item>
-                <Tilt3D intensity={2}>
+                <div key={g.id}>
                 <Link href={`/social/groups/${g.id}`} className="block">
-                  <MouseGlow className="card bg-surface p-4 transition-colors hover:border-brand/30">
+                  <div className="card bg-surface p-4 transition-colors hover:border-brand/30">
                     <div className="flex items-center gap-3.5">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface-raised text-ink-muted">
                         <Icon name="users" size={18} />
@@ -172,24 +171,22 @@ export function SocialHub({
                       </div>
                       <Icon name="chevronRight" size={16} className="shrink-0 text-ink-faint" />
                     </div>
-                  </MouseGlow>
+                  </div>
                 </Link>
-                </Tilt3D>
                 </div>
               ))
             )}
-          </ScrubStagger>
+          </div>
         )}
 
         {tab === "discover" && (
-          <ScrubStagger className="space-y-2.5">
+          <div className="space-y-2.5">
             {discoverGroups.length === 0 ? (
               <div className="card border-dashed p-6 text-center text-sm text-ink-muted">No other groups to join right now. Create one.</div>
             ) : (
               discoverGroups.map((g) => (
-                <div key={g.id} data-stagger-item>
-                <Tilt3D intensity={2}>
-                <MouseGlow className="card bg-surface p-4">
+                <div key={g.id}>
+                <div className="card bg-surface p-4">
                   <div className="flex items-start gap-3.5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface-raised text-ink-muted">
                       <Icon name="users" size={18} />
@@ -206,12 +203,11 @@ export function SocialHub({
                       </button>
                     </form>
                   </div>
-                </MouseGlow>
-                </Tilt3D>
+                </div>
                 </div>
               ))
             )}
-          </ScrubStagger>
+          </div>
         )}
       </section>
 
@@ -233,7 +229,7 @@ export function SocialHub({
                 <div className="min-w-0">
                   <div className="font-semibold text-ink">{partner.displayName}</div>
                   <div className="truncate text-xs text-ink-muted">
-                    {partner.careerStage}
+                    {careerStageLabel(partner.careerStage)}
                     {partner.company ? ` · ${partner.company}` : ""}
                   </div>
                   <div className="mt-0.5 text-xs text-ink-faint">
@@ -255,16 +251,14 @@ export function SocialHub({
                 </form>
                 <form action={nudgePartnerAction}>
                   <input type="hidden" name="connId" value={partnerConnId} />
-                  <Magnetic strength={0.3}>
                   <button type="submit" className="btn-ghost px-3 py-1.5 text-xs">
                     Nudge
                   </button>
-                  </Magnetic>
                 </form>
-                <form action={endPartnershipAction}>
+                <form action={endPartnershipAction} onSubmit={(e) => { if (!window.confirm(`End your partnership with ${partner.displayName}?`)) e.preventDefault(); }}>
                   <input type="hidden" name="connId" value={partnerConnId} />
                   <button type="submit" className="btn-ghost px-3 py-1.5 text-xs text-ink-muted">
-                    End
+                    End partnership
                   </button>
                 </form>
               </div>
@@ -290,17 +284,15 @@ export function SocialHub({
                   <div key={p.id} className="flex items-center justify-between gap-2 rounded-lg border border-line bg-canvas px-3 py-2">
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold text-ink">{p.requester.displayName}</div>
-                      <div className="truncate text-xs text-ink-muted">{p.requester.company || p.requester.school || p.requester.careerStage}</div>
+                      <div className="truncate text-xs text-ink-muted">{p.requester.company || p.requester.school || careerStageLabel(p.requester.careerStage)}</div>
                     </div>
                     <div className="flex shrink-0 gap-1">
                       <form action={respondConnectionAction}>
                         <input type="hidden" name="connId" value={p.id} />
                         <input type="hidden" name="accept" value="1" />
-                        <Magnetic strength={0.3}>
                         <button type="submit" className="btn-primary px-2 py-1 text-[11px]">
                           Accept
                         </button>
-                        </Magnetic>
                       </form>
                       <form action={respondConnectionAction}>
                         <input type="hidden" name="connId" value={p.id} />
@@ -356,7 +348,7 @@ export function SocialHub({
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium text-ink">{u.displayName}</div>
                       <div className="truncate text-[11px] text-ink-faint">
-                        {u.company || u.school || u.careerStage} · {u.currentStreak}d streak
+                        {u.company || u.school || careerStageLabel(u.careerStage)} · {u.currentStreak}d streak
                       </div>
                     </div>
                     {locked ? (
@@ -407,7 +399,7 @@ export function SocialHub({
                       {f.displayName}
                       {f.isPartner && <span className="ml-1.5 text-[10px] font-bold text-brand">Partner</span>}
                     </div>
-                    <div className="truncate text-xs text-ink-muted">{f.company || f.school || f.careerStage}</div>
+                    <div className="truncate text-xs text-ink-muted">{f.company || f.school || careerStageLabel(f.careerStage)}</div>
                   </div>
                   <form action={openDmAction}>
                     <input type="hidden" name="otherUserId" value={f.id} />

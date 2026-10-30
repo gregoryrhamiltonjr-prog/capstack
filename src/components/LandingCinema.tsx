@@ -174,7 +174,7 @@ const LINE_2 = "CAPITAL STACK.";
 
 function KineticLine({ text, className = "", glow = false }: { text: string; className?: string; glow?: boolean }) {
   return (
-    <span className={`block whitespace-nowrap ${className}`}>
+    <span aria-hidden="true" className={`block whitespace-nowrap ${className}`}>
       {text.split("").map((ch, i) => (
         <span key={i} className="char-mask">
           <span className={`hero-char ${glow ? "text-glow-brand" : ""}`}>{ch === " " ? " " : ch}</span>
@@ -213,7 +213,7 @@ export function CinematicHero() {
         scrollTrigger: {
           trigger: wrap,
           start: "top top",
-          end: "+=220%",
+          end: "+=110%",
           scrub: 0.4,
           pin: scene,
           anticipatePin: 1,
@@ -256,7 +256,7 @@ export function CinematicHero() {
 
   return (
     <div ref={wrapRef} className="relative">
-      <div ref={sceneRef} className="relative flex h-[100svh] flex-col items-center justify-center overflow-hidden">
+      <div ref={sceneRef} className="relative flex h-[100svh] flex-col items-center justify-center overflow-hidden pt-16">
         {/* Depth layers */}
         <div aria-hidden className="hero-parallax-far absolute inset-[-4%]">
           <div className="hero-grid absolute inset-0" />
@@ -267,7 +267,7 @@ export function CinematicHero() {
         <ParticleField />
 
         <div className="relative z-10 flex w-full max-w-[1500px] flex-col items-center px-5 text-center">
-          <div className="hero-badge mb-8 inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/[0.08] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright shadow-glow animate-glow-pulse">
+          <div className="hero-badge mb-[min(2rem,3svh)] inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/[0.08] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright shadow-glow animate-glow-pulse">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-bright" />
@@ -276,16 +276,17 @@ export function CinematicHero() {
           </div>
 
           {/* Viewport-filling kinetic headline */}
-          <h1 className="hero-headline font-black leading-[0.98] tracking-tight text-white" style={{ fontSize: "clamp(2.6rem, 8.2vw, 8.5rem)" }}>
+          <h1 className="hero-headline font-black leading-[0.98] tracking-tight text-white" style={{ fontSize: "clamp(2.4rem, min(8.2vw, 11svh), 8.5rem)" }}>
+            <span className="sr-only">{`${LINE_1} ${LINE_2}`.toLowerCase().replace(/^./, (c) => c.toUpperCase())}</span>
             <KineticLine text={LINE_1} />
             <KineticLine text={LINE_2} glow />
           </h1>
 
-          <p className="hero-sub mx-auto mt-7 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg">
+          <p className="hero-sub mx-auto mt-[min(1.75rem,3svh)] max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg">
             Zero to desk-ready across commercial real estate and high finance — models you can feel, not just read.
           </p>
 
-          <div className="hero-cta mt-8 flex flex-wrap items-center justify-center gap-4">
+          <div className="hero-cta mt-[min(2rem,3svh)] flex flex-wrap items-center justify-center gap-4">
             <a href="#waitlist" className="group inline-flex items-center gap-2 rounded-full bg-brand px-8 py-4 text-base font-bold text-[#1a1206] shadow-glow transition-colors hover:bg-brand-bright">
               Join the waitlist
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
@@ -296,7 +297,7 @@ export function CinematicHero() {
           </div>
 
           {/* 3D tower — assembles below the type, explodes on scroll */}
-          <div className="hero-tower relative mt-14 h-[240px] w-full max-w-[420px] [perspective:1200px] sm:h-[280px]">
+          <div className="hero-tower relative mt-[min(3.5rem,4svh)] h-[min(240px,24svh)] w-full max-w-[420px] [perspective:1200px] sm:h-[min(280px,24svh)]">
             <div className="hero-tower-inner absolute inset-0" style={{ transform: "rotateX(52deg) rotateZ(-42deg)", transformStyle: "preserve-3d" }}>
               {TOWER.map((t, i) => (
                 <div
@@ -321,7 +322,7 @@ export function CinematicHero() {
         </div>
 
         {/* Scroll cue */}
-        <div aria-hidden className="hero-scrollcue absolute bottom-6 left-1/2 z-10 -translate-x-1/2">
+        <div aria-hidden className="hero-scrollcue absolute bottom-6 left-1/2 z-10 -translate-x-1/2 [@media(max-height:820px)]:hidden">
           <div className="flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-ink-faint">
             Scroll
             <span className="relative h-10 w-px overflow-hidden bg-line">
@@ -421,7 +422,7 @@ export function HorizontalCourseRail() {
           {RAIL_COURSES.map((c) => (
             <article
               key={c.title}
-              className="group relative flex h-[380px] w-[420px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl border border-line bg-surface p-8 transition-all duration-300 hover:-translate-y-2 max-md:w-[85vw]"
+              className="group relative flex h-[380px] w-[420px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl border border-line bg-surface p-8 max-md:w-[85vw]"
               style={{ boxShadow: `0 20px 60px -30px ${c.color}40` }}
             >
               <div aria-hidden className="absolute -right-16 -top-16 h-56 w-56 rounded-full opacity-20 blur-3xl transition-opacity duration-500 group-hover:opacity-40" style={{ background: c.color }} />

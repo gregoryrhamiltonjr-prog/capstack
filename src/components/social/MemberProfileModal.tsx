@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@/components/ui";
 import { levelProgress } from "@/lib/xp";
 import { openDmAction, requestPartnerAction } from "@/lib/actions";
 import { UserAvatar } from "@/components/UserAvatar";
+import { careerStageLabel, jobAreaLabel } from "@/lib/presentation";
 
 export type MemberProfile = {
   id: string;
@@ -42,6 +43,7 @@ export function MemberProfileModal({
   const [status, setStatus] = useState<PartnerButtonStatus>(partnerStatus);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -50,12 +52,26 @@ export function MemberProfileModal({
   }, [partnerStatus, profile.id]);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+    if (!mounted || !panelRef.current) return;
+    const panel = panelRef.current;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const controls = () => [...panel.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]')].filter((element) => element.getClientRects().length > 0);
+    (controls()[0] ?? panel).focus();
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); return; }
+      if (event.key !== "Tab") return;
+      const items = controls();
+      const first = items[0];
+      const last = items.at(-1);
+      if (!first || !last) { event.preventDefault(); panel.focus(); return; }
+      if (!panel.contains(document.activeElement) || (event.shiftKey && document.activeElement === first)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = previousOverflow; if (previousFocus?.isConnected) previousFocus.focus(); };
+  }, [mounted, onClose]);
 
   const partnerLabel =
     status === "pending" ? "Pending" : status === "partner" ? "Partners" : status === "incoming" ? "Respond on Social" : "Partner";
@@ -63,14 +79,14 @@ export function MemberProfileModal({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="member-profile-title">
-      <button type="button" className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} aria-label="Close profile" />
-      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl animate-fade-up">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <button type="button" tabIndex={-1} aria-hidden="true" className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} aria-label="Close profile" />
+      <div ref={panelRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="member-profile-title" className="relative max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-surface shadow-2xl">
         <div className="h-20 bg-gradient-to-r from-brand/25 via-info/15 to-transparent" />
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 rounded-lg border border-line bg-surface/80 p-1.5 text-ink-muted hover:text-ink"
+          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface/80 text-ink-muted hover:text-ink"
           aria-label="Close"
         >
           <Icon name="x" size={14} />
@@ -88,13 +104,13 @@ export function MemberProfileModal({
             />
           </div>
 
-          <h2 id="member-profile-title" className="text-xl font-extrabold text-ink">
+          <h2 id="member-profile-title" className="break-words text-xl font-bold text-ink">
             {profile.displayName}
             {isSelf && <span className="ml-2 text-xs font-medium text-ink-faint">(you)</span>}
           </h2>
 
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-muted">
-            <span className="capitalize">{profile.careerStage.replace("_", " ")}</span>
+            <span className="capitalize">{careerStageLabel(profile.careerStage)}</span>
             {profile.groupRole && (
               <>
                 <span className="text-ink-faint">·</span>
@@ -140,7 +156,7 @@ export function MemberProfileModal({
             {profile.jobArea && (
               <div className="flex items-center gap-2 text-ink-muted">
                 <Icon name="briefcase" size={14} className="shrink-0 text-ink-faint" />
-                <span className="truncate capitalize">{profile.jobArea.replace(/_/g, " ")}</span>
+                <span className="truncate capitalize">{jobAreaLabel(profile.jobArea)}</span>
               </div>
             )}
           </div>
