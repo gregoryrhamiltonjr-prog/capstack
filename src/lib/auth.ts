@@ -2,10 +2,12 @@ import "server-only";
 import { auth, signOut } from "@/auth";
 import { db } from "./db";
 import { hashPassword, verifyPassword } from "./auth-password";
+import { isAuthenticationConfigured } from "./auth-configuration";
 
 export { hashPassword, verifyPassword };
 
 export async function getUserId(): Promise<string | null> {
+  if (!isAuthenticationConfigured()) return null;
   const session = await auth();
   const id = (session?.user as { id?: string } | undefined)?.id;
   return id ?? null;
