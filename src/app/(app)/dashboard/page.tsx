@@ -2,190 +2,49 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getCourseState, findNextChapter } from "@/lib/progress";
 import { effectiveFreeRoam } from "@/lib/subscription";
-import Link from "next/link";
-import { Icon } from "@/components/ui";
-import { levelProgress } from "@/lib/xp";
 import { db } from "@/lib/db";
-import { MouseGlow, ScrubReveal, Magnetic, Tilt3D, ParallaxLayer, ScrubStagger } from "@/components/InteractiveWrappers";
-
-const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-
-async function last7DaysXp(userId: string) {
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  start.setUTCDate(start.getUTCDate() - 6);
-
-  const events = await db.xpEvent.findMany({
-    where: { userId, createdAt: { gte: start } },
-    select: { amount: true, createdAt: true },
-  });
-
-  const byDay = new Map<string, number>();
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(start);
-    d.setUTCDate(start.getUTCDate() + i);
-    byDay.set(d.toISOString().slice(0, 10), 0);
-  }
-  for (const e of events) {
-    const key = e.createdAt.toISOString().slice(0, 10);
-    if (byDay.has(key)) byDay.set(key, (byDay.get(key) || 0) + e.amount);
-  }
-
-  return [...byDay.entries()].map(([key, xp]) => {
-    const d = new Date(key + "T00:00:00Z");
-    return { day: DAY_LABELS[d.getUTCDay()], xp };
-  });
-}
+import { activityWindowStart, dailyXpSeries, startOfUtcWeek } from "@/lib/dashboard";
+import { DashboardView } from "@/components/DashboardView";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (!user.isAdmin) redirect("/");
 
-  const tracks = await getCourseState(user.id, effectiveFreeRoam(user));
+  const now = new Date();
+  const weekStart = startOfUtcWeek(now);
+  const [tracks, events, lessonsThisWeek] = await Promise.all([
+    getCourseState(user.id, effectiveFreeRoam(user)),
+    db.xpEvent.findMany({
+      where: { userId: user.id, createdAt: { gte: activityWindowStart(now), lte: now } },
+      select: { amount: true, createdAt: true },
+    }),
+    db.lessonProgress.count({
+      where: { userId: user.id, status: "completed", completedAt: { gte: weekStart, lte: now } },
+    }),
+  ]);
   const next = findNextChapter(tracks);
-  const progress = levelProgress(user.xp);
-
-  const recentActivity = await last7DaysXp(user.id);
-  const maxActivity = Math.max(...recentActivity.map((a) => a.xp), 1);
-  const unlockedTracks = tracks.filter((t) => t.unlocked).length;
-  const completedChapters = tracks.reduce(
-    (n, t) => n + t.modules.reduce((m, mod) => m + mod.chapters.filter((c) => c.status === "passed" || c.status === "tested_out").length, 0),
-    0
-  );
+  const chapters = tracks.flatMap((track) => track.modules.flatMap((module) => module.chapters));
 
   return (
-    <div className="mx-auto max-w-5xl space-y-10 pb-20">
-      <header className="flex flex-col justify-between gap-6 border-b border-line pb-6 md:flex-row md:items-end">
-        <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-ink">Dashboard</h1>
-          <p className="mt-2 text-lg text-ink-muted">
-            Welcome back, <span className="font-semibold text-ink">{user.displayName.split(" ")[0]}</span>.
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <div className="card flex items-center gap-3 border-brand/30 bg-brand/5 px-4 py-2">
-            <Icon name="zap" size={18} className="text-brand-bright" />
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wide text-brand">Streak</div>
-              <div className="text-lg font-black leading-none text-ink">{user.currentStreak}d</div>
-            </div>
-          </div>
-          <div className="card flex items-center gap-3 border-gold/30 bg-gold/5 px-4 py-2">
-            <Icon name="trophy" size={18} className="text-gold" />
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gold">Rank</div>
-              <div className="text-lg font-black leading-none text-ink">{progress.rank}</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <ParallaxLayer depth={5}>
-      <ScrubReveal className="grid gap-8 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-          {next ? (
-            <MouseGlow className="card-raised border-l-4 border-l-info p-7">
-              <div className="mb-2 flex items-center gap-2 text-info">
-                <Icon name="target" size={16} />
-                <span className="text-xs font-semibold uppercase tracking-wider">Up next</span>
-              </div>
-              <h2 className="text-2xl font-bold text-ink sm:text-3xl">{next.chapter.title}</h2>
-              <p className="mt-2 text-ink-muted">{next.chapter.objective}</p>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <Magnetic>
-                  <Link href={`/learn/${next.chapter.code}`} className="btn-primary px-6 py-2.5">
-                    Continue learning
-                  </Link>
-                </Magnetic>
-                <span className="flex items-center gap-1.5 text-sm text-ink-muted">
-                  <Icon name="clock" size={14} /> ~15 min
-                </span>
-              </div>
-            </MouseGlow>
-          ) : (
-            <MouseGlow className="card-raised border-l-4 border-l-brand p-7">
-              <h2 className="text-2xl font-bold text-ink">You&apos;re all caught up</h2>
-              <p className="mt-2 text-ink-muted">Browse the course map for the next course.</p>
-              <Link href="/map" className="btn-primary mt-6 inline-flex">
-                View course map
-              </Link>
-            </MouseGlow>
-          )}
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            {[
-              { label: "Courses unlocked", value: unlockedTracks },
-              { label: "Modules passed", value: completedChapters },
-              { label: "Total XP", value: user.xp.toLocaleString() },
-            ].map((s) => (
-              <Tilt3D key={s.label} intensity={5}>
-                <div className="card bg-surface p-4">
-                  <div className="text-2xl font-black text-ink tabnum">{s.value}</div>
-                  <div className="mt-0.5 text-xs text-ink-muted">{s.label}</div>
-                </div>
-              </Tilt3D>
-            ))}
-          </div>
-
-          <div className="card bg-surface p-6">
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-wide text-ink-muted">Weekly XP</h3>
-            <ScrubStagger className="flex h-36 items-end justify-between gap-2">
-              {recentActivity.map((day, i) => {
-                const heightPct = (day.xp / maxActivity) * 100;
-                return (
-                  <div key={i} data-stagger-item className="group flex flex-1 flex-col items-center gap-2">
-                    <div className="relative flex h-full w-full items-end overflow-hidden rounded-t-md bg-surface-raised">
-                      <div className="w-full rounded-t-md bg-brand/80 transition-all duration-500 group-hover:bg-brand" style={{ height: `${heightPct}%` }} />
-                    </div>
-                    <div className="text-[10px] uppercase text-ink-faint">{day.day}</div>
-                  </div>
-                );
-              })}
-            </ScrubStagger>
-          </div>
-        </div>
-
-        <div className="space-y-5">
-          <Tilt3D intensity={3}>
-          <div className="card bg-surface-raised p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="font-bold text-ink">Rank progress</h3>
-              <span className="text-sm font-bold text-brand tabnum">{user.xp.toLocaleString()} XP</span>
-            </div>
-            <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface">
-              <div className="h-full rounded-full bg-gradient-to-r from-info to-brand" style={{ width: `${progress.pct}%` }} />
-            </div>
-            <div className="mt-2 flex justify-between text-xs text-ink-muted">
-              <span>{progress.rank}</span>
-              <span>{progress.nextRank ?? "Max"}</span>
-            </div>
-          </div>
-          </Tilt3D>
-
-          <Tilt3D intensity={3}>
-          <div className="card p-5">
-            <h3 className="mb-3 font-bold text-ink">Weekly goal</h3>
-            <p className="text-sm text-ink-muted">
-              Target: <span className="font-semibold text-ink">{user.weeklyGoal} lessons</span>
-            </p>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-raised">
-              <div className="h-full w-[70%] rounded-full bg-brand" />
-            </div>
-            <p className="mt-2 text-xs font-medium text-brand">On track</p>
-          </div>
-          </Tilt3D>
-
-          <Tilt3D intensity={3}>
-          <div className="card border-line p-5">
-            <h3 className="mb-2 font-bold text-ink">How XP works</h3>
-            <p className="text-sm leading-relaxed text-ink-muted">
-              Complete lessons and pass module quizzes (70%+) to climb the ladder. Streaks add a small daily bonus.
-            </p>
-          </div>
-          </Tilt3D>
-        </div>
-      </ScrubReveal>
-      </ParallaxLayer>
-    </div>
+    <DashboardView
+      name={user.displayName}
+      xp={user.xp}
+      streak={user.currentStreak}
+      weeklyGoal={user.weeklyGoal}
+      lessonsThisWeek={lessonsThisWeek}
+      unlockedCourses={tracks.filter((track) => track.unlocked).length}
+      completedChapters={chapters.filter((chapter) => chapter.status === "passed" || chapter.status === "tested_out").length}
+      totalChapters={chapters.length}
+      activity={dailyXpSeries(events, now)}
+      weekLabel={`Week of ${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })}`}
+      next={next ? {
+        title: next.chapter.title,
+        objective: next.chapter.objective,
+        code: next.chapter.code,
+        course: next.track.title,
+        lessons: next.chapter.lessonCount,
+      } : null}
+    />
   );
 }
