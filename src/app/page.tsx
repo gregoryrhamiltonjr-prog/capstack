@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { Logo, Wordmark } from "@/components/Logo";
 import { Icon } from "@/components/ui";
-import { BentoGrid, ScrollyTelling, FinancialCalculator, Testimonials, ScrollProgress } from "@/components/LandingBlocks";
+import { BentoGrid, ScrollyTelling, FinancialCalculator, ScrollProgress } from "@/components/LandingBlocks";
 import { CinematicHero, OutlineMarquee, HorizontalCourseRail, GiantStats, ScrollReset } from "@/components/LandingCinema";
 import { ScrubReveal } from "@/components/InteractiveWrappers";
 import { ComingSoon } from "@/components/ComingSoon";
@@ -10,10 +10,10 @@ import { ROADMAP } from "@/content/roadmap";
 import { logoutAction } from "@/lib/actions";
 
 const FEATURES = [
-  { icon: "book", title: "Institutional-grade content", body: "300–800 words per concept in the flagship courses, with worked numbers, desk callouts, and interview ammo. Zero filler." },
+  { icon: "book", title: "Institutional-grade content", body: "In-depth lessons with worked numbers, desk callouts, and interview prep — the real mechanics, not a glossary." },
   { icon: "chart", title: "Interactive by default", body: "Cap-rate sliders, DSCR loan-sizing, capital-stack builder, amortization, CMBS waterfall, IRR playground — feel the math move." },
-  { icon: "trophy", title: "Gamified progression", body: "XP, a 12-rank ladder from Prospect to Rainmaker, daily streaks, quizzes with a tiered hint system, and four leaderboards." },
-  { icon: "users", title: "A full social layer", body: "Profiles, school & company discovery, DMs, accountability partners, and groups. Learn like it's a group chat." },
+  { icon: "trophy", title: "Gamified progression", body: "XP, a 12-rank ladder from Prospect to Rainmaker, daily streaks, a leaderboard, and quizzes with tiered hints." },
+  { icon: "users", title: "Learn with others", body: "Profiles, direct messages, study groups, and accountability partners to keep each other on track." },
 ];
 
 const CRE_TRACKS = ROADMAP.filter((t) => t.realm === "cre");
@@ -22,7 +22,7 @@ const LIVE_COUNT = ROADMAP.filter((t) => t.live).length;
 const STATS: [string, string][] = [
   [String(ROADMAP.length), "courses, two realms"],
   ["12", "ranks to Rainmaker"],
-  ["6", "interactive widgets"],
+  ["7", "interactive tools"],
   [String(LIVE_COUNT), "courses live now"],
 ];
 
@@ -75,10 +75,6 @@ export default async function Landing() {
 
       {/* Horizontal-scroll course rail (pinned) */}
       <HorizontalCourseRail />
-
-      <ScrubReveal>
-        <Testimonials />
-      </ScrubReveal>
 
       <ScrubReveal>
         <BentoGrid />
@@ -156,7 +152,7 @@ export default async function Landing() {
             <div aria-hidden className="absolute -top-24 left-1/2 h-64 w-96 -translate-x-1/2 animate-glow-pulse rounded-full bg-brand/10 blur-3xl" />
             <div className="relative">
               <Logo size={40} className="mx-auto mb-4" />
-              <h2 className="text-2xl font-bold tracking-tight">Ready to make analyst by next Friday?</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Ready to learn the whole capital stack?</h2>
               <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted">CapStack is in private access — we&apos;re onboarding new members in waves.</p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <a href="#waitlist" className="btn-primary rounded-full px-6 py-3 text-base shadow-glow">Join the waitlist</a>

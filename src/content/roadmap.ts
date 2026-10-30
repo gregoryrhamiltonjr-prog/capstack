@@ -37,7 +37,7 @@ export const ROADMAP: RoadmapTrack[] = [
   { code: "T21", realm: "cre", title: "PropTech, ESG & the Future", tagline: "Green financing, data, and emerging models.", tier: "Core 200", live: false, moduleCount: 2 },
   // ---- High Finance realm ----
   { code: "HF-1", realm: "hf", title: "Finance & Accounting Bedrock", tagline: "The mandatory foundation.", tier: "Foundations 100", live: true, moduleCount: 4 },
-  { code: "HF-2", realm: "hf", title: "Investment Banking", tagline: "The landscape, M&A, and LBO basics.", tier: "Intermediate", live: true, moduleCount: 2 },
+  { code: "HF-2", realm: "hf", title: "Investment Banking", tagline: "The landscape, the M&A process, and accretion/dilution.", tier: "Intermediate", live: true, moduleCount: 2 },
   { code: "HF-3", realm: "hf", title: "Equity Capital Markets", tagline: "IPOs, follow-ons, converts.", tier: "Intermediate", live: true, moduleCount: 2 },
   { code: "HF-4", realm: "hf", title: "Debt Capital Markets & Bond Math", tagline: "Fixed income, IG & HY issuance.", tier: "Intermediate–Advanced", live: true, moduleCount: 2 },
   { code: "HF-5", realm: "hf", title: "LevFin & Private Credit", tagline: "The debt stack, covenants, direct lending.", tier: "Advanced", live: true, moduleCount: 2 },

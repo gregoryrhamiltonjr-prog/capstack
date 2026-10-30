@@ -26,10 +26,10 @@ export function ComingSoon() {
             Coming soon
           </span>
           <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl">
-            New realms, live cohorts &amp; desk simulators are on the way.
+            More courses, cohorts &amp; desk simulations are planned.
           </h2>
           <p className="text-sm text-ink-muted">
-            Join the waitlist for early access and founding-member pricing.
+            Join the waitlist for early access as new members are onboarded.
           </p>
         </div>
 
