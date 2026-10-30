@@ -22,7 +22,7 @@ export default async function LeaderboardPage() {
   const rank = levelProgress(user.xp);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-7 pb-8">
+    <div className="mx-auto max-w-5xl 2xl:max-w-6xl space-y-7 pb-8">
       <header className="border-b border-line pb-6"><h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Leaderboard</h1><p className="mt-2 text-sm leading-7 text-ink-muted sm:text-base">Real progress from the private-access cohort. Ranked by all-time XP.</p><span className="chip mt-3">Top 100 · All time</span></header>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <section className="min-w-0 overflow-hidden rounded-2xl border border-line bg-surface" aria-label="Cohort leaderboard"><div className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] gap-2 border-b border-line px-3 py-3 text-[10px] font-semibold uppercase tracking-wider text-ink-muted sm:grid-cols-[2.25rem_minmax(0,1fr)_auto] sm:gap-4 sm:px-4"><span className="text-center">#</span><span>Member</span><span className="text-right">XP</span></div><LeaderboardList topUsers={topUsers} currentUserId={user.id} /></section>

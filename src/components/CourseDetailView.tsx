@@ -9,7 +9,7 @@ export function CourseDetailView({ track, completedLessonIds }: { track: TrackSt
   const realmChip = track.realm === "cre" ? "!border-brand/30 !text-brand" : "!border-info/40 !text-info";
 
   return (
-    <div className="mx-auto max-w-6xl pb-12">
+    <div className="w-full pb-12">
       <div className="mb-4">
         <Link href="/map" className="inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
           <Icon name="chevronRight" size={14} className="rotate-180" /> All courses
@@ -98,7 +98,7 @@ export function CourseDetailView({ track, completedLessonIds }: { track: TrackSt
                   ) : null}
                 </div>
 
-                <div data-course-chapter-grid="true" className="grid items-stretch gap-4 md:grid-cols-2">
+                <div data-course-chapter-grid="true" className="grid items-stretch gap-4 md:grid-cols-2 min-[1800px]:grid-cols-3 min-[2400px]:grid-cols-4">
                   {mod.chapters.map((chap) => {
                     const isPassed = chap.status === "passed" || chap.status === "tested_out";
                     return (

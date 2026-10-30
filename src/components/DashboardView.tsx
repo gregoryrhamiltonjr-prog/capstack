@@ -43,7 +43,7 @@ export function DashboardView(props: DashboardViewProps) {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-7 pb-4 sm:space-y-8">
+    <div className="w-full space-y-7 pb-4 sm:space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-bright"><span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" /> Your learning desk</p>

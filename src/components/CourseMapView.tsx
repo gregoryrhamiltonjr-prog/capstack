@@ -12,7 +12,7 @@ export function CourseMapView({ tracks }: { tracks: TrackState[] }) {
   const hf = tracks.filter((track) => track.realm === "hf").length;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-9 pb-8">
+    <div className="w-full space-y-9 pb-8">
       <header className="border-b border-line pb-6">
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bright">Your curriculum</p>
         <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Courses</h1>
@@ -37,7 +37,7 @@ export function CourseMapView({ tracks }: { tracks: TrackState[] }) {
               <div className="shrink-0 text-right"><p className="text-2xl font-bold text-brand-bright tabnum">{track.progressPct}% <span className="text-xs font-medium text-ink-muted">complete</span></p><Link href={`/course/${track.code}`} className="mt-2 inline-flex min-h-11 items-center gap-1 rounded-lg text-xs font-semibold text-brand-bright hover:underline">Open course<Icon name="chevronRight" size={13} /></Link></div>
             </header>
 
-            <div data-course-unit-grid className="grid items-stretch gap-4 md:grid-cols-2">
+            <div data-course-unit-grid className="grid items-stretch gap-4 md:grid-cols-2 min-[1800px]:grid-cols-3 min-[2400px]:grid-cols-4">
               {track.modules.map((unit) => (
                 <section key={unit.id} aria-labelledby={`unit-${unit.id}`} className={`min-w-0 rounded-2xl border border-l-[3px] border-line bg-surface p-5 transition-colors hover:border-brand/40 ${unit.complete ? "border-l-brand" : unit.unlocked ? "border-l-info" : "border-l-line"}`}>
                   <div className="mb-2 flex items-start justify-between gap-3"><h3 id={`unit-${unit.id}`} className="text-lg font-semibold leading-tight text-ink">{unit.title}</h3>{(!unit.unlocked || unit.complete) && <Icon name={unit.complete ? "check" : "lock"} size={16} className={`shrink-0 ${unit.complete ? "text-brand" : "text-ink-muted"}`} />}</div>

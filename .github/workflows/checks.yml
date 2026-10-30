@@ -24,5 +24,9 @@ jobs:
         run: npm ci --include=dev
       - name: Regression tests, type check, production build
         run: npm run check
+      - name: Responsive layout geometry (isolated synthetic fixtures)
+        run: npm run test:layout
+        env:
+          CHROMIUM_PATH: /usr/bin/google-chrome
       - name: Known dependency vulnerabilities
         run: npm audit --include=dev --audit-level=moderate
