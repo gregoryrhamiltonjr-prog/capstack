@@ -156,3 +156,12 @@ test("membership controls never send administrators to checkout", () => {
   assert.equal(membershipControl({ isAdmin: true, stripeCustomerId: null, subscriptionStatus: null, trialEndsAt: null, currentPeriodEnd: null } as never), "admin");
   assert.equal(careerStageLabel("unknown_stage"), "unknown stage");
 });
+
+test("landing page carries no fabricated testimonials or unbuilt-feature claims", () => {
+  const landing = ["src/app/page.tsx", "src/components/LandingBlocks.tsx", "src/components/LandingCinema.tsx", "src/components/ComingSoon.tsx"]
+    .map((file) => readFileSync(file, "utf8"))
+    .join("\n");
+  for (const claim of [/Testimonials/, /proprietary screener/i, /four leaderboards/i, /company discovery/i, /Drag and drop/i, /next Friday/i, /founding-member pricing/i, /"6", "interactive/, /title: "LBO Modeling"/]) {
+    assert.doesNotMatch(landing, claim);
+  }
+});

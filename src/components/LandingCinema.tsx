@@ -379,10 +379,10 @@ export function OutlineMarquee() {
 // ==========================================
 const RAIL_COURSES = [
   { title: "Debt & the Capital Stack", realm: "CRE", color: "#C79A3A", icon: "🏛", blurb: "Senior to common — who gets paid, in what order, and why the middle is where careers are made." },
-  { title: "LBO Modeling", realm: "High Finance", color: "#3B82F6", icon: "📈", blurb: "Sources & uses, debt schedules, returns bridges. The model every PE interview assumes you know." },
+  { title: "Bond Math", realm: "High Finance", color: "#3B82F6", icon: "📈", blurb: "Yield, price, duration and convexity — the fixed-income math behind every debt deal." },
   { title: "CMBS & Structured Finance", realm: "CRE", color: "#8B5CF6", icon: "🧱", blurb: "Tranching, subordination, and how defaults cascade bottom-up through a securitization." },
-  { title: "DSCR & Loan Sizing", realm: "CRE", color: "#6FA891", icon: "🏦", blurb: "NOI ÷ debt service — the constraint that actually sizes every senior loan on the street." },
-  { title: "IRR Playground", realm: "Both realms", color: "#F5B301", icon: "⚡", blurb: "Feel how timing, leverage, and exit caps bend the return profile in real time." },
+  { title: "DSCR & Loan Sizing", realm: "Interactive tool", color: "#6FA891", icon: "🏦", blurb: "NOI ÷ debt service — the constraint that actually sizes every senior loan on the street." },
+  { title: "IRR Playground", realm: "Interactive tool", color: "#F5B301", icon: "⚡", blurb: "Feel how timing, leverage, and exit caps bend the return profile in real time." },
 ];
 
 export function HorizontalCourseRail() {
@@ -419,7 +419,7 @@ export function HorizontalCourseRail() {
         <div className="mx-auto mb-10 w-full max-w-7xl px-6">
           <div className="text-[10px] font-black uppercase tracking-[0.3em] text-brand">The library</div>
           <h2 className="mt-3 font-black leading-none text-white" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)" }}>
-            Courses built like <span className="text-glow-brand">desk training.</span>
+            Courses and tools built like <span className="text-glow-brand">desk training.</span>
           </h2>
         </div>
         <div ref={railRef} className="flex w-max gap-6 px-12 max-md:w-full max-md:snap-x max-md:snap-mandatory max-md:overflow-x-auto max-md:px-6">
