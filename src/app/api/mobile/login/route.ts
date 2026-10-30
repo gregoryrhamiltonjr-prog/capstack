@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth";
 import { signMobileToken } from "@/lib/mobile-auth";
+import { authenticationUnavailableResponse, isAuthenticationConfigured } from "@/lib/auth-configuration";
 
 export async function POST(request: Request) {
+  if (!isAuthenticationConfigured()) return authenticationUnavailableResponse();
   try {
     const body = await request.json();
     const email = String(body.email || "").trim().toLowerCase();

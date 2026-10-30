@@ -13,6 +13,7 @@ import { canUseFreeRoam } from "./subscription";
 import { createCheckoutUrl, createPortalUrl } from "./billing";
 import { clientIpFromHeaders, rateLimit } from "./rate-limit";
 import { headers } from "next/headers";
+import { isAuthenticationConfigured } from "./auth-configuration";
 
 async function requireUserId(): Promise<string> {
   const uid = await getUserId();
@@ -59,6 +60,7 @@ export async function signupAction(_formData: FormData) {
 }
 
 export async function loginAction(formData: FormData) {
+  if (!isAuthenticationConfigured()) redirect("/login");
   const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
   const user = await db.user.findUnique({ where: { email } });
@@ -76,6 +78,7 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function oauthSignInAction(formData: FormData) {
+  if (!isAuthenticationConfigured()) redirect("/login");
   const provider = String(formData.get("provider") || "");
   if (provider !== "google" && provider !== "apple") redirect("/login?error=1");
   await signIn(provider, { redirectTo: "/auth/complete" });

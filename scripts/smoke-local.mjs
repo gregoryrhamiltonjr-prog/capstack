@@ -33,4 +33,19 @@ for (const pathname of ["/dashboard", "/admin/waitlist"]) {
   checks++;
 }
 
+if (!process.env.DATABASE_URL || !(process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET)) {
+  for (const [pathname, method] of [["/api/auth/session", "GET"], ["/api/mobile/login", "POST"]]) {
+    const response = await fetch(`${base}${pathname}`, { method, redirect: "manual" });
+    assert.equal(response.status, 503, `${pathname} must fail closed when unconfigured`);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    console.log(`PASS unconfigured ${method} ${pathname}: 503, no-store`);
+    checks++;
+  }
+  const login = await fetch(`${base}/login`);
+  const html = await login.text();
+  assert.doesNotMatch(html, /<form|type="password"/);
+  console.log("PASS unconfigured login does not collect credentials");
+  checks++;
+}
+
 console.log(`${checks} local production smoke checks passed.`);

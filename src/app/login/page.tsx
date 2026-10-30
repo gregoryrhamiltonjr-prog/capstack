@@ -4,8 +4,13 @@ import { getCurrentUser } from "@/lib/auth";
 import { loginAction } from "@/lib/actions";
 import { Wordmark } from "@/components/Logo";
 import { AuthProviders } from "@/components/AuthProviders";
+import { AuthUnavailable } from "@/components/AuthUnavailable";
+import { isAuthenticationConfigured } from "@/lib/auth-configuration";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  if (!isAuthenticationConfigured()) {
+    return <AuthUnavailable preview={process.env.VERCEL_ENV === "preview"} />;
+  }
   const currentUser = await getCurrentUser();
   if (currentUser?.isAdmin) redirect("/dashboard");
   const { error } = await searchParams;
