@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { submitQuizResult } from "@/lib/actions";
 import { parseJSON } from "@/lib/util";
-import { isAnswerReady, PASS_PCT } from "@/lib/quiz";
+import { isAnswerReady, PASS_PCT, stablePermutation } from "@/lib/quiz";
 import { Icon } from "@/components/ui";
 
 export type QuizQ = {
@@ -75,6 +75,10 @@ export function ChapterQuiz({
   const hints = useMemo(() => (q ? parseJSON(q.hints, [] as string[]).filter(Boolean) : []), [q]);
   const progressPct = questions.length ? Math.round(((idx + (a.submitted ? 1 : 0)) / questions.length) * 100) : 0;
   const ready = q ? isAnswerReady(q.type, a) : false;
+  // Authored content lists ordering items solved and tends to reuse answer slots;
+  // show both in a stable per-question shuffle so the layout never gives the answer away.
+  const initialOrder = useMemo(() => (q && data.items ? stablePermutation(data.items.length, `${q.id}:order`, true) : []), [q, data.items]);
+  const choiceOrder = useMemo(() => (q && data.choices ? stablePermutation(data.choices.length, `${q.id}:choices`) : []), [q, data.choices]);
 
   function update(partial: Partial<AnswerState>) {
     if (!q) return;
@@ -92,7 +96,7 @@ export function ChapterQuiz({
       return Number.isFinite(num) && Math.abs(num - (data.answer ?? NaN)) <= (data.tolerance ?? 0);
     }
     if (q.type === "ordering") {
-      const order = a.order ?? (data.items ?? []).map((_, i) => i);
+      const order = a.order ?? initialOrder;
       return order.every((v, i) => v === i);
     }
     return false;
@@ -203,7 +207,7 @@ export function ChapterQuiz({
     );
   }
 
-  const order = a.order ?? (data.items ? data.items.map((_, i) => i) : []);
+  const order = a.order ?? initialOrder;
 
   function moveOrder(from: number, dir: -1 | 1) {
     const to = from + dir;
@@ -257,7 +261,8 @@ export function ChapterQuiz({
         <div className="mt-5 space-y-2">
           {(q.type === "mc" || q.type === "scenario") && (
             <div role="radiogroup" aria-labelledby={choiceGroupLabel} className="space-y-2">
-              {(data.choices ?? []).map((choice, i) => {
+              {choiceOrder.map((i, position) => {
+                const choice = (data.choices ?? [])[i];
                 const selected = a.choice === i;
                 const show = a.submitted;
                 const isCorrect = i === data.correct;
@@ -279,7 +284,7 @@ export function ChapterQuiz({
                             : "border-line bg-canvas text-ink-muted hover:border-line-strong hover:text-ink"
                     }`}
                   >
-                    <span aria-hidden="true" className="mt-px font-mono text-xs text-ink-muted">{String.fromCharCode(65 + i)}.</span>
+                    <span aria-hidden="true" className="mt-px font-mono text-xs text-ink-muted">{String.fromCharCode(65 + position)}.</span>
                     <span className="min-w-0 flex-1">{choice}</span>
                     {show && isCorrect && <span className="shrink-0 text-xs font-semibold">Correct answer</span>}
                     {show && selected && !isCorrect && <span className="shrink-0 text-xs font-semibold">Your answer</span>}

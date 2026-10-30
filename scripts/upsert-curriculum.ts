@@ -6,7 +6,7 @@ loadEnvConfig(process.cwd());
 const db = new PrismaClient();
 
 async function upsertCurriculum() {
-  console.log("Upserting curriculum from static files...");
+  console.log("Upserting curriculum from static files (additive: never deletes content or progress)...");
   let trackOrder = 0;
   for (const t of ALL_TRACKS) {
     await db.track.upsert({
@@ -145,6 +145,14 @@ async function upsertCurriculum() {
             },
           });
           qOrder++;
+        }
+
+        // Glossary rows have generated ids, so match on (chapter, term): update the
+        // definition if present, otherwise add it. Never deletes existing terms.
+        for (const g of c.glossary ?? []) {
+          const existing = await db.glossaryTerm.findFirst({ where: { chapterId: c.code, term: g.term }, select: { id: true } });
+          if (existing) await db.glossaryTerm.update({ where: { id: existing.id }, data: { definition: g.definition } });
+          else await db.glossaryTerm.create({ data: { term: g.term, definition: g.definition, chapterId: c.code } });
         }
       }
     }
