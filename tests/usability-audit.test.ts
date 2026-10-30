@@ -110,7 +110,7 @@ test("landing headline has a readable accessible name and fits short viewports",
   assert.match(source, /min\(8\.2vw, 11svh\)/);
   // Fixed-size slabs must scale with the stack on short screens and never block the CTAs.
   assert.match(source, /hero-tower pointer-events-none/);
-  assert.match(source, /\[@media\(max-height:820px\)\]:scale-\[0\.72\]/);
+  assert.match(source, /\[@media\(max-height:820px\)\]:scale-\[0\.66\]/);
 });
 
 test("fonts are self-hosted rather than loaded from a blocking third-party stylesheet", () => {
