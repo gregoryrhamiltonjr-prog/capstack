@@ -1,5 +1,6 @@
 import type { SeedTrack } from "./schema";
 import { T1_M2, T1_M3, T1_M5_2, T1_M6_3, T1_M7 } from "./additions/t1";
+import { T2_M1, T2_M2_2, T2_M3, T2_M4 } from "./additions/t2";
 import { p, desk, interview, note, warn, practice, worked, formula, widget, crosslink, stage, scene3d, mc, numeric, ordering, scenario } from "./schema";
 
 export const CRE_TRACKS: SeedTrack[] = [
@@ -513,6 +514,7 @@ export const CRE_TRACKS: SeedTrack[] = [
     orderIndex: 2,
     prereqTrackIds: ["T1"],
     modules: [
+      T2_M1,
       {
         code: "T2.M2",
         title: "The Capital Stack",
@@ -572,8 +574,11 @@ export const CRE_TRACKS: SeedTrack[] = [
               { term: "Blended cost of capital", definition: "The share-weighted average cost across all layers of the stack." },
             ],
           },
+          T2_M2_2,
         ],
       },
+      T2_M3,
+      T2_M4,
     ],
   },
 
