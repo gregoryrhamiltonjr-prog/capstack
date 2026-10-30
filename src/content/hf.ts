@@ -677,7 +677,7 @@ export const HF_TRACKS: SeedTrack[] = [
                     },
                     "The leveraged debt stack, senior to junior"
                   ),
-                  crosslink("T2", "The CRE version of the same idea — the capital stack on a property"),
+                  crosslink("T2.M2.1", "The CRE version of the same idea — the capital stack on a property"),
                 ],
               },
               {

@@ -466,7 +466,7 @@ export const CRE_TRACKS: SeedTrack[] = [
                 readMinutes: 5,
                 blocks: [
                   p("Because the GP's promote is *convex* — it pays off big only above hurdles — a sponsor near a hurdle has an incentive to swing for the fences: take more risk to clear 15% rather than lock in 14.9%. LPs counter with **clawbacks** (give back promote if later losses drag the deal below the hurdle) and by choosing IRR hurdles vs. equity-multiple hurdles carefully. An IRR hurdle rewards speed (encouraging early sales); a multiple hurdle rewards magnitude (encouraging longer holds)."),
-                  crosslink("T6.M1.2", "Fund-level vs. deal-level promote (REPE)"),
+                  note("Promotes also exist one level up, between a fund's investors and its manager. Fund-level vs. deal-level promote is covered in the Real Estate Private Equity course (coming soon).", "Fund-level promote"),
                   interview("Be ready to *build* a simple waterfall verbally: 'return capital, pay an 8 pref, then 80/20 to a 12, then 70/30.' Being able to allocate a $10M profit through those tiers on a whiteboard is a common REPE/associate interview task."),
                 ],
               },

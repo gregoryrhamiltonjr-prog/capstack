@@ -1,0 +1,56 @@
+name: Load curriculum into production
+
+# Manually triggered. Copies the course content in src/content into the production
+# database using scripts/upsert-curriculum.ts, which only inserts or updates rows:
+# it never deletes courses, lessons, quiz questions, users or learner progress.
+#
+# One-time setup (repository owner): Settings → Secrets and variables → Actions →
+# New repository secret named PRODUCTION_DATABASE_URL with the production Postgres URL.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "load" to write the curriculum to the production database'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: load-curriculum
+  cancel-in-progress: false
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.ref == 'refs/heads/main'
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Require explicit confirmation
+        if: inputs.confirm != 'load'
+        run: |
+          echo 'Confirmation was not "load"; nothing was written.'
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install locked dependencies and generate Prisma client
+        run: npm ci --include=dev
+      - name: Validate curriculum and app before writing
+        run: npm test && npm run typecheck
+      - name: Upsert curriculum (additive only)
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "PRODUCTION_DATABASE_URL secret is not set; nothing was written." >&2
+            exit 1
+          fi
+          npx tsx scripts/upsert-curriculum.ts
+      - name: Note
+        run: echo "Loaded. The site caches the curriculum for up to one hour, so new lessons can take up to an hour to appear."
