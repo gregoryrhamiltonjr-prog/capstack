@@ -55,6 +55,7 @@ async function main() {
     assert.equal(await page.evaluate(() => window.__lessonSpeechMock.spoken.length), 0);
     pass("audio never auto-plays");
     await page.getByLabel("Speed", { exact: true }).selectOption("1.5");
+    await page.getByRole("button", { name: "Voice options", exact: true }).click();
     await page.getByLabel("Voice", { exact: true }).selectOption("test-uk");
     assert.equal(await page.locator('option[value="test-fr"]').count(), 0);
     await page.getByRole("button", { name: "Listen: Sample lesson one", exact: true }).click();
@@ -99,9 +100,9 @@ async function main() {
     pass("browser errors surface with a working retry");
     await page.setViewportSize({ width: 390, height: 844 });
     assert.equal(await page.getByLabel("Voice", { exact: true }).isVisible(), false);
-    await page.getByRole("button", { name: "Voice & speed", exact: true }).click();
+    await page.getByRole("button", { name: "Voice options", exact: true }).click();
     await page.getByLabel("Voice", { exact: true }).waitFor({ state: "visible" });
-    await page.getByRole("button", { name: "Voice & speed", exact: true }).click();
+    await page.getByRole("button", { name: "Voice options", exact: true }).click();
     await page.getByLabel("Voice", { exact: true }).waitFor({ state: "hidden" });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true);
     await page.screenshot({ path: resolve(output, "player-mobile.png"), fullPage: true });

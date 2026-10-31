@@ -145,6 +145,15 @@ test("browser audio errors are visible and can be retried", () => {
   assert.equal(f.states.at(-1)?.phase, "playing");
 });
 
+test("audio is a compact integrated toolbar with optional details, not another highlighted card", () => {
+  const html = renderToStaticMarkup(createElement(LessonAudio, { title: "Sample lesson", text: "A short lesson." }));
+  assert.match(html, /data-lesson-audio-toolbar="true" class="mb-5"/);
+  assert.match(html, /class="sr-only">Listen to this lesson/);
+  assert.match(html, /aria-label="Voice options" aria-expanded="false"/);
+  assert.match(html, /id="[^"]+-preferences" hidden/);
+  assert.doesNotMatch(html, /bg-brand\/\[0\.04\]|rounded-xl border border-brand\/20/);
+});
+
 test("lesson audio has labeled controls and explicitly avoids completion side effects", () => {
   const html = renderToStaticMarkup(createElement(LessonAudio, { title: "Sample lesson", text: "A short lesson." }));
   for (const phrase of ["Listen to this lesson", "Lesson audio controls", "Speed", "Voice", "Stop", "Listening does not mark the lesson complete"]) assert.ok(html.includes(phrase));
